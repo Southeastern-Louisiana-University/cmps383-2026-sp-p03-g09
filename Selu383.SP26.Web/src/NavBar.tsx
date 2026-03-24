@@ -6,7 +6,8 @@ function NavBar() {
   const location = useLocation();
 
   const tabValue = location.pathname === '/menu' ? '/menu'
-    : location.pathname === '/order' ? '/order'
+      : location.pathname === '/order' ? '/order'
+          : location.pathname === '/promos' ? '/promos'
     : '/';
 
     return (
@@ -17,7 +18,8 @@ function NavBar() {
               <Tabs.List justify="flex-end" className="font-tiempos-text">
                   <Tabs.Tab value="/">home</Tabs.Tab>
                   <Tabs.Tab value="/menu">menu</Tabs.Tab>
-                  <Tabs.Tab value="/order">order</Tabs.Tab>
+                    <Tabs.Tab value="/order">order</Tabs.Tab>
+                    <Tabs.Tab value="/promos">promos</Tabs.Tab>
               </Tabs.List>
             </Tabs>
             </Group>

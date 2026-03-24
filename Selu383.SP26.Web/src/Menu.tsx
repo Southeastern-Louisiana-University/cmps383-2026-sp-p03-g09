@@ -55,7 +55,10 @@ export default function Menu() {
             <Container size="md" py="xl">
                 <Stack gap="xl">
                     <DrinkSection title="cold drinks" drinks={coldDrinks} />
-                    <DrinkSection title="hot drinks"  drinks={hotDrinks} />
+                    <DrinkSection title="hot drinks" drinks={hotDrinks} />
+                    <Text size="11pt" className="font-tiempos-text" c="dimmed" style={{ textAlign: 'left', maxWidth: 380 }}>
+                    * availability and price depends on location
+                    </Text>
                 </Stack>
             </Container>
         </AppShell>

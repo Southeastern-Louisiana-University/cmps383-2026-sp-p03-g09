@@ -14,7 +14,7 @@ export default function Home() {
                         come say hi today
                     </Text>
 
-                    <Text size="24pt" c="dimmed" className="font-consolas" fw={500}>
+                    <Text size="24pt" c="dimmed" className="font-courier" fw={500}>
                     (@^u^)
                     </Text>
                 </Text>
