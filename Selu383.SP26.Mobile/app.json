@@ -1,7 +1,9 @@
 {
   "expo": {
-    "name": "Selu383-SP26-P03-Mobile-g09",
-    "slug": "Selu383-SP26-P03-Mobile-g09",
+    //"name": "Selu383-SP26-P03-Mobile-g09",
+    //"slug": "Selu383-SP26-P03-Mobile-g09",
+    "name": "Caffeinated Lions",
+    "slug": "caffeinated-lions",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
