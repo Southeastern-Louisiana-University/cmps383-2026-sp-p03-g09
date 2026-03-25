@@ -1,4 +1,4 @@
-import { Group, Tabs, Text, Container } from '@mantine/core';
+import { Group, Tabs, Text } from '@mantine/core';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 function NavBar() {
