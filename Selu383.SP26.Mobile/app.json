@@ -1,7 +1,9 @@
 {
   "expo": {
-    "name": "Selu383-SP26-P03-Mobile-g09",
-    "slug": "Selu383-SP26-P03-Mobile-g09",
+    //"name": "Selu383-SP26-P03-Mobile-g09",
+    //"slug": "Selu383-SP26-P03-Mobile-g09",
+    "name": "Caffeinated Lions",
+    "slug": "caffeinated-lions",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,9 +16,9 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundImage": "./assets/images/icon.png",
+        "monochromeImage": "./assets/images/icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -24,7 +26,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/cupalonecolorless.png"
     },
     "plugins": [
       "expo-router",
