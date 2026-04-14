@@ -121,16 +121,101 @@ export default function Menu() {
     const [imageIndex, setImageIndex] = useState<number>(0);
     const [count, setCount] = useState<number>(1);
 
+    // NEW STATE
+    const [size, setSize] = useState<'small' | 'medium' | 'large'>('small');
+    const [toasted, setToasted] = useState<boolean>(false);
+    const [whip, setWhip] = useState<boolean>(false);
+
+    const coffeeWithWhip = [
+        'iced latte',
+        'supernova',
+        'roaring frappe',
+        'black & white cold brew',
+    ];
+
     const openModal = (drink: Drink, index: number) => {
         setSelected(drink);
         setImageIndex(index);
         setCount(1);
+
+        // reset options
+        setSize('small');
+        setToasted(true);
+        setWhip(false);
     };
 
     const closeModal = () => {
         setSelected(null);
         setCount(1);
     };
+
+    // price parser
+    const getBasePrice = (price: string) => parseFloat(price.replace('$', ''));
+
+    const getSizeMultiplier = () => {
+        switch (size) {
+            case 'medium':
+                return 1.2;
+            case 'large':
+                return 1.4;
+            default:
+                return 1;
+        }
+    };
+
+    const getTotalPrice = () => {
+        if (!selected) return 0;
+        let base = getBasePrice(selected.price);
+
+        // apply size multiplier only for drinks
+        const isDrink = allDrinks.some(d => d.name === selected.name);
+        if (isDrink) {
+            base *= getSizeMultiplier();
+        }
+
+        return (base * count).toFixed(2);
+    };
+
+    const addToBag = () => {
+        if (!selected) return;
+
+        const base = getBasePrice(selected.price);
+        const unitPrice = (allDrinks.some(d => d.name === selected.name) ? base * getSizeMultiplier() : base);
+
+        const item = {
+            id: JSON.stringify({ name: selected.name, size, toasted, whip }),
+            name: selected.name,
+            unitPrice,
+            qty: count,
+            size: isBagel ? undefined : size,
+            toasted: isBagel ? toasted : undefined,
+            whip: showWhip ? whip : undefined,
+        } as any;
+
+        try {
+            const raw = localStorage.getItem('cart');
+            const current = raw ? JSON.parse(raw) : [];
+
+            const idx = current.findIndex((ci: any) => ci.id === item.id);
+            if (idx >= 0) {
+                current[idx].qty = (current[idx].qty || 0) + item.qty;
+            } else {
+                current.push(item);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(current));
+            // notify other components
+            window.dispatchEvent(new Event('cartUpdated'));
+        } catch (e) {
+            console.error('failed to add to cart', e);
+        }
+
+        closeModal();
+    };
+
+    const isDrink = selected && allDrinks.some(d => d.name === selected.name);
+    const isBagel = selected && bagels.some(b => b.name === selected.name);
+    const showWhip = selected && coffeeWithWhip.includes(selected.name);
 
     return (
         <AppShell>
@@ -147,7 +232,6 @@ export default function Menu() {
                 </Stack>
             </Container>
 
-            {/* Overlay Modal */}
             <Modal
                 opened={!!selected}
                 onClose={closeModal}
@@ -172,15 +256,51 @@ export default function Menu() {
                             {selected.name}
                         </Text>
 
+                        {/* DYNAMIC PRICE */}
                         <Text size="14pt" fw={500}>
-                            {selected.price}
+                            ${getTotalPrice()}
                         </Text>
 
                         <Text size="12pt" c="dimmed">
                             {selected.desc}
                         </Text>
 
-                        {/* Quantity Controls */}
+                        {/* SIZE OPTIONS (DRINKS ONLY) */}
+                        {isDrink && (
+                            <Group justify="center">
+                                {(['small', 'medium', 'large'] as const).map((s) => (
+                                    <Button
+                                        key={s}
+                                        variant={size === s ? 'filled' : 'outline'}
+                                        onClick={() => setSize(s)}
+                                    >
+                                        {s}
+                                    </Button>
+                                ))}
+                            </Group>
+                        )}
+
+                        {/* TOASTED (BAGELS) */}
+                        {isBagel && (
+                            <Button
+                                variant={toasted ? 'filled' : 'outline'}
+                                onClick={() => setToasted((t) => !t)}
+                            >
+                                {toasted ? 'toasted ✓' : 'untoasted'}
+                            </Button>
+                        )}
+
+                        {/* WHIPPED CREAM (SELECT COFFEE DRINKS) */}
+                        {showWhip && (
+                            <Button
+                                variant={whip ? 'filled' : 'outline'}
+                                onClick={() => setWhip((w) => !w)}
+                            >
+                                {whip ? 'whipped cream ✓' : 'add whipped cream'}
+                            </Button>
+                        )}
+
+                        {/* Quantity */}
                         <Group justify="center" gap="md">
                             <Button
                                 onClick={() => setCount((c) => Math.max(1, c - 1))}
@@ -199,9 +319,12 @@ export default function Menu() {
                             </Button>
                         </Group>
 
-                        {/* Action Buttons */}
+                        {/* ACTIONS */}
                         <Group grow mt="md">
-                            <Button onClick={() => { }}>
+                            <Button
+                                disabled={isDrink && !size}
+                                onClick={addToBag}
+                            >
                                 add to bag
                             </Button>
 
