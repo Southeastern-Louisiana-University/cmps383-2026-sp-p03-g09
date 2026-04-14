@@ -53,8 +53,8 @@ export default function Home() {
             {/* ── Hero / Welcome ── */}
             <Center h="calc(100vh - 120px)">
                 <Text size="48pt" className="font-tiempos-headline" fw={300} component="div">
-                    five locations. <br />
-                    twenty drinks. <br />
+                    three locations. <br />
+                    six drinks. <br />
                     unlimited ways to smile.<br />
 
                     <Space h="md" />
@@ -70,7 +70,7 @@ export default function Home() {
 
             <Group justify="center">
                 <Text size="16pt" className="font-tiempos-headline" fw={300}>
-                    baton rouge {"\u2022"} hammond {"\u2022"} lafayette {"\u2022"} metairie {"\u2022"} new orleans
+                    hammond, la {"\u2022"} new orleans, la {"\u2022"} new york, ny
                 </Text>
             </Group>
 

@@ -51,7 +51,7 @@ function NavBar() {
                   </div>
                 ))
               ) : (
-                <div style={{ color: '#6b7280' }}>No items in cart</div>
+                <div style={{ color: '#6b7280' }}>No items in bag</div>
               )}
             </Stack>
           </Drawer>

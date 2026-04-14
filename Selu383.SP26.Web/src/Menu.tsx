@@ -13,33 +13,45 @@ import { useState } from 'react';
 
 type Drink = {
     name: string;
+    price: string;
     desc: string;
 };
 
-const coldDrinks: Drink[] = [
-    { name: 'cold brew', desc: 'steeped for 12 hours, smooth and naturally sweet' },
-    { name: 'nitro cold brew', desc: 'cold brew on tap, infused with nitrogen for a silky finish' },
-    { name: 'iced coffee', desc: 'freshly brewed coffee poured over ice' },
-    { name: 'iced americano', desc: 'espresso shots over ice, topped with cold water' },
-    { name: 'iced latte', desc: 'espresso with cold milk over ice' },
-    { name: 'iced mocha', desc: 'espresso, chocolate, and milk over ice' },
-    { name: 'frappe', desc: 'blended ice, espresso, and milk' },
-    { name: 'vietnamese iced coffee', desc: 'strong drip coffee with sweetened condensed milk over ice' },
-    { name: 'cold foam latte', desc: 'iced latte crowned with velvety cold foam' },
-    { name: 'shaken espresso', desc: 'espresso shaken with ice for a frothy, chilled pick-me-up' },
+const allDrinks: Drink[] = [
+    { name: 'iced latte', price: '$5.50', desc: 'espresso and milk served over ice for a refreshing coffee drink.' },
+    { name: 'supernova', price: '$7.95', desc: 'a unique coffee blend with a complex, balanced profile and subtle sweetness. delicious as espresso or paired with milk.' },
+    { name: 'roaring frappe', price: '$6.20', desc: 'cold brew, milk, and ice blended together with a signature syrup or flavor, topped with whipped cream.' },
+    { name: 'black & white cold brew', price: '$5.15', desc: 'cold brew made with both dark and light roast beans, finished with a drizzle of condensed milk.' },
+    { name: 'strawberry limeade', price: '$5.00', desc: 'fresh lime juice blended with strawberry purée for a refreshing, tangy drink.' },
+    { name: 'shaken lemonade', price: '$5.00', desc: 'fresh lemon juice and simple syrup vigorously shaken for a bright, refreshing lemonade.' },
 ];
 
-const hotDrinks: Drink[] = [
-    { name: 'espresso', desc: 'a concentrated shot of rich, bold coffee' },
-    { name: 'americano', desc: 'espresso diluted with hot water for a clean, smooth cup' },
-    { name: 'cappuccino', desc: 'equal parts espresso, steamed milk, and thick foam' },
-    { name: 'latte', desc: 'espresso with a generous pour of silky steamed milk' },
-    { name: 'macchiato', desc: 'espresso marked with a dollop of foam' },
-    { name: 'mocha', desc: 'espresso blended with chocolate and steamed milk' },
-    { name: 'flat white', desc: 'velvety microfoam poured over a double ristretto' },
-    { name: 'cortado', desc: 'equal parts espresso and warm milk to balance the intensity' },
-    { name: 'lungo', desc: 'a long pull espresso, slower and more mellow' },
-    { name: 'pour over', desc: 'single-origin beans brewed to order, one careful pour at a time' },
+const sweetCrepes: Drink[] = [
+    { name: 'mannino honey crepe', price: '$10.00', desc: 'a sweet crepe drizzled with mannino honey and topped with mixed berries.' },
+    { name: 'downtowner', price: '$10.75', desc: "strawberries and bananas wrapped in a crepe, finished with nutella and hershey's chocolate sauce." },
+    { name: 'funky monkey', price: '$10.00', desc: 'nutella and bananas wrapped in a crepe, served with whipped cream.' },
+    { name: "le s'mores", price: '$9.50', desc: 'marshmallow cream and chocolate sauce inside a crepe, topped with graham cracker crumbs.' },
+    { name: 'strawberry fields', price: '$10.00', desc: "fresh strawberries with hershey's chocolate drizzle and a dusting of powdered sugar." },
+    { name: 'bonjour', price: '$8.50', desc: 'a sweet crepe filled with syrup and cinnamon, finished with powdered sugar.' },
+    { name: 'banana foster', price: '$8.95', desc: 'bananas with cinnamon in a crepe, topped with a generous drizzle of caramel sauce.' },
+];
+
+const savoryCrapes: Drink[] = [
+    { name: "matt's scrambled eggs", price: '$5.00', desc: 'scrambled eggs and melted mozzarella cheese wrapped in a crepe.' },
+    { name: 'meanie mushroom', price: '$10.50', desc: 'sautéed mushrooms, mozzarella, tomato, and bacon inside a delicate crepe.' },
+    { name: 'turkey club', price: '$10.50', desc: 'sliced turkey, bacon, spinach, and tomato wrapped in a savory crepe.' },
+    { name: 'green machine', price: '$10.00', desc: 'spinach, artichokes, and mozzarella cheese inside a fresh crepe.' },
+    { name: 'perfect pair', price: '$10.00', desc: 'a unique combination of bacon and nutella wrapped in a crepe.' },
+    { name: 'crepe fromage', price: '$8.00', desc: 'a savory crepe filled with a blend of cheeses.' },
+    { name: 'farmers market crepe', price: '$10.50', desc: 'turkey, spinach, and mozzarella wrapped in a savory crepe.' },
+];
+
+const bagels: Drink[] = [
+    { name: 'travis special', price: '$14.00', desc: 'cream cheese, salmon, spinach, and a fried egg served on a freshly toasted bagel.' },
+    { name: 'crème brulagel', price: '$8.00', desc: 'a toasted bagel with a caramelized sugar crust inspired by crème brûlée, served with cream cheese.' },
+    { name: 'the fancy one', price: '$13.00', desc: 'smoked salmon, cream cheese, and fresh dill on a toasted bagel.' },
+    { name: 'breakfast bagel', price: '$9.50', desc: 'a toasted bagel with your choice of ham, bacon, or sausage, a fried egg, and cheddar cheese.' },
+    { name: 'the classic', price: '$5.25', desc: 'a toasted bagel with cream cheese.' },
 ];
 
 function DrinkSection({
@@ -124,8 +136,10 @@ export default function Menu() {
         <AppShell>
             <Container size="lg" py="xl">
                 <Stack gap="xl">
-                    <DrinkSection title="cold drinks" drinks={coldDrinks} onSelect={openModal} />
-                    <DrinkSection title="hot drinks" drinks={hotDrinks} onSelect={openModal} />
+                    <DrinkSection title="drinks" drinks={allDrinks} onSelect={openModal} />
+                    <DrinkSection title="sweet crepes" drinks={sweetCrepes} onSelect={openModal} />
+                    <DrinkSection title="savory crepes" drinks={savoryCrapes} onSelect={openModal} />
+                    <DrinkSection title="bagels" drinks={bagels} onSelect={openModal} />
 
                     <Text size="11pt" c="dimmed" style={{ maxWidth: 380 }}>
                         * availability and price depends on location
@@ -158,6 +172,10 @@ export default function Menu() {
                             {selected.name}
                         </Text>
 
+                        <Text size="14pt" fw={500}>
+                            {selected.price}
+                        </Text>
+
                         <Text size="12pt" c="dimmed">
                             {selected.desc}
                         </Text>
@@ -184,11 +202,11 @@ export default function Menu() {
                         {/* Action Buttons */}
                         <Group grow mt="md">
                             <Button onClick={() => { }}>
-                                Add to Cart
+                                add to bag
                             </Button>
 
                             <Button variant="light" color="gray" onClick={closeModal}>
-                                Cancel
+                                cancel
                             </Button>
                         </Group>
                     </Stack>
