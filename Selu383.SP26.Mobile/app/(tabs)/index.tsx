@@ -125,7 +125,7 @@ export default function HomeScreen() {
       paddingBottom: 12,
       backgroundColor: palette.bg,
       borderBottomWidth: 1,
-      borderBottomColor: palette.subtle + '40',
+      borderBottomColor: palette.accent + '40',
     },
     logoTopBar: {
       color: palette.accent,
@@ -155,7 +155,7 @@ export default function HomeScreen() {
       alignItems: 'center',
       gap: 5,
       borderWidth: 1,
-      borderColor: palette.subtle,
+      borderColor: palette.accent,
       borderRadius: 20,
       paddingHorizontal: 12,
       paddingVertical: 6,
@@ -184,9 +184,10 @@ export default function HomeScreen() {
     },
 
     saying: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 13,
       letterSpacing: 1,
+      marginTop: 25,
       marginBottom: 40,
       fontStyle: 'italic',
       opacity: 0.75,
@@ -200,27 +201,27 @@ export default function HomeScreen() {
       letterSpacing: 0.5,
     },
     subline: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 14,
       letterSpacing: 2,
       marginBottom: 4,
       opacity: 0.75,
     },
     kaomoji: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 13,
       letterSpacing: 1,
       marginBottom: 40,
     },
     drinkLabel: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 10,
       letterSpacing: 3,
       textTransform: 'uppercase',
       marginBottom: 12,
     },
     swipeHint: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 10,
       letterSpacing: 1.5,
       opacity: 0.5,
@@ -235,7 +236,7 @@ export default function HomeScreen() {
       backgroundColor: palette.surface,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: palette.subtle,
+      borderColor: palette.accent,
       overflow: 'hidden',
       marginLeft: 32,
     },
@@ -261,7 +262,7 @@ export default function HomeScreen() {
       letterSpacing: 0.5,
     },
     cardDesc: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 12,
       lineHeight: 18,
       opacity: 0.75,
@@ -293,7 +294,7 @@ export default function HomeScreen() {
       borderRadius: 3,
     },
     locations: {
-      color: palette.subtle,
+      color: palette.accent,
       fontSize: 11,
       letterSpacing: 1.5,
       textAlign: 'center',
@@ -317,20 +318,20 @@ export default function HomeScreen() {
             <Ionicons
               name="sunny-outline"
               size={13}
-              color={palette.subtle}
+              color={palette.accent}
               style={styles.themeIcon}
             />
             <Switch
               value={isDark}
               onValueChange={val => setTheme(val ? 'dark' : 'light')}
-              trackColor={{ false: palette.subtle + '88', true: palette.accent + '88' }}
+              trackColor={{ false: palette.accent + '88', true: palette.accent + '88' }}
               thumbColor={isDark ? palette.accent : palette.elevated}
-              ios_backgroundColor={palette.subtle + '88'}
+              ios_backgroundColor={palette.accent + '88'}
             />
             <Ionicons
               name="moon-outline"
               size={13}
-              color={palette.subtle}
+              color={palette.accent}
               style={styles.themeIcon}
             />
           </View>
@@ -399,14 +400,14 @@ export default function HomeScreen() {
               key={i}
               style={[
                 styles.dot,
-                { backgroundColor: i === activeSlot ? palette.accent : palette.subtle },
+                { backgroundColor: i === activeSlot ? palette.accent : palette.accent },
               ]}
             />
           ))}
         </View>
 
         <Text style={styles.locations}>
-          baton rouge · hammond · lafayette · metairie · new orleans
+          new orleans · hammond · new york
         </Text>
 
       </ScrollView>
