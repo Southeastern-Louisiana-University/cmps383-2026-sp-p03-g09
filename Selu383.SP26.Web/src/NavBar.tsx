@@ -30,7 +30,7 @@ function NavBar() {
 
     return (
         <>
-        <Group h={60} px="xl" justify="space-between" w="100%">
+        <Group h={60} px="xl" justify="space-between" style={{ width: '100%', boxSizing: 'border-box' }}>
             <Text size="24pt" className="font-tiempos-headline" onClick={() => navigate('/')} style={{ cursor: 'pointer' }} role="button" aria-label="home">
               caffeinated lions
             </Text>
