@@ -26,14 +26,15 @@ export interface ButtonTokens {
 
 const PALETTES: Record<ThemeName, ThemePalette> = {
   light: {
-    bg: "#f1f0ff",
-    text: "#1e1b4b",
-    surface: "#e8e6ff",
-    elevated: "#ffffff",
-    subtle: "#8581a9",
-    accent: "#a5b4fc",
+    bg: "#f8f7ff",          // softer, less blue-heavy background
+    text: "#1c1a3a",        // slightly warmer dark for readability
+    surface: "#eef2ff",     // soft lavender surface instead of loud indigo
+    elevated: "#ffffff",    // keep clean cards
+    subtle: "#a5b4fc",      // muted lavender-gray for secondary text
+    accent: "#5f71e9",      // your required color, now used intentionally
+    //accent: "#8b87c9 ",// deeper version for hover/active states
     danger: "#e5484d",
-    success: "#6ee7b7",
+    success: "#4ade80",     // cleaner green (less minty, more modern)
   },
   dark: {
     bg: "#1e1b4b",
@@ -42,8 +43,8 @@ const PALETTES: Record<ThemeName, ThemePalette> = {
     elevated: "#3b3680",
     subtle: "#4c4899",
     accent: "#a5b4fc",
-    danger: "#ff6b6f",
-    success: "#6ee7b7",
+    danger: "#e5484d",
+    success: "#4ade80",
   },
   oled: {
     bg: "#000000",

@@ -166,11 +166,6 @@ export default function ProfileScreen() {
       alignItems: 'center',
       gap: 8,
     },
-    themeToggle: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 4,
-    },
     themeIcon: { opacity: 0.6 },
     topBtn: {
       flexDirection: 'row',
@@ -230,17 +225,17 @@ export default function ProfileScreen() {
       letterSpacing: 0.5,
     },
     userHandle: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 12,
       letterSpacing: 1,
-      opacity: 0.65,
+      opacity: 1,
       marginTop: 2,
     },
     memberSince: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 10,
       letterSpacing: 1.5,
-      opacity: 0.5,
+      opacity: 0.9,
       marginTop: 3,
     },
 
@@ -259,7 +254,7 @@ export default function ProfileScreen() {
       backgroundColor: palette.accent + '18',
     },
     tierText: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 11,
       letterSpacing: 1.5,
     },
@@ -280,7 +275,7 @@ export default function ProfileScreen() {
       marginTop: 20,
     },
     streakNum: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 32,
       fontWeight: '300',
     },
@@ -291,7 +286,7 @@ export default function ProfileScreen() {
       letterSpacing: 0.5,
     },
     streakSub: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 11,
       opacity: 0.65,
       marginTop: 2,
@@ -312,7 +307,7 @@ export default function ProfileScreen() {
       letterSpacing: 0.5,
     },
     pointsLabel: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 11,
       letterSpacing: 1.5,
       opacity: 0.7,
@@ -332,7 +327,7 @@ export default function ProfileScreen() {
       backgroundColor: palette.accent + '10',
     },
     pointsNextText: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 11,
       letterSpacing: 1,
       opacity: 0.75,
@@ -349,7 +344,7 @@ export default function ProfileScreen() {
       borderRadius: 2,
     },
     progressHint: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 10,
       letterSpacing: 1,
       opacity: 0.5,
@@ -379,7 +374,7 @@ export default function ProfileScreen() {
       letterSpacing: 0.5,
     },
     statLabel: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 9,
       letterSpacing: 1.5,
       opacity: 0.65,
@@ -394,7 +389,7 @@ export default function ProfileScreen() {
       gap: 14,
       paddingVertical: 13,
       borderBottomWidth: 1,
-      borderBottomColor: palette.accent + '22',
+      borderBottomColor: palette.text + '22',
     },
     orderEmoji: { fontSize: 22 },
     orderName: {
@@ -404,14 +399,14 @@ export default function ProfileScreen() {
       letterSpacing: 0.5,
     },
     orderMeta: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 10,
       letterSpacing: 1,
       opacity: 0.6,
       marginTop: 2,
     },
     orderPoints: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 11,
       letterSpacing: 1,
       opacity: 0.75,
@@ -426,18 +421,18 @@ export default function ProfileScreen() {
       marginTop: 44,
       paddingVertical: 14,
       borderWidth: 1,
-      borderColor: palette.accent + '55',
+      borderColor: palette.text + '55',
       borderRadius: 28,
     },
     signOutText: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 12,
       letterSpacing: 1.5,
       opacity: 0.7,
     },
 
     kaomoji: {
-      color: palette.accent,
+      color: palette.text,
       fontSize: 12,
       letterSpacing: 1,
       opacity: 0.5,
@@ -462,17 +457,6 @@ export default function ProfileScreen() {
       <View style={styles.topBar}>
         <Text style={styles.logoTopBar}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
-          <View style={styles.themeToggle}>
-            <Ionicons name="sunny-outline" size={13} color={palette.accent} style={styles.themeIcon} />
-            <Switch
-              value={isDark}
-              onValueChange={val => setTheme(val ? 'dark' : 'light')}
-              trackColor={{ false: palette.accent + '88', true: palette.accent + '88' }}
-              thumbColor={isDark ? palette.accent : palette.elevated}
-              ios_backgroundColor={palette.accent + '88'}
-            />
-            <Ionicons name="moon-outline" size={13} color={palette.accent} style={styles.themeIcon} />
-          </View>
 
           {/* settings icon button */}
           <TouchableOpacity

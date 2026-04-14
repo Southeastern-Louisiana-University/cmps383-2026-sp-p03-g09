@@ -109,15 +109,6 @@ export default function Signup() {
       <View style={styles.topBar}>
         <Text style={styles.logo}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
-          <Ionicons name="sunny-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
-          <Switch
-            value={isDark}
-            onValueChange={val => setTheme(val ? "dark" : "light")}
-            trackColor={{ false: palette.subtle + "88", true: palette.accent + "88" }}
-            thumbColor={isDark ? palette.accent : palette.elevated}
-            ios_backgroundColor={palette.subtle + "88"}
-          />
-          <Ionicons name="moon-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <Ionicons name="arrow-back-outline" size={12} color={palette.text} opacity={0.8} />
             <Text style={styles.backBtnText}>back</Text>

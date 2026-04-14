@@ -14,7 +14,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTheme, ThemePalette } from '@/app/theme-context';
-import MapView, { Marker, UrlTile } from 'react-native-maps';
+import MapView, { Marker, UrlTile, PROVIDER_DEFAULT} from 'react-native-maps';
 
 
 
@@ -32,15 +32,6 @@ export default function Stores() {
       <View style={styles.topBar}>
         <Text style={styles.logo}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
-          <Ionicons name="sunny-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
-          <Switch
-            value={isDark}
-            onValueChange={val => setTheme(val ? "dark" : "light")}
-            trackColor={{ false: palette.subtle + "88", true: palette.accent + "88" }}
-            thumbColor={isDark ? palette.accent : palette.elevated}
-            ios_backgroundColor={palette.subtle + "88"}
-          />
-          <Ionicons name="moon-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <Ionicons name="arrow-back-outline" size={12} color={palette.text} opacity={0.8} />
             <Text style={styles.backBtnText}>back</Text>
@@ -75,12 +66,13 @@ export default function Stores() {
                 latitudeDelta: 0.05,
                 longitudeDelta: 0.05,
             }}
+            provider={PROVIDER_DEFAULT}
             mapType="none" 
         >
         <UrlTile
-            urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-            maximumZ={19}
-            flipY={false}
+          urlTemplate={`https://tiles.stadiamaps.com/tiles/${isDark ? 'alidade_smooth_dark' : 'alidade_smooth'}/{z}/{x}/{y}.png?api_key=178321b1-54c2-4932-af4c-5d60acc9ef13`}
+          maximumZ={19}
+          flipY={false}
         />
         <Marker
             coordinate={{ latitude: 29.949352264404297, longitude: -90.1276626586914 }}
@@ -114,12 +106,13 @@ export default function Stores() {
                 latitudeDelta: 0.05,
                 longitudeDelta: 0.05,
             }}
+            provider={PROVIDER_DEFAULT}
             mapType="none" 
         >
         <UrlTile
-            urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-            maximumZ={19}
-            flipY={false}
+          urlTemplate={`https://tiles.stadiamaps.com/tiles/${isDark ? 'alidade_smooth_dark' : 'alidade_smooth'}/{z}/{x}/{y}.png?api_key=178321b1-54c2-4932-af4c-5d60acc9ef13`}
+          maximumZ={19}
+          flipY={false}
         />
         <Marker
             coordinate={{ latitude: 30.5046845, longitude: -90.4605094 }}
@@ -153,12 +146,13 @@ export default function Stores() {
                 latitudeDelta: 0.05,
                 longitudeDelta: 0.05,
             }}
+            provider={PROVIDER_DEFAULT}
             mapType="none" 
         >
         <UrlTile
-            urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-            maximumZ={19}
-            flipY={false}
+          urlTemplate={`https://tiles.stadiamaps.com/tiles/${isDark ? 'alidade_smooth_dark' : 'alidade_smooth'}/{z}/{x}/{y}.png?api_key=178321b1-54c2-4932-af4c-5d60acc9ef13`}
+          maximumZ={19}
+          flipY={false}
         />
         <Marker
             coordinate={{ latitude: 40.72407913208008, longitude: -73.9903564453125 }}

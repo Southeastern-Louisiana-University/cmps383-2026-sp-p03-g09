@@ -162,7 +162,7 @@ export default function HomeScreen() {
     },
     topBtnText: {
       color: palette.text,
-      fontSize: 11,
+      fontSize: 14,
       letterSpacing: 0.5,
       opacity: 0.8,
     },
@@ -313,37 +313,14 @@ export default function HomeScreen() {
         <Text style={styles.logoTopBar}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
 
-          {/* theme toggle — lives here now */}
-          <View style={styles.themeToggle}>
-            <Ionicons
-              name="sunny-outline"
-              size={13}
-              color={palette.accent}
-              style={styles.themeIcon}
-            />
-            <Switch
-              value={isDark}
-              onValueChange={val => setTheme(val ? 'dark' : 'light')}
-              trackColor={{ false: palette.accent + '88', true: palette.accent + '88' }}
-              thumbColor={isDark ? palette.accent : palette.elevated}
-              ios_backgroundColor={palette.accent + '88'}
-            />
-            <Ionicons
-              name="moon-outline"
-              size={13}
-              color={palette.accent}
-              style={styles.themeIcon}
-            />
-          </View>
-
           <TouchableOpacity style={styles.topBtn} onPress={() => router.push('/pages/stores')}>
-            <Ionicons name="location-outline" size={12} color={palette.text} opacity={0.8} />
+            <Ionicons name="location-outline" size={12} color={palette.text} opacity={1} />
             <Text style={styles.topBtnText}>stores</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.topBtn} onPress={() => router.push('/pages/login')}>
             <Ionicons name="paw-outline" size={12} color={palette.accent} />
-            <Text style={styles.topBtnAccentText}>sign in</Text>
+            <Text style={styles.topBtnText}>sign in</Text>
           </TouchableOpacity>
 
         </View>
