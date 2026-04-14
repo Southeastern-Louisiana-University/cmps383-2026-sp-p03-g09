@@ -15,6 +15,7 @@ import { useRouter } from 'expo-router';
 
 const REWARDS = [
   {
+    name: 'drippy coffee',
     id: 'free_drip',
     label: 'free drip coffee',
     desc: 'any drip coffee, on us',
@@ -22,6 +23,7 @@ const REWARDS = [
     icon: 'cafe-outline',
   },
   {
+    name: 'iced out latte',
     id: 'free_latte',
     label: 'free iced latte',
     desc: 'any iced latte, your way',
@@ -29,6 +31,7 @@ const REWARDS = [
     icon: 'water-outline',
   },
   {
+    name: 'roaring frappe',
     id: 'free_frappe',
     label: 'free roaring frappe',
     desc: 'our signature blended drink',
@@ -36,6 +39,7 @@ const REWARDS = [
     icon: 'snow-outline',
   },
   {
+    name: 'lioness crepe',
     id: 'free_crepe',
     label: 'free sweet crepe',
     desc: 'any sweet crepe of your choice',
@@ -43,6 +47,7 @@ const REWARDS = [
     icon: 'restaurant-outline',
   },
   {
+    name: 'bagel bliss',
     id: 'free_bagel',
     label: 'free bagel',
     desc: 'any bagel from the menu',
@@ -50,6 +55,7 @@ const REWARDS = [
     icon: 'ellipse-outline',
   },
   {
+    name: 'queen\'s treat',
     id: 'free_drink',
     label: 'free drink of your choice',
     desc: 'anything on the drinks menu',

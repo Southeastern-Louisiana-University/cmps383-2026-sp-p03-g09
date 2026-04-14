@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTheme, ThemePalette } from '@/app/theme-context';
 
-// ─── tiny labelled field ──────────────────────────────────────────────────────
+// tiny labelled field 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <View style={{ marginBottom: 20 }}>
@@ -105,7 +105,7 @@ export default function Signup() {
     <View style={styles.container}>
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={palette.bg} />
 
-      {/* ── top bar ─────────────────────────────────────────────────────────── */}
+      {/*top bar*/}
       <View style={styles.topBar}>
         <Text style={styles.logo}>caffeinated lions</Text>
         <View style={styles.topBarRight}>

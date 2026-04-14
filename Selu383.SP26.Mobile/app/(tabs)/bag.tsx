@@ -141,7 +141,7 @@ export default function Signup() {
         </TouchableOpacity>
 
         <Text style={styles.footer}>
-          baton rouge · hammond · lafayette · metairie · new orleans
+          new orleans · hammond · new york
         </Text>
 
       </ScrollView>
