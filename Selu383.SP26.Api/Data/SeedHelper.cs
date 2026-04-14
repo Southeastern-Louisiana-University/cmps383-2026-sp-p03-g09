@@ -71,10 +71,15 @@ public static class SeedHelper
 
     private static async Task AddLocations(DataContext dataContext)
     {
+        if (dataContext.Set<Location>().Any())
+        {
+            return;
+        }
+
         dataContext.Set<Location>().AddRange(
-            new Location { Name = "Location 1", Address = "123 Main St", TableCount = 10 },
-            new Location { Name = "Location 2", Address = "456 Oak Ave", TableCount = 20 },
-            new Location { Name = "Location 3", Address = "789 Pine Ln", TableCount = 15 }
+            new Location { Name = "Caffeinated Lions – Hammond", Address = "1514 N Morrison Blvd, Hammond, LA 70401", TableCount = 12 },
+            new Location { Name = "Caffeinated Lions – New Orleans", Address = "800 Magazine St, New Orleans, LA 70130", TableCount = 20 },
+            new Location { Name = "Caffeinated Lions – New York", Address = "45 W 29th St, New York, NY 10001", TableCount = 15 }
         );
 
         await dataContext.SaveChangesAsync();
