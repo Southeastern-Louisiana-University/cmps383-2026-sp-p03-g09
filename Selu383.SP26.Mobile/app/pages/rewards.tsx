@@ -204,19 +204,6 @@ export default function RewardsScreen() {
       opacity: 0.7,
       marginBottom: 8,
     },
-    tierBadge: {
-      borderWidth: 1,
-      borderColor: palette.accent,
-      borderRadius: 20,
-      paddingHorizontal: 12,
-      paddingVertical: 4,
-      alignSelf: 'flex-start',
-    },
-    tierText: {
-      color: palette.accent,
-      fontSize: 10,
-      letterSpacing: 2,
-    },
     progressLabel: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -525,11 +512,6 @@ export default function RewardsScreen() {
             <View>
               <Text style={styles.pointsNumber}>{points}</Text>
               <Text style={styles.pointsUnit}>points available</Text>
-            </View>
-            <View style={styles.tierBadge}>
-              <Text style={styles.tierText}>
-                {points >= 500 ? 'gold lion 🦁' : points >= 200 ? 'silver paw' : 'cub tier'}
-              </Text>
             </View>
           </View>
           <View style={styles.progressLabel}>
