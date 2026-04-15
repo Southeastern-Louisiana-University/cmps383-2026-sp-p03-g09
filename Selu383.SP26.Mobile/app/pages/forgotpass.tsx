@@ -146,7 +146,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette']) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + '40',
     },
-    logo: { color: palette.accent, fontSize: 14, fontWeight: '300', letterSpacing: 1 },
+    logo: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1 },
     topBarRight: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -172,7 +172,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette']) =>
     headline: {
       color: palette.text,
       fontSize: 42,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 50,
       letterSpacing: 0.5,
       marginBottom: 8,
@@ -225,7 +225,6 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette']) =>
       color: palette.accent,
       fontSize: 14,
       letterSpacing: 1.5,
-      fontWeight: '400',
     },
     backToLogin: {
       alignSelf: 'center',

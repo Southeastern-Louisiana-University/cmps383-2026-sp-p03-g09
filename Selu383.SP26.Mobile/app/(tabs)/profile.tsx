@@ -157,7 +157,7 @@ export default function ProfileScreen() {
     logoTopBar: {
       color: palette.accent,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
     },
     topBarRight: {
@@ -220,7 +220,7 @@ export default function ProfileScreen() {
     userName: {
       color: palette.text,
       fontSize: 28,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     userHandle: {
@@ -253,12 +253,12 @@ export default function ProfileScreen() {
     streakNum: {
       color: palette.text,
       fontSize: 32,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
     },
     streakLabel: {
       color: palette.text,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     streakSub: {
@@ -279,7 +279,7 @@ export default function ProfileScreen() {
     pointsNum: {
       color: palette.text,
       fontSize: 36,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     pointsLabel: {
@@ -346,7 +346,7 @@ export default function ProfileScreen() {
     statValue: {
       color: palette.text,
       fontSize: 22,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     statLabel: {
@@ -371,7 +371,7 @@ export default function ProfileScreen() {
     orderName: {
       color: palette.text,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     orderMeta: {

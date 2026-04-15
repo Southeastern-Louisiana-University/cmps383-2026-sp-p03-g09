@@ -211,7 +211,7 @@ export default function MenuScreen() {
       backgroundColor: palette.bg,
       borderBottomWidth: 1, borderBottomColor: palette.accent + '40',
     },
-    logoTopBar: { color: palette.accent, fontSize: 14, fontWeight: '300', letterSpacing: 1 },
+    logoTopBar: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1 },
     backBtn: {
       flexDirection: 'row', alignItems: 'center', gap: 5,
       borderWidth: 1, borderColor: palette.accent, borderRadius: 20,
@@ -223,7 +223,7 @@ export default function MenuScreen() {
 
     pageHeader: { paddingHorizontal: 32, paddingTop: 32, paddingBottom: 24 },
     pageLabel: { color: palette.accent, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 8 },
-    pageTitle: { color: palette.text, fontSize: 36, fontWeight: '300', letterSpacing: 0.5, marginBottom: 4 },
+    pageTitle: { color: palette.text, fontSize: 36, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5, marginBottom: 4 },
     pageSubtitle: { color: palette.accent, fontSize: 12, letterSpacing: 1, opacity: 0.6, fontStyle: 'italic' },
 
     tabBar: { flexDirection: 'row', paddingHorizontal: 32, gap: 8, marginBottom: 24 },
@@ -240,10 +240,10 @@ export default function MenuScreen() {
       paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: palette.accent + '20', gap: 12,
     },
     itemInfo: { flex: 1 },
-    itemName: { color: palette.text, fontSize: 15, fontWeight: '300', letterSpacing: 0.3, marginBottom: 4 },
+    itemName: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, marginBottom: 4 },
     itemDesc: { color: palette.accent, fontSize: 12, lineHeight: 18, opacity: 0.65 },
     itemRight: { alignItems: 'flex-end', gap: 8 },
-    itemPrice: { color: palette.accent, fontSize: 13, fontWeight: '300', letterSpacing: 0.5 },
+    itemPrice: { color: palette.accent, fontSize: 13, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
     addBtn: {
       borderWidth: 1, borderColor: palette.accent, borderRadius: 20,
       paddingHorizontal: 12, paddingVertical: 5, backgroundColor: palette.accent + '22',
@@ -263,7 +263,7 @@ export default function MenuScreen() {
     },
     handle: { width: 36, height: 3, backgroundColor: palette.accent + '40', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
     modalLabel: { color: palette.accent, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', opacity: 0.7, marginBottom: 6 },
-    modalTitle: { color: palette.text, fontSize: 22, fontWeight: '300', letterSpacing: 0.3, marginBottom: 4 },
+    modalTitle: { color: palette.text, fontSize: 22, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, marginBottom: 4 },
     modalDesc: { color: palette.accent, fontSize: 12, opacity: 0.6, letterSpacing: 0.3, marginBottom: 24 },
 
     divider: { height: 1, backgroundColor: palette.accent + '20', marginVertical: 16 },
@@ -296,7 +296,7 @@ export default function MenuScreen() {
     qtyRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
     qtyBtn: { width: 32, height: 32, borderRadius: 16, borderWidth: 1, borderColor: palette.accent, alignItems: 'center', justifyContent: 'center' },
     qtyBtnText: { color: palette.accent, fontSize: 18, lineHeight: 22 },
-    qtyNum: { color: palette.text, fontSize: 18, fontWeight: '300', minWidth: 20, textAlign: 'center' },
+    qtyNum: { color: palette.text, fontSize: 18, fontFamily: 'Tiempos-Regular', minWidth: 20, textAlign: 'center' },
     totalText: { color: palette.accent, fontSize: 13, letterSpacing: 0.5 },
 
     confirmBtn: {

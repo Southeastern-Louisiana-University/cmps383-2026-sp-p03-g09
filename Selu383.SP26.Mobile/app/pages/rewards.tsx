@@ -126,7 +126,7 @@ export default function RewardsScreen() {
     logoTopBar: {
       color: palette.accent,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
     },
     backBtn: {
@@ -163,7 +163,7 @@ export default function RewardsScreen() {
     pageTitle: {
       color: palette.text,
       fontSize: 36,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       marginBottom: 4,
     },
@@ -193,7 +193,7 @@ export default function RewardsScreen() {
     pointsNumber: {
       color: palette.text,
       fontSize: 52,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: -1,
       lineHeight: 56,
     },
@@ -277,7 +277,7 @@ export default function RewardsScreen() {
     rewardName: {
       color: palette.text,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.3,
       marginBottom: 3,
     },
@@ -291,7 +291,7 @@ export default function RewardsScreen() {
     rewardCost: {
       color: palette.accent,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     redeemBtn: {
@@ -336,7 +336,7 @@ export default function RewardsScreen() {
     historyLabel: {
       color: palette.text,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.2,
       flex: 1,
     },
@@ -349,7 +349,7 @@ export default function RewardsScreen() {
     },
     historyPoints: {
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
 
@@ -396,7 +396,7 @@ export default function RewardsScreen() {
     modalTitle: {
       color: palette.text,
       fontSize: 24,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       marginBottom: 8,
     },
@@ -425,7 +425,7 @@ export default function RewardsScreen() {
     modalCostValue: {
       color: palette.text,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     modalActions: { flexDirection: 'row', gap: 12 },

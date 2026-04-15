@@ -201,7 +201,7 @@ const createStyles = (palette: ThemePalette) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + "40",
     },
-    logo: { color: palette.accent, fontSize: 14, fontWeight: "300", letterSpacing: 1 },
+    logo: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1 },
     topBarRight: { flexDirection: "row", alignItems: "center", gap: 8 },
     backBtn: {
       flexDirection: "row",
@@ -219,15 +219,15 @@ const createStyles = (palette: ThemePalette) =>
     headline: {
       color: palette.text,
       fontSize: 42,
-      fontWeight: "300",
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 50,
       letterSpacing: 0.5,
       marginBottom: 32,
     },
 
     emptyState: { alignItems: "center", paddingTop: 48 },
-    emptyText: { color: palette.text, fontSize: 14, opacity: 0.4, letterSpacing: 0.5, marginBottom: 12 },
-    emptyLink: { color: palette.accent, fontSize: 13, letterSpacing: 0.5 },
+    emptyText: { color: palette.text, fontSize: 14, opacity: 0.4, letterSpacing: 0.5, marginBottom: 12, fontFamily: 'Tiempos-Regular' },
+    emptyLink: { color: palette.accent, fontSize: 13, letterSpacing: 0.5, fontFamily: 'Tiempos-Regular', },
 
     itemCard: {
       backgroundColor: palette.surface,
@@ -238,9 +238,9 @@ const createStyles = (palette: ThemePalette) =>
       marginBottom: 12,
     },
     itemCardTop: { flexDirection: "row", justifyContent: "space-between", marginBottom: 12 },
-    itemName: { color: palette.text, fontSize: 15, fontWeight: "300", letterSpacing: 0.3, marginBottom: 4 },
+    itemName: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, marginBottom: 4 },
     itemMeta: { color: palette.accent, fontSize: 11, opacity: 0.65, letterSpacing: 0.3, marginTop: 2 },
-    itemTotal: { color: palette.accent, fontSize: 14, fontWeight: "300", letterSpacing: 0.5 },
+    itemTotal: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
 
     itemCardBottom: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
     qtyRow: { flexDirection: "row", alignItems: "center", gap: 12 },
@@ -250,10 +250,10 @@ const createStyles = (palette: ThemePalette) =>
       alignItems: "center", justifyContent: "center",
     },
     qtyBtnText: { color: palette.accent, fontSize: 16, lineHeight: 20 },
-    qtyNum: { color: palette.text, fontSize: 15, fontWeight: "300", minWidth: 18, textAlign: "center" },
+    qtyNum: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', minWidth: 18, textAlign: "center" },
 
     removeBtn: { flexDirection: "row", alignItems: "center", gap: 5, opacity: 0.6 },
-    removeBtnText: { color: palette.subtle, fontSize: 11, letterSpacing: 0.5 },
+    removeBtnText: { color: palette.subtle, fontSize: 11, letterSpacing: 0.5, fontFamily: 'Tiempos-Regular',},
 
     summaryCard: {
       backgroundColor: palette.surface,
@@ -274,8 +274,8 @@ const createStyles = (palette: ThemePalette) =>
       paddingTop: 10,
       marginTop: 2,
     },
-    summaryTotalLabel: { color: palette.text, fontSize: 15, fontWeight: "300", letterSpacing: 0.5 },
-    summaryTotalValue: { color: palette.accent, fontSize: 15, fontWeight: "300", letterSpacing: 0.5 },
+    summaryTotalLabel: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
+    summaryTotalValue: { color: palette.accent, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
 
     submitBtn: {
       borderWidth: 1,
@@ -289,7 +289,7 @@ const createStyles = (palette: ThemePalette) =>
       color: palette.accent,
       fontSize: 14,
       letterSpacing: 1.5,
-      fontWeight: "400",
+      fontFamily: 'Tiempos-Regular',
     },
 
     footer: {
@@ -301,5 +301,6 @@ const createStyles = (palette: ThemePalette) =>
       paddingTop: 20,
       paddingBottom: 20,
       opacity: 1,
+      fontFamily: 'Tiempos-Regular',
     },
   });
