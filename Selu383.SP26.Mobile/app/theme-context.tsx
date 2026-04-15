@@ -26,15 +26,15 @@ export interface ButtonTokens {
 
 const PALETTES: Record<ThemeName, ThemePalette> = {
   light: {
-    bg: "#f1f0ff",
-    text: "#1e1b4b",
-    surface: "#e8e6ff",
-    elevated: "#ffffff",
-    subtle: "#8581a9",
-    accent: "#a5b4fc",
+    bg: "#f8f7ff",        
+    text: "#1c1a3a",        
+    surface: "#eef2ff",   
+    elevated: "#ffffff",   
+    subtle: "#a5b4fc",     
+    accent: "#5f71e9",      
     danger: "#e5484d",
-    success: "#6ee7b7",
-  },
+    success: "#4ade80",  
+  },  
   dark: {
     bg: "#1e1b4b",
     text: "#f1f0ff",
@@ -42,8 +42,8 @@ const PALETTES: Record<ThemeName, ThemePalette> = {
     elevated: "#3b3680",
     subtle: "#4c4899",
     accent: "#a5b4fc",
-    danger: "#ff6b6f",
-    success: "#6ee7b7",
+    danger: "#e5484d",
+    success: "#4ade80",
   },
   oled: {
     bg: "#000000",

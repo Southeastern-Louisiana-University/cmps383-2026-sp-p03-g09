@@ -4,9 +4,10 @@ import React from 'react';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Feather from '@expo/vector-icons/Feather';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/app/theme-context';
-import { AntDesign } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Stack } from 'expo-router';
 import { ThemeProvider } from '@/app/theme-context';
 
@@ -32,22 +33,23 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome5 name="heart" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="menu"
         options={{
           title: 'Menu',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="mug.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="coffee" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="promos"
+        name="bag"
         options={{
-          title: 'Promos',
-          tabBarIcon: ({ color }) => <AntDesign size={28} name="fund" color={color} />,
+          title: 'Bag',
+          tabBarIcon: ({ color }) => <Feather name="shopping-bag" size={24} color={color} />,
         }}
+        
       />
       <Tabs.Screen
         name="profile"

@@ -8,14 +8,13 @@ import {
   Alert,
   ScrollView,
   Platform,
-  Switch,
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTheme, ThemePalette } from '@/app/theme-context';
 
-// ─── tiny labelled field ──────────────────────────────────────────────────────
+// tiny labelled field
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <View style={{ marginBottom: 20 }}>
@@ -23,11 +22,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
         fontSize: 10,
         letterSpacing: 2,
         textTransform: "uppercase",
-        opacity: 0.5,
+        opacity: 0.6,
         marginBottom: 8,
-        color: "#888",
       }}>
-        {label}
+        {children}
       </Text>
       {children}
     </View>
@@ -105,19 +103,10 @@ export default function Signup() {
     <View style={styles.container}>
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={palette.bg} />
 
-      {/* ── top bar ─────────────────────────────────────────────────────────── */}
+      {/* top bar */}
       <View style={styles.topBar}>
         <Text style={styles.logo}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
-          <Ionicons name="sunny-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
-          <Switch
-            value={isDark}
-            onValueChange={val => setTheme(val ? "dark" : "light")}
-            trackColor={{ false: palette.subtle + "88", true: palette.accent + "88" }}
-            thumbColor={isDark ? palette.accent : palette.elevated}
-            ios_backgroundColor={palette.subtle + "88"}
-          />
-          <Ionicons name="moon-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <Ionicons name="arrow-back-outline" size={12} color={palette.text} opacity={0.8} />
             <Text style={styles.backBtnText}>back</Text>
@@ -133,15 +122,17 @@ export default function Signup() {
         </Text>
         <Text style={styles.subline}>
           already one of us?{" "}
-          <Text style={{ color: palette.accent }} onPress={() => router.replace("/pages/login")}>
+          <Text style={{ color: palette.text, opacity: 1 }} onPress={() => router.replace("/pages/login")}>
             sign in →
           </Text>
         </Text>
 
-        {/* name */}
+        {/* name row */}
         <View style={styles.nameRow}>
           <View style={{ flex: 1 }}>
-            <Field label="first name">
+            <Text style={styles.fieldLabel}>first name</Text>
+            <View style={styles.inputRow}>
+              <Ionicons name="person-outline" size={15} color={palette.subtle} />
               <TextInput
                 style={styles.input}
                 placeholder="first"
@@ -155,10 +146,11 @@ export default function Signup() {
                 textContentType={Platform.OS === "ios" ? "givenName" : "none"}
                 autoComplete="name-given"
               />
-            </Field>
+            </View>
           </View>
           <View style={{ flex: 1 }}>
-            <Field label="last name">
+            <Text style={styles.fieldLabel}>last name</Text>
+            <View style={styles.inputRow}>
               <TextInput
                 style={styles.input}
                 placeholder="last"
@@ -173,35 +165,41 @@ export default function Signup() {
                 textContentType={Platform.OS === "ios" ? "familyName" : "none"}
                 autoComplete="name-family"
               />
-            </Field>
+            </View>
           </View>
         </View>
 
         {/* email */}
-        <Field label="email">
-          <TextInput
-            style={styles.input}
-            placeholder="your@email.com"
-            placeholderTextColor={palette.subtle}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            ref={emailRef}
-            returnKeyType="next"
-            blurOnSubmit={false}
-            onSubmitEditing={() => passwordRef.current?.focus()}
-            textContentType={Platform.OS === "ios" ? "emailAddress" : "none"}
-            autoComplete="email"
-          />
-        </Field>
+        <View style={styles.fieldWrapper}>
+          <Text style={styles.fieldLabel}>email</Text>
+          <View style={styles.inputRow}>
+            <Ionicons name="mail-outline" size={15} color={palette.subtle} />
+            <TextInput
+              style={styles.input}
+              placeholder="your@email.com"
+              placeholderTextColor={palette.subtle}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              ref={emailRef}
+              returnKeyType="next"
+              blurOnSubmit={false}
+              onSubmitEditing={() => passwordRef.current?.focus()}
+              textContentType={Platform.OS === "ios" ? "emailAddress" : "none"}
+              autoComplete="email"
+            />
+          </View>
+        </View>
 
         {/* password */}
-        <Field label="password">
-          <View style={{ position: "relative" }}>
+        <View style={styles.fieldWrapper}>
+          <Text style={styles.fieldLabel}>password</Text>
+          <View style={styles.inputRow}>
+            <Ionicons name="lock-closed-outline" size={15} color={palette.subtle} />
             <TextInput
-              style={[styles.input, { paddingRight: 48 }]}
+              style={styles.input}
               placeholder="password"
               placeholderTextColor={palette.subtle}
               value={password}
@@ -216,8 +214,8 @@ export default function Signup() {
               textContentType={Platform.OS === "ios" ? "newPassword" : "none"}
               autoComplete="password"
             />
-            <TouchableOpacity onPress={() => setShowPassword(s => !s)} style={styles.eyeBtn}>
-              <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={18} color={palette.subtle} />
+            <TouchableOpacity onPress={() => setShowPassword(s => !s)}>
+              <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={16} color={palette.subtle} />
             </TouchableOpacity>
           </View>
 
@@ -241,13 +239,15 @@ export default function Signup() {
               </View>
             </View>
           )}
-        </Field>
+        </View>
 
         {/* confirm password */}
-        <Field label="confirm password">
-          <View style={{ position: "relative" }}>
+        <View style={styles.fieldWrapper}>
+          <Text style={styles.fieldLabel}>confirm password</Text>
+          <View style={[styles.inputRow, confirmPassword !== "" && !passwordsMatch && styles.inputRowError]}>
+            <Ionicons name="lock-closed-outline" size={15} color={palette.subtle} />
             <TextInput
-              style={[styles.input, confirmPassword !== "" && !passwordsMatch && styles.inputError, { paddingRight: 48 }]}
+              style={styles.input}
               placeholder="confirm password"
               placeholderTextColor={palette.subtle}
               value={confirmPassword}
@@ -261,8 +261,8 @@ export default function Signup() {
               textContentType={Platform.OS === "ios" ? "newPassword" : "none"}
               autoComplete="password"
             />
-            <TouchableOpacity onPress={() => setShowConfirmPassword(s => !s)} style={styles.eyeBtn}>
-              <Ionicons name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} size={18} color={palette.subtle} />
+            <TouchableOpacity onPress={() => setShowConfirmPassword(s => !s)}>
+              <Ionicons name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} size={16} color={palette.subtle} />
             </TouchableOpacity>
           </View>
           {confirmPassword !== "" && !passwordsMatch && (
@@ -271,7 +271,7 @@ export default function Signup() {
           {passwordsMatch && (
             <Text style={{ color: "#4CAF50", fontSize: 11, marginTop: 4, letterSpacing: 0.5 }}>✓ passwords match</Text>
           )}
-        </Field>
+        </View>
 
         {/* submit */}
         <TouchableOpacity
@@ -285,7 +285,7 @@ export default function Signup() {
         </TouchableOpacity>
 
         <Text style={styles.footer}>
-          baton rouge · hammond · lafayette · metairie · new orleans
+          new orleans · hammond · new york
         </Text>
 
       </ScrollView>
@@ -297,16 +297,12 @@ const createStyles = (palette: ThemePalette) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: palette.bg },
     topBar: {
-      position: "absolute",
-      top: 0, left: 0, right: 0,
-      zIndex: 10,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       paddingHorizontal: 32,
       paddingTop: 52,
       paddingBottom: 12,
-      backgroundColor: palette.bg,
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + "40",
     },
@@ -323,7 +319,7 @@ const createStyles = (palette: ThemePalette) =>
       paddingVertical: 6,
     },
     backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
-    scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
+    scroll: { paddingHorizontal: 32, paddingTop: 40, paddingBottom: 64 },
     headline: {
       color: palette.text,
       fontSize: 42,
@@ -333,43 +329,63 @@ const createStyles = (palette: ThemePalette) =>
       marginBottom: 8,
     },
     subline: {
-      color: palette.subtle,
+      color: palette.text,
       fontSize: 13,
       letterSpacing: 0.5,
-      opacity: 0.75,
-      marginBottom: 40,
+      //opacity: 0.75,
+      marginBottom: 48,
     },
-    nameRow: { flexDirection: "row", gap: 12 },
-    input: {
-      height: 46,
+    nameRow: { flexDirection: "row", gap: 12, marginBottom: 20 },
+    fieldWrapper: { marginBottom: 20 },
+    fieldLabel: {
+      fontSize: 10,
+      letterSpacing: 2,
+      textTransform: "uppercase",
+      color: palette.text,
+      opacity: 0.6,
+      marginBottom: 8,
+    },
+    inputRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
       backgroundColor: palette.surface,
       borderWidth: 1,
       borderColor: palette.subtle + "88",
       borderRadius: 10,
       paddingHorizontal: 14,
-      fontSize: 14,
+      height: 46,
+    },
+    inputRowError: { borderColor: "#FF5722" },
+    input: {
+      flex: 1,
       color: palette.text,
+      fontSize: 14,
       letterSpacing: 0.3,
     },
-    inputError: { borderColor: "#FF5722" },
-    eyeBtn: { position: "absolute", right: 14, top: 14 },
     submitBtn: {
-      marginTop: 32,
       borderWidth: 1,
       borderColor: palette.accent,
       borderRadius: 24,
       paddingVertical: 14,
-      alignItems: "center",
-      backgroundColor: palette.accent + "18",
+      alignItems: 'center',
+      backgroundColor: palette.accent + '18',
+      marginTop: 12, 
     },
-    submitBtnText: { color: palette.accent, fontSize: 14, letterSpacing: 1.5, fontWeight: "400" },
-    footer: {
-      color: palette.subtle,
-      fontSize: 11,
+    submitBtnText: {
+      color: palette.accent,
+      fontSize: 14,
       letterSpacing: 1.5,
-      textAlign: "center",
+      fontWeight: '400',
+    },
+    footer: {
+      color: palette.accent,
+      fontSize: 15,
+      letterSpacing: 1.5,
+      textAlign: 'center',
       lineHeight: 20,
-      marginTop: 24,
-      opacity: 0.5,
+      paddingTop: 20,
+      paddingBottom: 32,
+      opacity: 1,
     },
   });
