@@ -1,59 +1,108 @@
-import { Group, Tabs, Text, ActionIcon, Drawer, Stack, Indicator, Badge, Button, Divider } from '@mantine/core';
+import {
+    Group,
+    Text,
+    ActionIcon,
+    Drawer,
+    Stack,
+    Indicator,
+    Button,
+    Divider,
+    UnstyledButton,
+    useComputedColorScheme,
+    useMantineColorScheme,
+} from '@mantine/core';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { IconShoppingBag } from '@tabler/icons-react';
+import { IconShoppingBag, IconSun, IconMoon } from '@tabler/icons-react';
 import { useAuth } from './AuthContext';
 import { useCart } from './CartContext';
 import Login from './Login';
+
+const NAV_LINKS = [
+    { label: 'menu',    path: '/menu' },
+    { label: 'stores',  path: '/stores' },
+    { label: 'rewards', path: '/rewards' },
+];
 
 function NavBar() {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useAuth();
-    const { items, total, itemCount, removeItem, updateQty } = useCart();
-
-    const tabValue = location.pathname === '/menu' ? '/menu'
-        : location.pathname === '/stores' ? '/stores'
-        : location.pathname === '/promos' ? '/promos'
-        : location.pathname === '/rewards' ? '/rewards'
-        : location.pathname === '/profile' ? '/profile'
-        : '/';
+    const { items, total, itemCount, updateQty } = useCart();
+    const { toggleColorScheme } = useMantineColorScheme();
+    const computedColorScheme = useComputedColorScheme('dark');
 
     const [drawerOpened, setDrawerOpened] = useState(false);
     const [loginOpened, setLoginOpened] = useState(false);
 
+    const isActive = (path: string) => location.pathname === path;
+
     return (
         <>
-            <Group h={60} px="xl" justify="space-between" style={{ width: '100%', boxSizing: 'border-box' }}>
+            <Group
+                h={60}
+                px="xl"
+                justify="space-between"
+                style={{ width: '100%', boxSizing: 'border-box' }}
+            >
+                {/* Logo */}
                 <Text
                     size="24pt"
                     className="font-tiempos-headline"
                     onClick={() => navigate('/')}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', flexShrink: 0 }}
                     role="button"
                     aria-label="home"
                 >
                     caffeinated lions
                 </Text>
 
-                <Group gap="md">
-                    <Tabs color="#a5b4fc" variant="pills" value={tabValue} onChange={(value) => navigate(value!)}>
-                        <Tabs.List justify="flex-end" className="font-tiempos-text">
-                            <Tabs.Tab value="/menu">menu</Tabs.Tab>
-                            <Tabs.Tab value="/stores">stores</Tabs.Tab>
-                            <Tabs.Tab value="/promos">promos</Tabs.Tab>
-                            <Tabs.Tab value="/rewards">rewards</Tabs.Tab>
-                            {user && (
-                                <Tabs.Tab value="/profile">profile</Tabs.Tab>
-                            )}
-                        </Tabs.List>
-                    </Tabs>
+                {/* Right side */}
+                <Group gap={20} align="right">
+                    {/* Nav links */}
+                    {NAV_LINKS.map(link => (
+                        <UnstyledButton
+                            key={link.path}
+                            onClick={() => navigate(link.path)}
+                            className="nav-link"
+                            data-active={isActive(link.path) || undefined}
+                        >
+                            {link.label}
+                        </UnstyledButton>
+                    ))}
 
+                    {user && (
+                        <UnstyledButton
+                            onClick={() => navigate('/profile')}
+                            className="nav-link"
+                            data-active={isActive('/profile') || undefined}
+                        >
+                            profile
+                        </UnstyledButton>
+                    )}
+
+                    {/* Divider */}
+                    <Divider orientation="vertical" h={20} style={{ alignSelf: 'center', margin: '0 4px' }} />
+
+                    {/* Theme toggle */}
+                    <ActionIcon
+                        size="lg"
+                        variant="transparent"
+                        onClick={() => toggleColorScheme()}
+                        aria-label="toggle color scheme"
+                        style={{ opacity: 0.7 }}
+                    >
+                        {computedColorScheme === 'dark'
+                            ? <IconSun size={18} />
+                            : <IconMoon size={18} />}
+                    </ActionIcon>
+
+                    {/* Cart */}
                     <Indicator
                         label={itemCount > 0 ? String(itemCount) : undefined}
                         disabled={itemCount === 0}
                         color="#a5b4fc"
-                        size={18}
+                        size={17}
                         offset={4}
                     >
                         <ActionIcon
@@ -61,24 +110,37 @@ function NavBar() {
                             variant="transparent"
                             onClick={() => setDrawerOpened(o => !o)}
                             aria-label="cart"
+                            style={{ opacity: 0.7 }}
                         >
-                            <IconShoppingBag size={24} />
+                            <IconShoppingBag size={20} />
                         </ActionIcon>
                     </Indicator>
 
-                    <Tabs color="#a5b4fc" variant="pills" value={null}>
-                        <Tabs.List className="font-tiempos-text">
-                            {user ? (
-                                <Tabs.Tab value="signout" onClick={() => logout()}>
-                                    sign out
-                                </Tabs.Tab>
-                            ) : (
-                                <Tabs.Tab value="signin" onClick={() => setLoginOpened(true)}>
-                                    sign in
-                                </Tabs.Tab>
-                            )}
-                        </Tabs.List>
-                    </Tabs>
+                    {/* Auth */}
+                    {user ? (
+                        <Button
+                            onClick={() => logout()}
+                            variant="subtle"
+                            color="gray"
+                            size="sm"
+                            className="font-tiempos-text"
+                            tt="lowercase"
+                            style={{ opacity: 0.65 }}
+                        >
+                            sign out
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={() => setLoginOpened(true)}
+                            variant="subtle"
+                            color="#a5b4fc"
+                            size="sm"
+                            className="font-tiempos-text"
+                            tt="lowercase"
+                        >
+                            sign in
+                        </Button>
+                    )}
                 </Group>
             </Group>
 
@@ -95,7 +157,7 @@ function NavBar() {
                 padding="md"
                 size="md"
             >
-                <Stack gap="sm" style={{ height: '100%' }}>
+                <Stack gap="sm">
                     {items.length === 0 ? (
                         <Text size="13pt" c="dimmed" className="font-tiempos-text">
                             nothing here yet — add something from the menu.
