@@ -18,6 +18,36 @@ import { useState, useEffect } from 'react';
 import { api, type MenuItemDto } from './api';
 import { useCart } from './CartContext';
 
+import icedLatteImg from './assets/photos/iced latte.png';
+import supernovaImg from './assets/photos/supernova.png';
+import roaringFrappeImg from './assets/photos/roaring frappe.png';
+import blackWhiteColdBrewImg from './assets/photos/black and white cold brew.png';
+import strawberryLimeadeImg from './assets/photos/strawberry limeade.png';
+import shakenLemonadeImg from './assets/photos/shaken lemonade.png';
+import manninoCrepeImg from './assets/photos/mannino crepe.png';
+import downtownerImg from './assets/photos/downtowner.png';
+import funkyMonkeyImg from './assets/photos/funky monkey.png';
+import leSmoresImg from './assets/photos/le smores.png';
+import strawberryFieldsImg from './assets/photos/strawberry fields.png';
+import bonjourImg from './assets/photos/bonjour.png';
+import bananasFosterImg from './assets/photos/bananas foster.png';
+
+const MENU_PHOTOS: Record<string, string> = {
+    'iced latte': icedLatteImg,
+    'supernova': supernovaImg,
+    'roaring frappe': roaringFrappeImg,
+    'black & white cold brew': blackWhiteColdBrewImg,
+    'strawberry limeade': strawberryLimeadeImg,
+    'shaken lemonade': shakenLemonadeImg,
+    'mannino honey crepe': manninoCrepeImg,
+    'downtowner': downtownerImg,
+    'funky monkey': funkyMonkeyImg,
+    "le s'mores": leSmoresImg,
+    'strawberry fields': strawberryFieldsImg,
+    'bonjour': bonjourImg,
+    'banana foster': bananasFosterImg,
+};
+
 const SIZE_UPCHARGES: Record<string, number> = {
     small: 0,
     medium: 0.75,
@@ -33,7 +63,7 @@ function MenuSection({
 }: {
     title: string;
     items: MenuItemDto[];
-    onSelect: (item: MenuItemDto, index: number) => void;
+    onSelect: (item: MenuItemDto) => void;
 }) {
     return (
         <Stack gap="md">
@@ -41,10 +71,10 @@ function MenuSection({
                 {title}
             </Text>
             <Grid gutter="md">
-                {items.map((item, i) => (
+                {items.map((item) => (
                     <Grid.Col key={item.id} span={12 / 5}>
                         <Box
-                            onClick={() => onSelect(item, i)}
+                            onClick={() => onSelect(item)}
                             style={{
                                 position: 'relative',
                                 width: '100%',
@@ -54,11 +84,15 @@ function MenuSection({
                                 cursor: 'pointer',
                             }}
                         >
-                            <img
-                                src={`https://source.unsplash.com/400x400/?coffee&sig=${item.id}`}
-                                alt={item.name}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
+                            {MENU_PHOTOS[item.name] ? (
+                                <img
+                                    src={MENU_PHOTOS[item.name]}
+                                    alt={item.name}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            ) : (
+                                <Box style={{ width: '100%', height: '100%', background: '#1c1c2e' }} />
+                            )}
                             <Box
                                 style={{
                                     position: 'absolute',
@@ -93,7 +127,6 @@ export default function Menu() {
     const [selectedAddOnIds, setSelectedAddOnIds] = useState<number[]>([]);
     const [selectedToggleLabels, setSelectedToggleLabels] = useState<string[]>([]);
     const [qty, setQty] = useState(1);
-    const [imageIndex, setImageIndex] = useState(0);
     const [addedMsg, setAddedMsg] = useState(false);
 
     useEffect(() => {
@@ -103,9 +136,8 @@ export default function Menu() {
             .finally(() => setLoading(false));
     }, []);
 
-    const openModal = (item: MenuItemDto, index: number) => {
+    const openModal = (item: MenuItemDto) => {
         setSelected(item);
-        setImageIndex(index);
         setSize('medium');
         setSelectedAddOnIds([]);
         setSelectedToggleLabels(item.toggles.filter(t => t.defaultOn).map(t => t.label));
@@ -204,11 +236,15 @@ export default function Menu() {
             >
                 {selected && (
                     <Stack gap="md">
-                        <img
-                            src={`https://source.unsplash.com/600x600/?coffee&sig=${imageIndex}`}
-                            alt={selected.name}
-                            style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
-                        />
+                        {MENU_PHOTOS[selected.name] ? (
+                            <img
+                                src={MENU_PHOTOS[selected.name]}
+                                alt={selected.name}
+                                style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
+                            />
+                        ) : (
+                            <Box style={{ width: '100%', aspectRatio: '1 / 1', borderRadius: 8, background: '#1c1c2e' }} />
+                        )}
 
                         <Group justify="space-between" align="flex-end">
                             <Text size="20pt" fw={600} className="font-tiempos-headline">
