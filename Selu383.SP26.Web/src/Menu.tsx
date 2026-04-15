@@ -8,72 +8,43 @@ import {
     Modal,
     Button,
     Group,
+    Checkbox,
+    SegmentedControl,
+    Loader,
+    Center,
+    Divider,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api, MenuItemDto } from './api';
+import { useCart } from './CartContext';
 
-type Drink = {
-    name: string;
-    price: string;
-    desc: string;
+const SIZE_UPCHARGES: Record<string, number> = {
+    small: 0,
+    medium: 0.75,
+    large: 1.5,
 };
 
-const allDrinks: Drink[] = [
-    { name: 'iced latte', price: '$5.50', desc: 'espresso and milk served over ice for a refreshing coffee drink.' },
-    { name: 'supernova', price: '$7.95', desc: 'a unique coffee blend with a complex, balanced profile and subtle sweetness. delicious as espresso or paired with milk.' },
-    { name: 'roaring frappe', price: '$6.20', desc: 'cold brew, milk, and ice blended together with a signature syrup or flavor, topped with whipped cream.' },
-    { name: 'black & white cold brew', price: '$5.15', desc: 'cold brew made with both dark and light roast beans, finished with a drizzle of condensed milk.' },
-    { name: 'strawberry limeade', price: '$5.00', desc: 'fresh lime juice blended with strawberry purée for a refreshing, tangy drink.' },
-    { name: 'shaken lemonade', price: '$5.00', desc: 'fresh lemon juice and simple syrup vigorously shaken for a bright, refreshing lemonade.' },
-];
+const CATEGORY_ORDER = ['drinks', 'sweet crepes', 'savory crepes', 'bagels'];
 
-const sweetCrepes: Drink[] = [
-    { name: 'mannino honey crepe', price: '$10.00', desc: 'a sweet crepe drizzled with mannino honey and topped with mixed berries.' },
-    { name: 'downtowner', price: '$10.75', desc: "strawberries and bananas wrapped in a crepe, finished with nutella and hershey's chocolate sauce." },
-    { name: 'funky monkey', price: '$10.00', desc: 'nutella and bananas wrapped in a crepe, served with whipped cream.' },
-    { name: "le s'mores", price: '$9.50', desc: 'marshmallow cream and chocolate sauce inside a crepe, topped with graham cracker crumbs.' },
-    { name: 'strawberry fields', price: '$10.00', desc: "fresh strawberries with hershey's chocolate drizzle and a dusting of powdered sugar." },
-    { name: 'bonjour', price: '$8.50', desc: 'a sweet crepe filled with syrup and cinnamon, finished with powdered sugar.' },
-    { name: 'banana foster', price: '$8.95', desc: 'bananas with cinnamon in a crepe, topped with a generous drizzle of caramel sauce.' },
-];
-
-const savoryCrapes: Drink[] = [
-    { name: "matt's scrambled eggs", price: '$5.00', desc: 'scrambled eggs and melted mozzarella cheese wrapped in a crepe.' },
-    { name: 'meanie mushroom', price: '$10.50', desc: 'sautéed mushrooms, mozzarella, tomato, and bacon inside a delicate crepe.' },
-    { name: 'turkey club', price: '$10.50', desc: 'sliced turkey, bacon, spinach, and tomato wrapped in a savory crepe.' },
-    { name: 'green machine', price: '$10.00', desc: 'spinach, artichokes, and mozzarella cheese inside a fresh crepe.' },
-    { name: 'perfect pair', price: '$10.00', desc: 'a unique combination of bacon and nutella wrapped in a crepe.' },
-    { name: 'crepe fromage', price: '$8.00', desc: 'a savory crepe filled with a blend of cheeses.' },
-    { name: 'farmers market crepe', price: '$10.50', desc: 'turkey, spinach, and mozzarella wrapped in a savory crepe.' },
-];
-
-const bagels: Drink[] = [
-    { name: 'travis special', price: '$14.00', desc: 'cream cheese, salmon, spinach, and a fried egg served on a freshly toasted bagel.' },
-    { name: 'crème brulagel', price: '$8.00', desc: 'a toasted bagel with a caramelized sugar crust inspired by crème brûlée, served with cream cheese.' },
-    { name: 'the fancy one', price: '$13.00', desc: 'smoked salmon, cream cheese, and fresh dill on a toasted bagel.' },
-    { name: 'breakfast bagel', price: '$9.50', desc: 'a toasted bagel with your choice of ham, bacon, or sausage, a fried egg, and cheddar cheese.' },
-    { name: 'the classic', price: '$5.25', desc: 'a toasted bagel with cream cheese.' },
-];
-
-function DrinkSection({
+function MenuSection({
     title,
-    drinks,
+    items,
     onSelect,
 }: {
     title: string;
-    drinks: Drink[];
-    onSelect: (drink: Drink, index: number) => void;
+    items: MenuItemDto[];
+    onSelect: (item: MenuItemDto, index: number) => void;
 }) {
     return (
         <Stack gap="md">
             <Text size="28pt" className="font-tiempos-headline" fw={300}>
                 {title}
             </Text>
-
             <Grid gutter="md">
-                {drinks.map((drink, i) => (
-                    <Grid.Col key={drink.name} span={12 / 5}>
+                {items.map((item, i) => (
+                    <Grid.Col key={item.id} span={12 / 5}>
                         <Box
-                            onClick={() => onSelect(drink, i)}
+                            onClick={() => onSelect(item, i)}
                             style={{
                                 position: 'relative',
                                 width: '100%',
@@ -84,15 +55,10 @@ function DrinkSection({
                             }}
                         >
                             <img
-                                src={`https://source.unsplash.com/400x400/?coffee&sig=${i}`}
-                                alt={drink.name}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                }}
+                                src={`https://source.unsplash.com/400x400/?coffee&sig=${item.id}`}
+                                alt={item.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
-
                             <Box
                                 style={{
                                     position: 'absolute',
@@ -105,7 +71,7 @@ function DrinkSection({
                                 }}
                             >
                                 <Text size="12pt" c="white" fw={500}>
-                                    {drink.name}
+                                    {item.name}
                                 </Text>
                             </Box>
                         </Box>
@@ -117,37 +83,117 @@ function DrinkSection({
 }
 
 export default function Menu() {
-    const [selected, setSelected] = useState<Drink | null>(null);
-    const [imageIndex, setImageIndex] = useState<number>(0);
-    const [count, setCount] = useState<number>(1);
+    const { addItem } = useCart();
+    const [menuItems, setMenuItems] = useState<MenuItemDto[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const openModal = (drink: Drink, index: number) => {
-        setSelected(drink);
+    const [selected, setSelected] = useState<MenuItemDto | null>(null);
+    const [size, setSize] = useState<'small' | 'medium' | 'large'>('medium');
+    const [selectedAddOnIds, setSelectedAddOnIds] = useState<number[]>([]);
+    const [selectedToggleLabels, setSelectedToggleLabels] = useState<string[]>([]);
+    const [qty, setQty] = useState(1);
+    const [imageIndex, setImageIndex] = useState(0);
+    const [addedMsg, setAddedMsg] = useState(false);
+
+    useEffect(() => {
+        api.menuItems.getAll()
+            .then(setMenuItems)
+            .catch(() => setError('could not load menu items.'))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const openModal = (item: MenuItemDto, index: number) => {
+        setSelected(item);
         setImageIndex(index);
-        setCount(1);
+        setSize('medium');
+        setSelectedAddOnIds([]);
+        setSelectedToggleLabels(item.toggles.filter(t => t.defaultOn).map(t => t.label));
+        setQty(1);
+        setAddedMsg(false);
     };
 
     const closeModal = () => {
         setSelected(null);
-        setCount(1);
+        setAddedMsg(false);
     };
+
+    const computedUnitPrice = selected
+        ? selected.basePrice
+            + (selected.hasSizes ? SIZE_UPCHARGES[size] : 0)
+            + selected.addOns
+                .filter(a => selectedAddOnIds.includes(a.id))
+                .reduce((sum, a) => sum + a.price, 0)
+        : 0;
+
+    const handleAddToBag = () => {
+        if (!selected) return;
+        addItem({
+            menuItemId: selected.id,
+            name: selected.name,
+            size: selected.hasSizes ? size : undefined,
+            selectedAddOns: selected.addOns
+                .filter(a => selectedAddOnIds.includes(a.id))
+                .map(a => ({ id: a.id, label: a.label, price: a.price })),
+            selectedToggleLabels,
+            qty,
+            unitPrice: computedUnitPrice,
+        });
+        setAddedMsg(true);
+        setTimeout(closeModal, 800);
+    };
+
+    const toggleAddOn = (id: number, checked: boolean) => {
+        setSelectedAddOnIds(prev =>
+            checked ? [...prev, id] : prev.filter(x => x !== id)
+        );
+    };
+
+    const toggleToggle = (label: string, checked: boolean) => {
+        setSelectedToggleLabels(prev =>
+            checked ? [...prev, label] : prev.filter(x => x !== label)
+        );
+    };
+
+    const groupedItems = CATEGORY_ORDER.map(cat => ({
+        category: cat,
+        items: menuItems.filter(i => i.category === cat),
+    })).filter(g => g.items.length > 0);
+
+    if (loading) {
+        return (
+            <Center h="50vh">
+                <Loader color="#a5b4fc" />
+            </Center>
+        );
+    }
+
+    if (error) {
+        return (
+            <Center h="50vh">
+                <Text c="dimmed">{error}</Text>
+            </Center>
+        );
+    }
 
     return (
         <AppShell>
             <Container size="lg" py="xl">
                 <Stack gap="xl">
-                    <DrinkSection title="drinks" drinks={allDrinks} onSelect={openModal} />
-                    <DrinkSection title="sweet crepes" drinks={sweetCrepes} onSelect={openModal} />
-                    <DrinkSection title="savory crepes" drinks={savoryCrapes} onSelect={openModal} />
-                    <DrinkSection title="bagels" drinks={bagels} onSelect={openModal} />
-
+                    {groupedItems.map(g => (
+                        <MenuSection
+                            key={g.category}
+                            title={g.category}
+                            items={g.items}
+                            onSelect={openModal}
+                        />
+                    ))}
                     <Text size="11pt" c="dimmed" style={{ maxWidth: 380 }}>
                         * availability and price depends on location
                     </Text>
                 </Stack>
             </Container>
 
-            {/* Overlay Modal */}
             <Modal
                 opened={!!selected}
                 onClose={closeModal}
@@ -161,51 +207,130 @@ export default function Menu() {
                         <img
                             src={`https://source.unsplash.com/600x600/?coffee&sig=${imageIndex}`}
                             alt={selected.name}
-                            style={{
-                                width: '100%',
-                                borderRadius: 8,
-                                objectFit: 'cover',
-                            }}
+                            style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
                         />
 
-                        <Text size="20pt" fw={600}>
-                            {selected.name}
-                        </Text>
-
-                        <Text size="14pt" fw={500}>
-                            {selected.price}
-                        </Text>
+                        <Group justify="space-between" align="flex-end">
+                            <Text size="20pt" fw={600} className="font-tiempos-headline">
+                                {selected.name}
+                            </Text>
+                            <Text size="16pt" fw={500}>
+                                ${computedUnitPrice.toFixed(2)}
+                            </Text>
+                        </Group>
 
                         <Text size="12pt" c="dimmed">
-                            {selected.desc}
+                            {selected.description}
                         </Text>
 
-                        {/* Quantity Controls */}
+                        {/* Size selector */}
+                        {selected.hasSizes && (
+                            <Stack gap={6}>
+                                <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                    size
+                                </Text>
+                                <SegmentedControl
+                                    value={size}
+                                    onChange={(v) => setSize(v as 'small' | 'medium' | 'large')}
+                                    color="#a5b4fc"
+                                    data={[
+                                        { label: 'small', value: 'small' },
+                                        { label: 'medium (+$0.75)', value: 'medium' },
+                                        { label: 'large (+$1.50)', value: 'large' },
+                                    ]}
+                                    fullWidth
+                                    classNames={{ label: 'font-tiempos-text' }}
+                                />
+                            </Stack>
+                        )}
+
+                        {/* Add-ons */}
+                        {selected.addOns.length > 0 && (
+                            <Stack gap={6}>
+                                <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                    add-ons
+                                </Text>
+                                <Grid gutter="xs">
+                                    {selected.addOns.map(a => (
+                                        <Grid.Col key={a.id} span={6}>
+                                            <Checkbox
+                                                checked={selectedAddOnIds.includes(a.id)}
+                                                onChange={e => toggleAddOn(a.id, e.currentTarget.checked)}
+                                                label={`${a.label}${a.price > 0 ? ` (+$${a.price.toFixed(2)})` : ' (free)'}`}
+                                                color="#a5b4fc"
+                                                size="sm"
+                                                classNames={{ label: 'font-tiempos-text' }}
+                                            />
+                                        </Grid.Col>
+                                    ))}
+                                </Grid>
+                            </Stack>
+                        )}
+
+                        {/* Toggles */}
+                        {selected.toggles.length > 0 && (
+                            <Stack gap={6}>
+                                <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                    options
+                                </Text>
+                                {selected.toggles.map(t => (
+                                    <Checkbox
+                                        key={t.id}
+                                        checked={selectedToggleLabels.includes(t.label)}
+                                        onChange={e => toggleToggle(t.label, e.currentTarget.checked)}
+                                        label={t.label}
+                                        color="#a5b4fc"
+                                        size="sm"
+                                        classNames={{ label: 'font-tiempos-text' }}
+                                    />
+                                ))}
+                            </Stack>
+                        )}
+
+                        <Divider />
+
+                        {/* Quantity */}
                         <Group justify="center" gap="md">
                             <Button
-                                onClick={() => setCount((c) => Math.max(1, c - 1))}
+                                onClick={() => setQty(q => Math.max(1, q - 1))}
                                 variant="outline"
+                                color="#a5b4fc"
+                                size="sm"
                             >
-                                -
+                                −
                             </Button>
-
-                            <Text size="14pt">{count}</Text>
-
+                            <Text size="16pt" fw={500}>{qty}</Text>
                             <Button
-                                onClick={() => setCount((c) => c + 1)}
+                                onClick={() => setQty(q => q + 1)}
                                 variant="outline"
+                                color="#a5b4fc"
+                                size="sm"
                             >
                                 +
                             </Button>
                         </Group>
 
-                        {/* Action Buttons */}
-                        <Group grow mt="md">
-                            <Button onClick={() => { }}>
-                                add to bag
-                            </Button>
+                        <Text size="12pt" ta="center" c="dimmed" className="font-tiempos-text">
+                            total: ${(computedUnitPrice * qty).toFixed(2)}
+                        </Text>
 
-                            <Button variant="light" color="gray" onClick={closeModal}>
+                        <Group grow>
+                            <Button
+                                onClick={handleAddToBag}
+                                color="#a5b4fc"
+                                disabled={addedMsg}
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                {addedMsg ? 'added!' : 'add to bag'}
+                            </Button>
+                            <Button
+                                variant="light"
+                                color="gray"
+                                onClick={closeModal}
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
                                 cancel
                             </Button>
                         </Group>
