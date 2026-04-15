@@ -35,7 +35,15 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    await SeedHelper.MigrateAndSeed(scope.ServiceProvider);
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        await SeedHelper.MigrateAndSeed(scope.ServiceProvider);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred during database migration/seeding. The app will start, but data may be missing.");
+    }
 }
 
 // Configure the HTTP request pipeline.

@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/app/theme-context';
+import { apiClient } from '@/api/client';
 
 export default function LoginScreen() {
   const { palette, theme, setTheme } = useTheme();
@@ -21,9 +22,10 @@ export default function LoginScreen() {
     }
     try {
       setSubmitting(true);
-      // TODO: your auth logic here
+      await apiClient.auth.login({ userName: email, password });
+      router.replace('/');
     } catch (e: any) {
-      Alert.alert('login failed', e.message);
+      Alert.alert('login failed', e.message ?? 'invalid username or password');
     } finally {
       setSubmitting(false);
     }

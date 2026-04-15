@@ -12,5 +12,9 @@ jobs:
         run: curl -s ${{ github.event.deployment_status.environment_url }}/api/locations
       - name: Test locations API
         run: curl -sSf ${{ github.event.deployment_status.environment_url }}/api/locations
+      - name: Test menu items API
+        run: curl -sSf ${{ github.event.deployment_status.environment_url }}/api/menu-items
+      - name: Test rewards API
+        run: curl -sSf ${{ github.event.deployment_status.environment_url }}/api/rewards
       - name: Test React
         run: curl -sSf ${{ github.event.deployment_status.environment_url }}/index.html

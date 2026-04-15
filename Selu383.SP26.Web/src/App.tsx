@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
+import Home from './Home.tsx'
+import Menu from './Menu.tsx'
+import Promos from './Promos.tsx'
+import Stores from './Stores.tsx'
+import Cart from './Cart.tsx'
+import Profile from './Profile.tsx'
+import Rewards from './Rewards.tsx'
+import NavBar from './NavBar.tsx'
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import { localStorageColorSchemeManager, MantineProvider } from '@mantine/core';
+
+const colorSchemeManager = localStorageColorSchemeManager({ key: 'cl-color-scheme' });
+import { AuthProvider } from './AuthContext.tsx';
+import { CartProvider } from './CartContext.tsx';
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <MantineProvider colorSchemeManager={colorSchemeManager} defaultColorScheme="dark">
+            <BrowserRouter>
+                <AuthProvider>
+                    <CartProvider>
+                        <NavBar />
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/menu" element={<Menu />} />
+                            <Route path="/promos" element={<Promos />} />
+                            <Route path="/stores" element={<Stores />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/rewards" element={<Rewards />} />
+                        </Routes>
+                    </CartProvider>
+                </AuthProvider>
+            </BrowserRouter>
+        </MantineProvider>
+    );
 }
 
 export default App
