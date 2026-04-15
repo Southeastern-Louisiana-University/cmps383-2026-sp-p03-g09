@@ -9,8 +9,6 @@ import {
     Divider,
     Select,
     SegmentedControl,
-    Loader,
-    Center,
     Badge,
     Alert,
 } from '@mantine/core';
@@ -18,7 +16,7 @@ import { TimeInput } from '@mantine/dates';
 import { IconCheck, IconShoppingBagX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, LocationDto, OrderDto } from './api';
+import { api, type LocationDto, type OrderDto } from './api';
 import { useCart } from './CartContext';
 
 const TAX_RATE = 0.0975;

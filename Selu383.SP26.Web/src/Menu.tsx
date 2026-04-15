@@ -15,7 +15,7 @@ import {
     Divider,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { api, MenuItemDto } from './api';
+import { api, type MenuItemDto } from './api';
 import { useCart } from './CartContext';
 
 const SIZE_UPCHARGES: Record<string, number> = {
