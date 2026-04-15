@@ -32,6 +32,7 @@ export default function Stores() {
       <View style={styles.topBar}>
         <Text style={styles.logo}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
+
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <Ionicons name="arrow-back-outline" size={12} color={palette.text} opacity={0.8} />
             <Text style={styles.backBtnText}>back</Text>
@@ -42,7 +43,7 @@ export default function Stores() {
     <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
       {/*nola location*/}
       <Text style={{
-        color: palette.accent,
+        color: palette.text,
         fontSize: 20,
         letterSpacing: 3,
         textTransform: 'uppercase',
@@ -82,7 +83,7 @@ export default function Stores() {
 
         {/*hammond location*/}
       <Text style={{
-        color: palette.accent,
+        color: palette.text,
         fontSize: 20,
         letterSpacing: 3,
         textTransform: 'uppercase',
@@ -122,7 +123,7 @@ export default function Stores() {
 
         {/*new york location*/}
       <Text style={{
-        color: palette.accent,
+        color: palette.text,
         fontSize: 20,
         letterSpacing: 3,
         textTransform: 'uppercase',
@@ -229,16 +230,6 @@ const createStyles = (palette: ThemePalette) =>
     },
     inputError: { borderColor: "#FF5722" },
     eyeBtn: { position: "absolute", right: 14, top: 14 },
-    submitBtn: {
-      marginTop: 32,
-      borderWidth: 1,
-      borderColor: palette.accent,
-      borderRadius: 24,
-      paddingVertical: 14,
-      alignItems: "center",
-      backgroundColor: palette.accent + "18",
-    },
-    submitBtnText: { color: palette.accent, fontSize: 14, letterSpacing: 1.5, fontWeight: "400" },
     footer: {
       color: palette.subtle,
       fontSize: 11,

@@ -84,7 +84,7 @@ function SettingRow({
   );
 }
 
-// ─── main screen ─────────────────────────────────────────────────────────────
+// main screen 
 
 export default function SettingsScreen() {
   const { palette, theme, setTheme } = useTheme();
@@ -137,16 +137,7 @@ export default function SettingsScreen() {
         <Text style={styles.logoTopBar}>caffeinated lions</Text>
         <View style={styles.topBarRight}>
           <View style={styles.themeToggle}>
-            <Ionicons name="sunny-outline" size={13} color={palette.accent} style={{ opacity: 0.6 }} />
-            <Switch
-              value={isDark}
-              onValueChange={val => setTheme(val ? 'dark' : 'light')}
-              trackColor={{ false: palette.accent + '88', true: palette.accent + '88' }}
-              thumbColor={isDark ? palette.accent : palette.elevated}
-              ios_backgroundColor={palette.accent + '88'}
-            />
-            <Ionicons name="moon-outline" size={13} color={palette.accent} style={{ opacity: 0.6 }} />
-          </View>
+         </View>
           <TouchableOpacity style={styles.topBtn} onPress={() => router.back()}>
             <Ionicons name="arrow-back-outline" size={12} color={palette.text} opacity={0.8} />
             <Text style={styles.topBtnText}>back</Text>
@@ -347,7 +338,7 @@ export default function SettingsScreen() {
           />
         </View>
 
-        {/* ── danger zone ─────────────────────────────────────────────── */}
+        {/*danger zone */}
         <SectionLabel text="danger zone" palette={palette} />
 
         <View style={styles.card}>
@@ -367,9 +358,6 @@ export default function SettingsScreen() {
     </View>
   );
 }
-
-// ─── styles ──────────────────────────────────────────────────────────────────
-
 const createStyles = (palette: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: palette.bg },

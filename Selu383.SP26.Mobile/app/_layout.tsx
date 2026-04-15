@@ -24,6 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="pages/orderConfirmation"/>
         <Stack.Screen name="pages/tiers"/>
         <Stack.Screen name="pages/stores"/>
+        <Stack.Screen name="pages/forgotpass"/>
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
