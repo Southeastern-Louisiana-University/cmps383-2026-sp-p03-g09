@@ -251,7 +251,7 @@ export default function MenuScreen() {
     },
     addBtnText: { color: palette.accent, fontSize: 10, letterSpacing: 1 },
 
-    footer: { color: palette.accent, fontSize: 11, letterSpacing: 1.5, textAlign: 'center', opacity: 0.5, marginTop: 40, marginBottom: 8 },
+    footer: { color: palette.accent, fontFamily: 'Tiempos-Regular', fontSize: 11, letterSpacing: 1.5, textAlign: 'center', opacity: 0.5, marginTop: 40, marginBottom: 8 },
 
     // modal
     overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'flex-end' },

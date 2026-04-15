@@ -299,6 +299,7 @@ export default function HomeScreen() {
       letterSpacing: 1.5,
       textAlign: 'center',
       lineHeight: 20,
+      fontFamily: 'Tiempos-Regular',
     },
   });
 
