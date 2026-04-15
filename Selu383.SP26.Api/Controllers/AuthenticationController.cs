@@ -28,6 +28,7 @@ public class AuthenticationController : ControllerBase
     {
         var username = User.GetCurrentUserName();
         var resultDto = await GetUserDto(userManager.Users).SingleAsync(x => x.UserName == username);
+        resultDto.Tier = GetTier(resultDto.LoyaltyPoints);
         return Ok(resultDto);
     }
 
@@ -48,6 +49,7 @@ public class AuthenticationController : ControllerBase
         await signInManager.SignInAsync(user, false);
 
         var resultDto = await GetUserDto(userManager.Users).SingleAsync(x => x.UserName == user.UserName);
+        resultDto.Tier = GetTier(resultDto.LoyaltyPoints);
         return Ok(resultDto);
     }
 
@@ -65,7 +67,16 @@ public class AuthenticationController : ControllerBase
         {
             Id = x.Id,
             UserName = x.UserName!,
-            Roles = x.UserRoles.Select(y => y.Role!.Name).ToArray()!
+            Roles = x.UserRoles.Select(y => y.Role!.Name).ToArray()!,
+            LoyaltyPoints = x.LoyaltyPoints,
+            MemberSince = x.MemberSince
         });
     }
+
+    private static string GetTier(int points) => points switch
+    {
+        >= 1000 => "golden paw",
+        >= 500 => "silver paw",
+        _ => "cub"
+    };
 }

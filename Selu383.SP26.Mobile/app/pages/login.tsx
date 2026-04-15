@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/app/theme-context';
+import { apiClient } from '@/api/client';
 
 export default function LoginScreen() {
   const { palette, theme, setTheme } = useTheme();
@@ -21,9 +22,10 @@ export default function LoginScreen() {
     }
     try {
       setSubmitting(true);
-      // TODO: your auth logic here
+      await apiClient.auth.login({ userName: email, password });
+      router.replace('/');
     } catch (e: any) {
-      Alert.alert('login failed', e.message);
+      Alert.alert('login failed', e.message ?? 'invalid username or password');
     } finally {
       setSubmitting(false);
     }
@@ -38,23 +40,18 @@ export default function LoginScreen() {
         backgroundColor={palette.bg}
       />
 
-      {/* ── top bar ─────────────────────────────────────────────────────────── */}
+      {/*top bar */}
       <View style={styles.topBar}>
-        <Text style={styles.logoTopBar}>caffeinated lions</Text>
-        <View style={styles.topBarRight}>
-          <Ionicons name="sunny-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
-          <Switch
-            value={isDark}
-            onValueChange={val => setTheme(val ? 'dark' : 'light')}
-            trackColor={{ false: palette.subtle + '88', true: palette.accent + '88' }}
-            thumbColor={isDark ? palette.accent : palette.elevated}
-            ios_backgroundColor={palette.subtle + '88'}
-          />
-          <Ionicons name="moon-outline" size={13} color={palette.subtle} style={{ opacity: 0.6 }} />
-        </View>
-      </View>
+              <Text style={styles.logo}>caffeinated lions</Text>
+              <View style={styles.topBarRight}>
+                <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+                  <Ionicons name="arrow-back-outline" size={12} color={palette.text} opacity={0.8} />
+                  <Text style={styles.backBtnText}>back</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
-      {/* ── content ─────────────────────────────────────────────────────────── */}
+      {/*login form*/}
       <View style={styles.content}>
 
         <Text style={styles.headline}>
@@ -64,7 +61,7 @@ export default function LoginScreen() {
         <Text style={styles.subline}>
           no account yet?{' '}
           <Text
-            style={{ color: palette.accent, opacity: 1 }}
+            style={{ color: palette.subtle, opacity: 1 }}
             onPress={() => router.push('/pages/signup')}
           >
             sign up →
@@ -120,7 +117,10 @@ export default function LoginScreen() {
 
         {/* forgot */}
         <TouchableOpacity style={styles.forgotRow}>
-          <Text style={styles.forgotText}>forgot your password?</Text>
+          <Text 
+            style={styles.forgotText} 
+            onPress={() => router.push('/pages/forgotpass')}
+          >forgot your password?</Text>
         </TouchableOpacity>
 
         {/* sign in button */}
@@ -134,12 +134,13 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
 
-      </View>
+      
 
-      {/* footer */}
-      <Text style={styles.footer}>
-        baton rouge · hammond · lafayette · metairie · new orleans
-      </Text>
+        {/* footer */}
+        <Text style={styles.footer}>
+          new orleans · hammond · new york
+        </Text>
+      </View>
     </View>
   );
 }
@@ -173,14 +174,25 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       alignItems: 'center',
       gap: 6,
     },
-
+    logo: { color: palette.accent, fontSize: 14, fontWeight: "300", letterSpacing: 1 },
+    backBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+      borderWidth: 1,
+      borderColor: palette.subtle,
+      borderRadius: 20,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+    },
+    backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
     content: {
       flex: 1,
       paddingHorizontal: 32,
       paddingTop: 56,
       justifyContent: 'center',
     },
-
     headline: {
       color: palette.text,
       fontSize: 42,
@@ -190,7 +202,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       marginBottom: 8,
     },
     subline: {
-      color: palette.subtle,
+      color: palette.text,
       fontSize: 13,
       letterSpacing: 0.5,
       opacity: 0.75,
@@ -204,7 +216,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       fontSize: 10,
       letterSpacing: 2,
       textTransform: 'uppercase',
-      color: palette.subtle,
+      color: palette.text,
       opacity: 0.6,
       marginBottom: 8,
     },
@@ -232,7 +244,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       marginTop: 4,
     },
     forgotText: {
-      color: palette.subtle,
+      color: palette.text,
       fontSize: 11,
       letterSpacing: 0.5,
       opacity: 0.7,
@@ -254,12 +266,13 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
     },
 
     footer: {
-      color: palette.subtle,
-      fontSize: 11,
+      color: palette.accent,
+      fontSize: 15,
       letterSpacing: 1.5,
       textAlign: 'center',
       lineHeight: 20,
-      paddingBottom: 32,
-      opacity: 0.5,
+      paddingTop: 20,
+      paddingBottom: 20,
+      opacity: 1,
     },
   });

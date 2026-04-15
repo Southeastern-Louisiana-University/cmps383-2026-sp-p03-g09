@@ -1,66 +1,342 @@
-import { AppShell, Text, Stack, Container, Divider, Group, Box } from '@mantine/core';
+import {
+    AppShell,
+    Text,
+    Stack,
+    Container,
+    Grid,
+    Box,
+    Modal,
+    Button,
+    Group,
+    Checkbox,
+    SegmentedControl,
+    Loader,
+    Center,
+    Divider,
+} from '@mantine/core';
+import { useState, useEffect } from 'react';
+import { api, MenuItemDto } from './api';
+import { useCart } from './CartContext';
 
-const coldDrinks = [
-    { name: 'cold brew',              desc: 'steeped for 12 hours, smooth and naturally sweet' },
-    { name: 'nitro cold brew',        desc: 'cold brew on tap, infused with nitrogen for a silky finish' },
-    { name: 'iced coffee',            desc: 'freshly brewed coffee poured over ice' },
-    { name: 'iced americano',         desc: 'espresso shots over ice, topped with cold water' },
-    { name: 'iced latte',             desc: 'espresso with cold milk over ice' },
-    { name: 'iced mocha',             desc: 'espresso, chocolate, and milk over ice' },
-    { name: 'frappe',                 desc: 'blended ice, espresso, and milk' },
-    { name: 'vietnamese iced coffee', desc: 'strong drip coffee with sweetened condensed milk over ice' },
-    { name: 'cold foam latte',        desc: 'iced latte crowned with velvety cold foam' },
-    { name: 'shaken espresso',        desc: 'espresso shaken with ice for a frothy, chilled pick-me-up' },
-];
+const SIZE_UPCHARGES: Record<string, number> = {
+    small: 0,
+    medium: 0.75,
+    large: 1.5,
+};
 
-const hotDrinks = [
-    { name: 'espresso',   desc: 'a concentrated shot of rich, bold coffee' },
-    { name: 'americano',  desc: 'espresso diluted with hot water for a clean, smooth cup' },
-    { name: 'cappuccino', desc: 'equal parts espresso, steamed milk, and thick foam' },
-    { name: 'latte',      desc: 'espresso with a generous pour of silky steamed milk' },
-    { name: 'macchiato',  desc: 'espresso marked with a dollop of foam' },
-    { name: 'mocha',      desc: 'espresso blended with chocolate and steamed milk' },
-    { name: 'flat white',  desc: 'velvety microfoam poured over a double ristretto' },
-    { name: 'cortado',    desc: 'equal parts espresso and warm milk to balance the intensity' },
-    { name: 'lungo',      desc: 'a long pull espresso, slower and more mellow' },
-    { name: 'pour over',  desc: 'single-origin beans brewed to order, one careful pour at a time' },
-];
+const CATEGORY_ORDER = ['drinks', 'sweet crepes', 'savory crepes', 'bagels'];
 
-function DrinkSection({ title, drinks }: { title: string; drinks: { name: string; desc: string }[] }) {
+function MenuSection({
+    title,
+    items,
+    onSelect,
+}: {
+    title: string;
+    items: MenuItemDto[];
+    onSelect: (item: MenuItemDto, index: number) => void;
+}) {
     return (
-        <Stack gap={0}>
-            <Text size="28pt" className="font-tiempos-headline" fw={300} mb="md">
+        <Stack gap="md">
+            <Text size="28pt" className="font-tiempos-headline" fw={300}>
                 {title}
             </Text>
-            {drinks.map((drink, i) => (
-                <Box key={drink.name}>
-                    <Group justify="space-between" align="baseline" py="xs">
-                        <Text size="14pt" className="font-tiempos-text" fw={500} style={{ minWidth: 220 }}>
-                            {drink.name}
-                        </Text>
-                        <Text size="11pt" className="font-tiempos-text" c="dimmed" style={{ textAlign: 'right', maxWidth: 380 }}>
-                            {drink.desc}
-                        </Text>
-                    </Group>
-                    {i < drinks.length - 1 && <Divider opacity={0.25} />}
-                </Box>
-            ))}
+            <Grid gutter="md">
+                {items.map((item, i) => (
+                    <Grid.Col key={item.id} span={12 / 5}>
+                        <Box
+                            onClick={() => onSelect(item, i)}
+                            style={{
+                                position: 'relative',
+                                width: '100%',
+                                aspectRatio: '1 / 1',
+                                overflow: 'hidden',
+                                borderRadius: 8,
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <img
+                                src={`https://source.unsplash.com/400x400/?coffee&sig=${item.id}`}
+                                alt={item.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                            <Box
+                                style={{
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    padding: '8px',
+                                    background: 'rgba(0,0,0,0.5)',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <Text size="12pt" c="white" fw={500}>
+                                    {item.name}
+                                </Text>
+                            </Box>
+                        </Box>
+                    </Grid.Col>
+                ))}
+            </Grid>
         </Stack>
     );
 }
 
 export default function Menu() {
+    const { addItem } = useCart();
+    const [menuItems, setMenuItems] = useState<MenuItemDto[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const [selected, setSelected] = useState<MenuItemDto | null>(null);
+    const [size, setSize] = useState<'small' | 'medium' | 'large'>('medium');
+    const [selectedAddOnIds, setSelectedAddOnIds] = useState<number[]>([]);
+    const [selectedToggleLabels, setSelectedToggleLabels] = useState<string[]>([]);
+    const [qty, setQty] = useState(1);
+    const [imageIndex, setImageIndex] = useState(0);
+    const [addedMsg, setAddedMsg] = useState(false);
+
+    useEffect(() => {
+        api.menuItems.getAll()
+            .then(setMenuItems)
+            .catch(() => setError('could not load menu items.'))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const openModal = (item: MenuItemDto, index: number) => {
+        setSelected(item);
+        setImageIndex(index);
+        setSize('medium');
+        setSelectedAddOnIds([]);
+        setSelectedToggleLabels(item.toggles.filter(t => t.defaultOn).map(t => t.label));
+        setQty(1);
+        setAddedMsg(false);
+    };
+
+    const closeModal = () => {
+        setSelected(null);
+        setAddedMsg(false);
+    };
+
+    const computedUnitPrice = selected
+        ? selected.basePrice
+            + (selected.hasSizes ? SIZE_UPCHARGES[size] : 0)
+            + selected.addOns
+                .filter(a => selectedAddOnIds.includes(a.id))
+                .reduce((sum, a) => sum + a.price, 0)
+        : 0;
+
+    const handleAddToBag = () => {
+        if (!selected) return;
+        addItem({
+            menuItemId: selected.id,
+            name: selected.name,
+            size: selected.hasSizes ? size : undefined,
+            selectedAddOns: selected.addOns
+                .filter(a => selectedAddOnIds.includes(a.id))
+                .map(a => ({ id: a.id, label: a.label, price: a.price })),
+            selectedToggleLabels,
+            qty,
+            unitPrice: computedUnitPrice,
+        });
+        setAddedMsg(true);
+        setTimeout(closeModal, 800);
+    };
+
+    const toggleAddOn = (id: number, checked: boolean) => {
+        setSelectedAddOnIds(prev =>
+            checked ? [...prev, id] : prev.filter(x => x !== id)
+        );
+    };
+
+    const toggleToggle = (label: string, checked: boolean) => {
+        setSelectedToggleLabels(prev =>
+            checked ? [...prev, label] : prev.filter(x => x !== label)
+        );
+    };
+
+    const groupedItems = CATEGORY_ORDER.map(cat => ({
+        category: cat,
+        items: menuItems.filter(i => i.category === cat),
+    })).filter(g => g.items.length > 0);
+
+    if (loading) {
+        return (
+            <Center h="50vh">
+                <Loader color="#a5b4fc" />
+            </Center>
+        );
+    }
+
+    if (error) {
+        return (
+            <Center h="50vh">
+                <Text c="dimmed">{error}</Text>
+            </Center>
+        );
+    }
+
     return (
         <AppShell>
-            <Container size="md" py="xl">
+            <Container size="lg" py="xl">
                 <Stack gap="xl">
-                    <DrinkSection title="cold drinks" drinks={coldDrinks} />
-                    <DrinkSection title="hot drinks" drinks={hotDrinks} />
-                    <Text size="11pt" className="font-tiempos-text" c="dimmed" style={{ textAlign: 'left', maxWidth: 380 }}>
-                    * availability and price depends on location
+                    {groupedItems.map(g => (
+                        <MenuSection
+                            key={g.category}
+                            title={g.category}
+                            items={g.items}
+                            onSelect={openModal}
+                        />
+                    ))}
+                    <Text size="11pt" c="dimmed" style={{ maxWidth: 380 }}>
+                        * availability and price depends on location
                     </Text>
                 </Stack>
             </Container>
+
+            <Modal
+                opened={!!selected}
+                onClose={closeModal}
+                centered
+                size="md"
+                withCloseButton={false}
+                overlayProps={{ opacity: 0.55, blur: 3 }}
+            >
+                {selected && (
+                    <Stack gap="md">
+                        <img
+                            src={`https://source.unsplash.com/600x600/?coffee&sig=${imageIndex}`}
+                            alt={selected.name}
+                            style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
+                        />
+
+                        <Group justify="space-between" align="flex-end">
+                            <Text size="20pt" fw={600} className="font-tiempos-headline">
+                                {selected.name}
+                            </Text>
+                            <Text size="16pt" fw={500}>
+                                ${computedUnitPrice.toFixed(2)}
+                            </Text>
+                        </Group>
+
+                        <Text size="12pt" c="dimmed">
+                            {selected.description}
+                        </Text>
+
+                        {/* Size selector */}
+                        {selected.hasSizes && (
+                            <Stack gap={6}>
+                                <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                    size
+                                </Text>
+                                <SegmentedControl
+                                    value={size}
+                                    onChange={(v) => setSize(v as 'small' | 'medium' | 'large')}
+                                    color="#a5b4fc"
+                                    data={[
+                                        { label: 'small', value: 'small' },
+                                        { label: 'medium (+$0.75)', value: 'medium' },
+                                        { label: 'large (+$1.50)', value: 'large' },
+                                    ]}
+                                    fullWidth
+                                    classNames={{ label: 'font-tiempos-text' }}
+                                />
+                            </Stack>
+                        )}
+
+                        {/* Add-ons */}
+                        {selected.addOns.length > 0 && (
+                            <Stack gap={6}>
+                                <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                    add-ons
+                                </Text>
+                                <Grid gutter="xs">
+                                    {selected.addOns.map(a => (
+                                        <Grid.Col key={a.id} span={6}>
+                                            <Checkbox
+                                                checked={selectedAddOnIds.includes(a.id)}
+                                                onChange={e => toggleAddOn(a.id, e.currentTarget.checked)}
+                                                label={`${a.label}${a.price > 0 ? ` (+$${a.price.toFixed(2)})` : ' (free)'}`}
+                                                color="#a5b4fc"
+                                                size="sm"
+                                                classNames={{ label: 'font-tiempos-text' }}
+                                            />
+                                        </Grid.Col>
+                                    ))}
+                                </Grid>
+                            </Stack>
+                        )}
+
+                        {/* Toggles */}
+                        {selected.toggles.length > 0 && (
+                            <Stack gap={6}>
+                                <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                    options
+                                </Text>
+                                {selected.toggles.map(t => (
+                                    <Checkbox
+                                        key={t.id}
+                                        checked={selectedToggleLabels.includes(t.label)}
+                                        onChange={e => toggleToggle(t.label, e.currentTarget.checked)}
+                                        label={t.label}
+                                        color="#a5b4fc"
+                                        size="sm"
+                                        classNames={{ label: 'font-tiempos-text' }}
+                                    />
+                                ))}
+                            </Stack>
+                        )}
+
+                        <Divider />
+
+                        {/* Quantity */}
+                        <Group justify="center" gap="md">
+                            <Button
+                                onClick={() => setQty(q => Math.max(1, q - 1))}
+                                variant="outline"
+                                color="#a5b4fc"
+                                size="sm"
+                            >
+                                −
+                            </Button>
+                            <Text size="16pt" fw={500}>{qty}</Text>
+                            <Button
+                                onClick={() => setQty(q => q + 1)}
+                                variant="outline"
+                                color="#a5b4fc"
+                                size="sm"
+                            >
+                                +
+                            </Button>
+                        </Group>
+
+                        <Text size="12pt" ta="center" c="dimmed" className="font-tiempos-text">
+                            total: ${(computedUnitPrice * qty).toFixed(2)}
+                        </Text>
+
+                        <Group grow>
+                            <Button
+                                onClick={handleAddToBag}
+                                color="#a5b4fc"
+                                disabled={addedMsg}
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                {addedMsg ? 'added!' : 'add to bag'}
+                            </Button>
+                            <Button
+                                variant="light"
+                                color="gray"
+                                onClick={closeModal}
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                cancel
+                            </Button>
+                        </Group>
+                    </Stack>
+                )}
+            </Modal>
         </AppShell>
     );
 }
