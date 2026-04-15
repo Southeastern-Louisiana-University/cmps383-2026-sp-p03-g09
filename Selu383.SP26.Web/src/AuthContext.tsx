@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { api, UserDto } from './api';
+import { api, type UserDto } from './api';
 
 type AuthContextType = {
     user: UserDto | null;

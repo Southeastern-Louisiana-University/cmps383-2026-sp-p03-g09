@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { IconCoffee, IconToolsKitchen2 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { api, RewardDto, UserDto } from './api';
+import { api, type RewardDto, type UserDto } from './api';
 import { useAuth } from './AuthContext';
 import Login from './Login';
 

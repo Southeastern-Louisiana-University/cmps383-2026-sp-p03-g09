@@ -17,7 +17,7 @@ import {
 import { IconPaw } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, OrderDto, UserDto } from './api';
+import { api, type OrderDto, type UserDto } from './api';
 import { useAuth } from './AuthContext';
 import Login from './Login';
 
