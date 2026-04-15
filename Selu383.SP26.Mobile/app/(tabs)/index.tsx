@@ -130,7 +130,7 @@ export default function HomeScreen() {
     logoTopBar: {
       color: palette.accent,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
     },
     topBarRight: {
@@ -195,7 +195,7 @@ export default function HomeScreen() {
     headline: {
       color: palette.text,
       fontSize: 42,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 50,
       marginBottom: 20,
       letterSpacing: 0.5,
@@ -258,7 +258,7 @@ export default function HomeScreen() {
     cardName: {
       color: palette.text,
       fontSize: 18,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     cardDesc: {

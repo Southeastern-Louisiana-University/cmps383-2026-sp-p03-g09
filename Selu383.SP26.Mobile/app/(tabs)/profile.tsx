@@ -21,7 +21,6 @@ const USER = {
   name: 'Sophia',
   handle: '@caffeinatedsoph',
   memberSince: 'March 2026',
-  tier: 'golden paw',
   points: 1240,
   nextReward: 1500,
   streak: 7,
@@ -158,7 +157,7 @@ export default function ProfileScreen() {
     logoTopBar: {
       color: palette.accent,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
     },
     topBarRight: {
@@ -221,7 +220,7 @@ export default function ProfileScreen() {
     userName: {
       color: palette.text,
       fontSize: 28,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     userHandle: {
@@ -239,29 +238,6 @@ export default function ProfileScreen() {
       marginTop: 3,
     },
 
-    // tier badge — now a button
-    tierBadge: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-      alignSelf: 'flex-start',
-      borderWidth: 1,
-      borderColor: palette.accent,
-      borderRadius: 20,
-      paddingHorizontal: 12,
-      paddingVertical: 5,
-      marginTop: 16,
-      backgroundColor: palette.accent + '18',
-    },
-    tierText: {
-      color: palette.text,
-      fontSize: 11,
-      letterSpacing: 1.5,
-    },
-    tierChevron: {
-      opacity: 0.6,
-    },
-
     // streak
     streakCard: {
       flexDirection: 'row',
@@ -277,12 +253,12 @@ export default function ProfileScreen() {
     streakNum: {
       color: palette.text,
       fontSize: 32,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
     },
     streakLabel: {
       color: palette.text,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     streakSub: {
@@ -303,7 +279,7 @@ export default function ProfileScreen() {
     pointsNum: {
       color: palette.text,
       fontSize: 36,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     pointsLabel: {
@@ -370,7 +346,7 @@ export default function ProfileScreen() {
     statValue: {
       color: palette.text,
       fontSize: 22,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     statLabel: {
@@ -395,7 +371,7 @@ export default function ProfileScreen() {
     orderName: {
       color: palette.text,
       fontSize: 13,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
     orderMeta: {
@@ -490,22 +466,7 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* tier badge — tappable, leads to tier page */}
-        <TouchableOpacity
-          style={styles.tierBadge}
-          onPress={() => router.push('/pages/tiers')}
-          accessibilityLabel="view tier details"
-        >
-          <Ionicons name="paw" size={12} color={palette.accent} />
-          <Text style={styles.tierText}>{USER.tier} member</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={11}
-            color={palette.accent}
-            style={styles.tierChevron}
-          />
-        </TouchableOpacity>
-
+      
         {/*streak*/}
         <SectionLabel text="current streak" palette={palette} />
         <Animated.View style={[styles.streakCard, { transform: [{ scale: streakAnim }] }]}>

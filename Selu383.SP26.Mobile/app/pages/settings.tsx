@@ -68,7 +68,7 @@ function SettingRow({
     >
       <Ionicons name={icon as any} size={17} color={iconColor} opacity={0.8} />
       <View style={{ flex: 1 }}>
-        <Text style={{ color, fontSize: 13, fontWeight: '300', letterSpacing: 0.4 }}>{label}</Text>
+        <Text style={{ color, fontSize: 13, fontFamily: 'Tiempos-Regular', letterSpacing: 0.4 }}>{label}</Text>
         {sublabel ? (
           <Text style={{ color: palette.accent, fontSize: 10, letterSpacing: 1, opacity: 0.55, marginTop: 2 }}>
             {sublabel}
@@ -376,7 +376,7 @@ const createStyles = (palette: any) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.accent + '40',
     },
-    logoTopBar: { color: palette.accent, fontSize: 14, fontWeight: '300', letterSpacing: 1 },
+    logoTopBar: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1 },
     topBarRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
     themeToggle: { flexDirection: 'row', alignItems: 'center', gap: 4 },
     topBtn: {
@@ -396,7 +396,7 @@ const createStyles = (palette: any) =>
     headline: {
       color: palette.text,
       fontSize: 42,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       marginBottom: 6,
     },
@@ -463,13 +463,13 @@ const createStyles = (palette: any) =>
     fieldValue: {
       color: palette.text,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.3,
     },
     fieldInput: {
       color: palette.text,
       fontSize: 14,
-      fontWeight: '300',
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.3,
       borderBottomWidth: 1,
       borderBottomColor: palette.accent + '88',

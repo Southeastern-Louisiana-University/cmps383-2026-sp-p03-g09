@@ -1,7 +1,9 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ThemeProvider } from '@/app/theme-context';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { Text } from 'react-native';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -11,9 +13,16 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    'Tiempos-Regular': require('../assets/fonts/TiemposText/TiemposText-Regular.otf'),
+  });
+  // @ts-ignore
+  Text.defaultProps = Text.defaultProps || {};
+  // @ts-ignore
+  Text.defaultProps.style = { fontFamily: 'Tiempos-Regular' };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider>
       <Stack screenOptions={{ headerShown: false }} >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />

@@ -253,7 +253,7 @@ const createStyles = (palette: ThemePalette) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + "40",
     },
-    logo: { color: palette.accent, fontSize: 14, fontWeight: "300", letterSpacing: 1 },
+    logo: { color: palette.accent, fontSize: 14, letterSpacing: 1 },
     backBtn: {
       flexDirection: "row",
       alignItems: "center",
@@ -270,7 +270,6 @@ const createStyles = (palette: ThemePalette) =>
     headline: {
       color: palette.text,
       fontSize: 42,
-      fontWeight: "300",
       lineHeight: 50,
       letterSpacing: 0.5,
       marginBottom: 8,
@@ -302,7 +301,7 @@ const createStyles = (palette: ThemePalette) =>
       borderColor: palette.accent,
       backgroundColor: palette.accent + "12",
     },
-    optionLabel: { color: palette.text, fontSize: 14, fontWeight: "300", letterSpacing: 0.3, marginBottom: 2, opacity: 0.6 },
+    optionLabel: { color: palette.text, fontSize: 14, letterSpacing: 0.3, marginBottom: 2, opacity: 0.6 },
     optionLabelActive: { opacity: 1 },
     optionSub: { color: palette.accent, fontSize: 11, letterSpacing: 0.3, opacity: 0.55 },
 
@@ -373,7 +372,7 @@ const createStyles = (palette: ThemePalette) =>
       backgroundColor: palette.accent + "18",
       marginBottom: 8,
     },
-    submitBtnText: { color: palette.accent, fontSize: 14, letterSpacing: 1.5, fontWeight: "400" },
+    submitBtnText: { color: palette.accent, fontSize: 14, letterSpacing: 1.5, },
 
     footer: {
       color: palette.accent,
