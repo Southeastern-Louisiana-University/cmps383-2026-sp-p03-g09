@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AppShell, Container, Stack, Text, SimpleGrid, Card, Group, Badge, Loader, Center } from '@mantine/core';
 import { IconMapPin, IconArmchair } from '@tabler/icons-react';
-import { api, LocationDto } from './api';
+import { api, type LocationDto } from './api';
 
 export default function Stores() {
     const [locations, setLocations] = useState<LocationDto[]>([]);
