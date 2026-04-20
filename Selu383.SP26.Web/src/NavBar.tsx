@@ -43,6 +43,7 @@ function NavBar() {
                 h={60}
                 px="xl"
                 justify="space-between"
+                className="glass-nav"
                 style={{ width: '100%', boxSizing: 'border-box' }}
             >
                 {/* Logo */}
@@ -212,6 +213,7 @@ function NavBar() {
                                     setDrawerOpened(false);
                                     navigate('/cart');
                                 }}
+                                variant="outline"
                                 color="#a5b4fc"
                                 className="font-tiempos-text"
                                 tt="lowercase"

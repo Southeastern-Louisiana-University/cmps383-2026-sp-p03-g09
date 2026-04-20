@@ -10,15 +10,23 @@ import Rewards from './Rewards.tsx'
 import NavBar from './NavBar.tsx'
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-import { localStorageColorSchemeManager, MantineProvider } from '@mantine/core';
+import { createTheme, localStorageColorSchemeManager, MantineProvider } from '@mantine/core';
 
 const colorSchemeManager = localStorageColorSchemeManager({ key: 'cl-color-scheme' });
 import { AuthProvider } from './AuthContext.tsx';
 import { CartProvider } from './CartContext.tsx';
 
+const theme = createTheme({
+    defaultRadius: 'md',
+    fontFamily: "'Tiempos Text', serif",
+    headings: {
+        fontFamily: "'Tiempos Headline', serif",
+    },
+});
+
 function App() {
     return (
-        <MantineProvider colorSchemeManager={colorSchemeManager} defaultColorScheme="dark">
+        <MantineProvider theme={theme} colorSchemeManager={colorSchemeManager} defaultColorScheme="dark">
             <BrowserRouter>
                 <AuthProvider>
                     <CartProvider>

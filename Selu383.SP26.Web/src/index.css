@@ -1,12 +1,9 @@
+/* ===== BASE ===== */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Tiempos Text', serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,11 +12,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #a5b4fc;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #818cf8;
 }
 
 body {
@@ -28,10 +25,7 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+h1 { font-size: 3.2em; line-height: 1.1; }
 
 button {
   border-radius: 8px;
@@ -40,54 +34,47 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* OS-level preference (fallback before Mantine sets the attribute) */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-/* Mantine-controlled color scheme — higher specificity than :root alone,
-   so these win over the media query when the user has a stored preference. */
+/* ===== DARK MODE ===== */
 html[data-mantine-color-scheme="dark"] {
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0c0d1a;
 }
-html[data-mantine-color-scheme="dark"] button {
-  background-color: #1a1a1a;
+html[data-mantine-color-scheme="dark"] body {
+  background-color: #0c0d1a;
+  background-image:
+    radial-gradient(ellipse 65% 55% at 12% 65%, rgba(99, 102, 241, 0.11) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 45% at 82% 12%, rgba(165, 180, 252, 0.07) 0%, transparent 100%);
 }
 
+/* ===== LIGHT MODE ===== */
 html[data-mantine-color-scheme="light"] {
-  color: #213547;
-  background-color: #ffffff;
+  color: #1e1b2e;
+  background-color: #f5f4ff;
+}
+html[data-mantine-color-scheme="light"] body {
+  background-color: #f5f4ff;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 18% 65%, rgba(165, 180, 252, 0.2) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 40% at 78% 18%, rgba(129, 140, 248, 0.13) 0%, transparent 100%);
 }
 html[data-mantine-color-scheme="light"] a:hover {
-  color: #747bff;
-}
-html[data-mantine-color-scheme="light"] button {
-  background-color: #f9f9f9;
+  color: #6366f1;
 }
 
-/* Tiempos Headline */
+/* OS-level fallbacks (before Mantine sets the attribute) */
+@media (prefers-color-scheme: light) {
+  :root { color: #1e1b2e; background-color: #f5f4ff; }
+}
+
+/* ===== FONTS ===== */
 @font-face { font-family: 'Tiempos Headline'; font-weight: 300; font-style: normal;  src: url('./fonts/TiemposHeadline/TiemposHeadline-Light.otf') format('opentype'); }
 @font-face { font-family: 'Tiempos Headline'; font-weight: 300; font-style: italic;  src: url('./fonts/TiemposHeadline/TiemposHeadline-LightItalic.otf') format('opentype'); }
 @font-face { font-family: 'Tiempos Headline'; font-weight: 400; font-style: normal;  src: url('./fonts/TiemposHeadline/TiemposHeadline-Regular.otf') format('opentype'); }
@@ -101,7 +88,6 @@ html[data-mantine-color-scheme="light"] button {
 @font-face { font-family: 'Tiempos Headline'; font-weight: 900; font-style: normal;  src: url('./fonts/TiemposHeadline/TiemposHeadline-Black.otf') format('opentype'); }
 @font-face { font-family: 'Tiempos Headline'; font-weight: 900; font-style: italic;  src: url('./fonts/TiemposHeadline/TiemposHeadline-BlackItalic.otf') format('opentype'); }
 
-/* Tiempos Text */
 @font-face { font-family: 'Tiempos Text'; font-weight: 400; font-style: normal;  src: url('./fonts/TiemposText/TiemposText-Regular.otf') format('opentype'); }
 @font-face { font-family: 'Tiempos Text'; font-weight: 400; font-style: italic;  src: url('./fonts/TiemposText/TiemposText-RegularItalic.otf') format('opentype'); }
 @font-face { font-family: 'Tiempos Text'; font-weight: 500; font-style: normal;  src: url('./fonts/TiemposText/TiemposText-Medium.otf') format('opentype'); }
@@ -111,33 +97,239 @@ html[data-mantine-color-scheme="light"] button {
 @font-face { font-family: 'Tiempos Text'; font-weight: 700; font-style: normal;  src: url('./fonts/TiemposText/TiemposText-Bold.otf') format('opentype'); }
 @font-face { font-family: 'Tiempos Text'; font-weight: 700; font-style: italic;  src: url('./fonts/TiemposText/TiemposText-BoldItalic.otf') format('opentype'); }
 
-/* Utility classes */
+/* ===== UTILITY CLASSES ===== */
 .font-tiempos-headline { font-family: 'Tiempos Headline', serif; }
 .font-tiempos-text     { font-family: 'Tiempos Text', serif; }
-.font-courier {
-    font-family: Courier New, Courier, monospace;
-    font-style: normal;
+.font-courier          { font-family: Courier New, Courier, monospace; font-style: normal; }
+
+/* ===== GLASS NAVBAR ===== */
+.glass-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: background 200ms ease, border-color 200ms ease;
+}
+html[data-mantine-color-scheme="dark"] .glass-nav {
+  background: rgba(12, 13, 26, 0.82);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+html[data-mantine-color-scheme="light"] .glass-nav {
+  background: rgba(245, 244, 255, 0.82);
+  border-bottom: 1px solid rgba(165, 180, 252, 0.22);
 }
 
-/* Navbar nav links */
+/* ===== NAVBAR LINKS ===== */
 .nav-link {
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-family: 'Tiempos Text', serif;
-    font-size: 13pt;
-    cursor: pointer;
-    background: transparent;
-    color: inherit;
-    opacity: 0.55;
-    border: none;
-    transition: background 140ms ease, opacity 140ms ease;
-    white-space: nowrap;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: 'Tiempos Text', serif;
+  font-size: 13pt;
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  border: none;
+  transition: background 150ms ease, opacity 150ms ease;
+  white-space: nowrap;
 }
 .nav-link:hover {
-    background: rgba(165, 180, 252, 0.1);
-    opacity: 0.85;
+  background: rgba(165, 180, 252, 0.12);
+  opacity: 0.85;
 }
 .nav-link[data-active='true'] {
-    background: rgba(165, 180, 252, 0.18);
-    opacity: 1;
+  background: rgba(165, 180, 252, 0.2);
+  opacity: 1;
+}
+
+/* ===== GLASS CARDS ===== */
+html[data-mantine-color-scheme="dark"] .mantine-Card-root {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+html[data-mantine-color-scheme="light"] .mantine-Card-root {
+  background: rgba(255, 255, 255, 0.62) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-color: rgba(165, 180, 252, 0.32) !important;
+  box-shadow: 0 0 0 1px rgba(165, 180, 252, 0.18), 0 4px 24px rgba(99, 102, 241, 0.08);
+}
+
+/* ===== GLASS MODAL ===== */
+html[data-mantine-color-scheme="dark"] .mantine-Modal-content {
+  background: rgba(14, 14, 28, 0.92) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+html[data-mantine-color-scheme="light"] .mantine-Modal-content {
+  background: rgba(250, 249, 255, 0.93) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(165, 180, 252, 0.3);
+}
+.mantine-Modal-header {
+  background: transparent !important;
+  padding: 22px 28px 14px !important;
+}
+.mantine-Modal-body {
+  padding: 0 28px 28px !important;
+}
+
+/* ===== GLASS DRAWER ===== */
+html[data-mantine-color-scheme="dark"] .mantine-Drawer-content {
+  background: rgba(10, 11, 22, 0.92) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+}
+html[data-mantine-color-scheme="light"] .mantine-Drawer-content {
+  background: rgba(245, 244, 255, 0.94) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid rgba(165, 180, 252, 0.28);
+}
+.mantine-Drawer-header {
+  background: transparent !important;
+}
+
+/* ===== BUTTON GLOW (DARK MODE) ===== */
+html[data-mantine-color-scheme="dark"] .mantine-Button-root[data-variant="filled"] {
+  box-shadow: 0 0 18px rgba(165, 180, 252, 0.18);
+  transition: box-shadow 200ms ease, transform 140ms ease, filter 200ms ease;
+}
+html[data-mantine-color-scheme="dark"] .mantine-Button-root[data-variant="filled"]:hover {
+  box-shadow: 0 0 28px rgba(165, 180, 252, 0.3);
+  transform: translateY(-1px);
+}
+html[data-mantine-color-scheme="dark"] .mantine-Button-root[data-variant="outline"] {
+  transition: box-shadow 200ms ease, transform 140ms ease;
+}
+html[data-mantine-color-scheme="dark"] .mantine-Button-root[data-variant="outline"]:hover {
+  box-shadow: 0 0 20px rgba(165, 180, 252, 0.15);
+  transform: translateY(-1px);
+}
+
+/* ===== HERO PAGE ===== */
+.hero-root {
+  position: relative;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-blob-1 {
+  width: 580px;
+  height: 580px;
+  background: radial-gradient(circle, rgba(165, 180, 252, 0.52) 0%, transparent 68%);
+  filter: blur(80px);
+  top: -150px;
+  right: 2%;
+  animation: blobFloat1 10s ease-in-out infinite;
+}
+.hero-blob-2 {
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.46) 0%, transparent 70%);
+  filter: blur(90px);
+  bottom: -100px;
+  left: 4%;
+  animation: blobFloat2 13s ease-in-out infinite;
+}
+.hero-blob-3 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.42) 0%, transparent 70%);
+  filter: blur(72px);
+  top: 36%;
+  left: 42%;
+  animation: blobFloat3 16s ease-in-out infinite;
+}
+
+@keyframes blobFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  30%       { transform: translate(-70px, 60px) scale(1.08); }
+  60%       { transform: translate(55px, -50px) scale(0.94); }
+}
+@keyframes blobFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  35%       { transform: translate(80px, -65px) scale(1.1); }
+  70%       { transform: translate(-50px, 45px) scale(0.92); }
+}
+@keyframes blobFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-60px, -75px) scale(1.12); }
+  80%       { transform: translate(65px, 40px) scale(0.9); }
+}
+
+/* Light mode: softer blobs */
+html[data-mantine-color-scheme="light"] .hero-blob-1 {
+  background: radial-gradient(circle, rgba(165, 180, 252, 0.55) 0%, transparent 68%);
+}
+html[data-mantine-color-scheme="light"] .hero-blob-2 {
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.48) 0%, transparent 70%);
+}
+html[data-mantine-color-scheme="light"] .hero-blob-3 {
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.44) 0%, transparent 70%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 32px;
+  max-width: 800px;
+}
+
+.hero-tag {
+  font-family: 'Tiempos Text', serif;
+  font-size: 10.5pt;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  opacity: 0.42;
+  margin: 0 0 30px;
+  display: block;
+}
+
+.hero-headline {
+  font-family: 'Tiempos Headline', serif;
+  font-weight: 300;
+  font-size: clamp(38px, 5.8vw, 70px);
+  line-height: 1.07;
+  margin: 0 0 22px;
+  letter-spacing: -0.015em;
+}
+
+.hero-sub {
+  font-family: 'Tiempos Text', serif;
+  font-size: 15pt;
+  opacity: 0.46;
+  margin: 0 0 40px;
+  font-weight: 400;
+}
+
+.hero-cat {
+  font-family: Courier New, Courier, monospace;
+  margin-left: 10px;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
