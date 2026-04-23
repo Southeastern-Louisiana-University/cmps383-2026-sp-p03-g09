@@ -365,7 +365,7 @@ export default function Cart() {
                         onClick={handlePlaceOrder}
                         loading={submitting}
                         size="lg"
-                        color="#a5b4fc"
+                        color="#6366f1"
                         className="font-tiempos-text"
                         tt="lowercase"
                         style={{ letterSpacing: '0.08em' }}

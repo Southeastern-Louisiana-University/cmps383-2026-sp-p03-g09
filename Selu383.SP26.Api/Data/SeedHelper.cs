@@ -21,6 +21,7 @@ public static class SeedHelper
 
         await AddLocations(dataContext);
         await AddMenuItems(dataContext);
+        await BackfillSizePrices(dataContext);
         await AddRewards(dataContext);
     }
 
@@ -148,36 +149,32 @@ public static class SeedHelper
             {
                 Name = "iced latte",
                 Description = "espresso and milk served over ice for a refreshing coffee drink.",
-                BasePrice = 5.50m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 5.50m, Category = "drinks", HasSizes = true,
+                SmallPrice = 5.50m, MediumPrice = 6.25m, LargePrice = 7.00m,
                 AddOns = DrinkAddOns()
             },
             new MenuItem
             {
                 Name = "supernova",
                 Description = "a unique coffee blend with a complex, balanced profile and subtle sweetness. delicious as espresso or paired with milk.",
-                BasePrice = 7.95m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 7.95m, Category = "drinks", HasSizes = true,
+                SmallPrice = 7.95m, MediumPrice = 8.70m, LargePrice = 9.45m,
                 AddOns = DrinkAddOns()
             },
             new MenuItem
             {
                 Name = "roaring frappe",
                 Description = "cold brew, milk, and ice blended together with a signature syrup or flavor, topped with whipped cream.",
-                BasePrice = 6.20m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 6.20m, Category = "drinks", HasSizes = true,
+                SmallPrice = 6.20m, MediumPrice = 6.95m, LargePrice = 7.70m,
                 AddOns = DrinkAddOns()
             },
             new MenuItem
             {
                 Name = "black & white cold brew",
                 Description = "cold brew made with both dark and light roast beans, finished with a drizzle of condensed milk.",
-                BasePrice = 5.15m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 5.15m, Category = "drinks", HasSizes = true,
+                SmallPrice = 5.15m, MediumPrice = 5.90m, LargePrice = 6.65m,
                 AddOns = [
                     new() { Label = "oat milk", Price = 0.75m },
                     new() { Label = "almond milk", Price = 0.75m },
@@ -189,9 +186,8 @@ public static class SeedHelper
             {
                 Name = "strawberry limeade",
                 Description = "fresh lime juice blended with strawberry purée for a refreshing, tangy drink.",
-                BasePrice = 5.00m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 5.00m, Category = "drinks", HasSizes = true,
+                SmallPrice = 5.00m, MediumPrice = 5.75m, LargePrice = 6.50m,
                 AddOns = [
                     new() { Label = "extra strawberry", Price = 0.50m },
                     new() { Label = "sugar-free syrup", Price = 0.00m },
@@ -201,9 +197,8 @@ public static class SeedHelper
             {
                 Name = "shaken lemonade",
                 Description = "fresh lemon juice and simple syrup vigorously shaken for a bright, refreshing lemonade.",
-                BasePrice = 5.00m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 5.00m, Category = "drinks", HasSizes = true,
+                SmallPrice = 5.00m, MediumPrice = 5.75m, LargePrice = 6.50m,
                 AddOns = [
                     new() { Label = "add strawberry", Price = 0.50m },
                     new() { Label = "add raspberry", Price = 0.50m },
@@ -214,9 +209,8 @@ public static class SeedHelper
             {
                 Name = "drip coffee",
                 Description = "freshly brewed house blend drip coffee, served hot.",
-                BasePrice = 3.50m,
-                Category = "drinks",
-                HasSizes = true,
+                BasePrice = 3.50m, Category = "drinks", HasSizes = true,
+                SmallPrice = 3.50m, MediumPrice = 4.25m, LargePrice = 5.00m,
                 AddOns = [
                     new() { Label = "oat milk", Price = 0.75m },
                     new() { Label = "almond milk", Price = 0.75m },
@@ -453,6 +447,45 @@ public static class SeedHelper
                 Category = "drink"
             }
         );
+
+        await dataContext.SaveChangesAsync();
+    }
+
+    // Backfills SmallPrice/MediumPrice/LargePrice for sized items that pre-date the migration.
+    private static async Task BackfillSizePrices(DataContext dataContext)
+    {
+        var items = await dataContext.Set<MenuItem>()
+            .Where(x => x.HasSizes && x.SmallPrice == null)
+            .ToListAsync();
+
+        if (!items.Any()) return;
+
+        var knownPrices = new Dictionary<string, (decimal S, decimal M, decimal L)>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["iced latte"]            = (5.50m, 6.25m, 7.00m),
+            ["supernova"]             = (7.95m, 8.70m, 9.45m),
+            ["roaring frappe"]        = (6.20m, 6.95m, 7.70m),
+            ["black & white cold brew"] = (5.15m, 5.90m, 6.65m),
+            ["strawberry limeade"]    = (5.00m, 5.75m, 6.50m),
+            ["shaken lemonade"]       = (5.00m, 5.75m, 6.50m),
+            ["drip coffee"]           = (3.50m, 4.25m, 5.00m),
+        };
+
+        foreach (var item in items)
+        {
+            if (knownPrices.TryGetValue(item.Name, out var p))
+            {
+                item.SmallPrice = p.S;
+                item.MediumPrice = p.M;
+                item.LargePrice = p.L;
+            }
+            else
+            {
+                item.SmallPrice = item.BasePrice;
+                item.MediumPrice = item.BasePrice + 0.75m;
+                item.LargePrice = item.BasePrice + 1.50m;
+            }
+        }
 
         await dataContext.SaveChangesAsync();
     }

@@ -2,6 +2,7 @@ using System.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Selu383.SP26.Api.Features.Auth;
 
 namespace Selu383.SP26.Api.Controllers;
@@ -15,6 +16,61 @@ public class UsersController : ControllerBase
     public UsersController(UserManager<User> userManager)
     {
         this.userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<List<UserDto>>> GetAll()
+    {
+        var users = await userManager.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .OrderBy(u => u.UserName)
+            .ToListAsync();
+
+        var dtos = new List<UserDto>();
+        foreach (var u in users)
+        {
+            var roles = u.UserRoles.Select(ur => ur.Role!.Name!).ToArray();
+            var points = u.LoyaltyPoints;
+            dtos.Add(new UserDto
+            {
+                Id = u.Id,
+                UserName = u.UserName!,
+                Roles = roles,
+                LoyaltyPoints = points,
+                MemberSince = u.MemberSince,
+                Tier = points switch { >= 1000 => "golden paw", >= 500 => "silver paw", _ => "cub" }
+            });
+        }
+        return Ok(dtos);
+    }
+
+    [HttpPut("{id}/loyalty-points")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<UserDto>> UpdateLoyaltyPoints(int id, [FromBody] UpdateLoyaltyPointsDto dto)
+    {
+        var user = await userManager.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null) return NotFound();
+
+        user.LoyaltyPoints = dto.LoyaltyPoints;
+        await userManager.UpdateAsync(user);
+
+        var roles = user.UserRoles.Select(ur => ur.Role!.Name!).ToArray();
+        var points = user.LoyaltyPoints;
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName!,
+            Roles = roles,
+            LoyaltyPoints = points,
+            MemberSince = user.MemberSince,
+            Tier = points switch { >= 1000 => "golden paw", >= 500 => "silver paw", _ => "cub" }
+        });
     }
 
     [HttpPost]
@@ -55,4 +111,9 @@ public class UsersController : ControllerBase
             UserName = newUser.UserName,
         });
     }
+}
+
+public class UpdateLoyaltyPointsDto
+{
+    public int LoyaltyPoints { get; set; }
 }

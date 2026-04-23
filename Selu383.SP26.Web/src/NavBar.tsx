@@ -43,6 +43,7 @@ function NavBar() {
                 h={60}
                 px="xl"
                 justify="space-between"
+                className="glass-nav"
                 style={{ width: '100%', boxSizing: 'border-box' }}
             >
                 {/* Logo */}
@@ -78,6 +79,16 @@ function NavBar() {
                             data-active={isActive('/profile') || undefined}
                         >
                             profile
+                        </UnstyledButton>
+                    )}
+
+                    {user?.roles.includes('Admin') && (
+                        <UnstyledButton
+                            onClick={() => navigate('/admin')}
+                            className="nav-link"
+                            data-active={isActive('/admin') || undefined}
+                        >
+                            admin
                         </UnstyledButton>
                     )}
 
@@ -212,6 +223,7 @@ function NavBar() {
                                     setDrawerOpened(false);
                                     navigate('/cart');
                                 }}
+                                variant="outline"
                                 color="#a5b4fc"
                                 className="font-tiempos-text"
                                 tt="lowercase"

@@ -10,6 +10,9 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
         builder.Property(x => x.Name).IsRequired().HasMaxLength(120);
         builder.Property(x => x.Category).IsRequired().HasMaxLength(60);
         builder.Property(x => x.BasePrice).HasColumnType("decimal(10,2)");
+        builder.Property(x => x.SmallPrice).HasColumnType("decimal(10,2)");
+        builder.Property(x => x.MediumPrice).HasColumnType("decimal(10,2)");
+        builder.Property(x => x.LargePrice).HasColumnType("decimal(10,2)");
     }
 }
 

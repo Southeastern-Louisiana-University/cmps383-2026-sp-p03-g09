@@ -16,13 +16,12 @@ namespace Selu383.SP26.Api.Controllers;
 [ApiController]
 public class OrdersController(DataContext dataContext, UserManager<User> userManager) : ControllerBase
 {
-    private static readonly decimal[] SizeUpcharges = [0m, 0.75m, 1.50m];
-
-    private static decimal GetSizeUpcharge(string? size) => size switch
+    private static decimal GetBaseForSize(MenuItem item, string? size) => size switch
     {
-        "medium" => 0.75m,
-        "large" => 1.50m,
-        _ => 0m
+        "small"  => item.SmallPrice  ?? item.BasePrice,
+        "medium" => item.MediumPrice ?? item.BasePrice + 0.75m,
+        "large"  => item.LargePrice  ?? item.BasePrice + 1.50m,
+        _        => item.BasePrice,
     };
 
     [HttpGet]
@@ -97,9 +96,8 @@ public class OrdersController(DataContext dataContext, UserManager<User> userMan
                 .Where(a => itemDto.SelectedAddOnIds.Contains(a.Id))
                 .ToList();
 
-            var sizeUpcharge = GetSizeUpcharge(itemDto.Size);
             var addOnsTotal = selectedAddOns.Sum(a => a.Price);
-            var unitPrice = menuItem.BasePrice + sizeUpcharge + addOnsTotal;
+            var unitPrice = GetBaseForSize(menuItem, itemDto.Size) + addOnsTotal;
 
             var selectedAddOnsJson = JsonSerializer.Serialize(
                 selectedAddOns.Select(a => new { id = a.Id, label = a.Label, price = a.Price }));
