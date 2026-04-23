@@ -7,6 +7,7 @@ import Stores from './Stores.tsx'
 import Cart from './Cart.tsx'
 import Profile from './Profile.tsx'
 import Rewards from './Rewards.tsx'
+import Admin from './Admin.tsx'
 import NavBar from './NavBar.tsx'
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
@@ -39,6 +40,7 @@ function App() {
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/rewards" element={<Rewards />} />
+                            <Route path="/admin" element={<Admin />} />
                         </Routes>
                     </CartProvider>
                 </AuthProvider>

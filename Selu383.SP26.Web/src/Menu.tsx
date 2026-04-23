@@ -48,11 +48,11 @@ const MENU_PHOTOS: Record<string, string> = {
     'banana foster': bananasFosterImg,
 };
 
-const SIZE_UPCHARGES: Record<string, number> = {
-    small: 0,
-    medium: 0.75,
-    large: 1.5,
-};
+function getSizeBasePrice(item: MenuItemDto, size: 'small' | 'medium' | 'large'): number {
+    if (size === 'small')  return item.smallPrice  ?? item.basePrice;
+    if (size === 'medium') return item.mediumPrice ?? item.basePrice + 0.75;
+    return item.largePrice ?? item.basePrice + 1.5;
+}
 
 const CATEGORY_ORDER = ['drinks', 'sweet crepes', 'savory crepes', 'bagels'];
 
@@ -151,8 +151,7 @@ export default function Menu() {
     };
 
     const computedUnitPrice = selected
-        ? selected.basePrice
-            + (selected.hasSizes ? SIZE_UPCHARGES[size] : 0)
+        ? (selected.hasSizes ? getSizeBasePrice(selected, size) : selected.basePrice)
             + selected.addOns
                 .filter(a => selectedAddOnIds.includes(a.id))
                 .reduce((sum, a) => sum + a.price, 0)
@@ -270,9 +269,9 @@ export default function Menu() {
                                     onChange={(v) => setSize(v as 'small' | 'medium' | 'large')}
                                     color="#a5b4fc"
                                     data={[
-                                        { label: 'small', value: 'small' },
-                                        { label: 'medium (+$0.75)', value: 'medium' },
-                                        { label: 'large (+$1.50)', value: 'large' },
+                                        { label: `small  $${getSizeBasePrice(selected, 'small').toFixed(2)}`, value: 'small' },
+                                        { label: `medium  $${getSizeBasePrice(selected, 'medium').toFixed(2)}`, value: 'medium' },
+                                        { label: `large  $${getSizeBasePrice(selected, 'large').toFixed(2)}`, value: 'large' },
                                     ]}
                                     fullWidth
                                     classNames={{ label: 'font-tiempos-text' }}

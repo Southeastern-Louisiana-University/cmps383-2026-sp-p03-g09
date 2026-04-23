@@ -1,8 +1,10 @@
 # General notes
-- Finish attaching final photos for menu items
-	- Possibly figure out how to store images in backend and allow for menu items to be created by admins, alongside custom photos for user profiles
-- Integrate different tax amounts for different locations (NY tax rate is different than LA's)
-- Admin page where users, loyalty points, menu items, etc can be managed
+- Figure out how to store images in backend and allow for menu items to be created by admins, alongside custom photos for user profiles
+- Integrate different tax amounts for different locations (NY tax rate is different than LA's) [This could also potentially be handled by location services]
+- Disable unrealistic payment methods
+- Implement a library that generates a QR code for orders
+- Admin page where users, loyalty points, menu items, etc can be managed - this is okay to be on web-only
+- Implement on-device location services for ordering
 
 # Done
 - [x] Margins/padding is too thin horizontally on the Navbar buttons — increased to 8px/16px

@@ -82,6 +82,16 @@ function NavBar() {
                         </UnstyledButton>
                     )}
 
+                    {user?.roles.includes('Admin') && (
+                        <UnstyledButton
+                            onClick={() => navigate('/admin')}
+                            className="nav-link"
+                            data-active={isActive('/admin') || undefined}
+                        >
+                            admin
+                        </UnstyledButton>
+                    )}
+
                     {/* Divider */}
                     <Divider orientation="vertical" h={20} style={{ alignSelf: 'center', margin: '0 4px' }} />
 

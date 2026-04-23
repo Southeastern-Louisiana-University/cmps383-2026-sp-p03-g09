@@ -9,6 +9,10 @@ public class MenuItem
     public string Category { get; set; } = string.Empty; // "drinks", "sweet crepes", "savory crepes", "bagels"
     public bool HasSizes { get; set; }
 
+    public decimal? SmallPrice { get; set; }
+    public decimal? MediumPrice { get; set; }
+    public decimal? LargePrice { get; set; }
+
     public virtual ICollection<MenuItemAddOn> AddOns { get; set; } = new List<MenuItemAddOn>();
     public virtual ICollection<MenuItemToggle> Toggles { get; set; } = new List<MenuItemToggle>();
 }

@@ -39,6 +39,9 @@ export type MenuItemDto = {
     basePrice: number;
     category: string; // "drinks" | "sweet crepes" | "savory crepes" | "bagels"
     hasSizes: boolean;
+    smallPrice: number | null;
+    mediumPrice: number | null;
+    largePrice: number | null;
     addOns: MenuItemAddOnDto[];
     toggles: MenuItemToggleDto[];
 };
@@ -93,6 +96,17 @@ export type CreateOrderDto = {
     items: CreateOrderItemDto[];
 };
 
+export type SaveMenuItemDto = {
+    name: string;
+    description: string;
+    basePrice: number;
+    category: string;
+    hasSizes: boolean;
+    smallPrice: number | null;
+    mediumPrice: number | null;
+    largePrice: number | null;
+};
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
     const res = await fetch(url, {
         credentials: 'include',
@@ -140,5 +154,28 @@ export const api = {
         getAll: () => request<RewardDto[]>('/api/rewards'),
         redeem: (id: number) =>
             request<UserDto>(`/api/rewards/${id}/redeem`, { method: 'POST' }),
+    },
+    admin: {
+        getUsers: () => request<UserDto[]>('/api/users'),
+        updateLoyaltyPoints: (id: number, points: number) =>
+            request<UserDto>(`/api/users/${id}/loyalty-points`, {
+                method: 'PUT',
+                body: JSON.stringify({ loyaltyPoints: points }),
+            }),
+        createMenuItem: (dto: SaveMenuItemDto) =>
+            request<MenuItemDto>('/api/menu-items', {
+                method: 'POST',
+                body: JSON.stringify(dto),
+            }),
+        updateMenuItem: (id: number, dto: SaveMenuItemDto) =>
+            request<MenuItemDto>(`/api/menu-items/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(dto),
+            }),
+        deleteMenuItem: (id: number) =>
+            fetch(`/api/menu-items/${id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            }),
     },
 };

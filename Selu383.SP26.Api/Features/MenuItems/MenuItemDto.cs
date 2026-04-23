@@ -8,6 +8,9 @@ public class MenuItemDto
     public decimal BasePrice { get; set; }
     public string Category { get; set; } = string.Empty;
     public bool HasSizes { get; set; }
+    public decimal? SmallPrice { get; set; }
+    public decimal? MediumPrice { get; set; }
+    public decimal? LargePrice { get; set; }
     public List<MenuItemAddOnDto> AddOns { get; set; } = new();
     public List<MenuItemToggleDto> Toggles { get; set; } = new();
 }
