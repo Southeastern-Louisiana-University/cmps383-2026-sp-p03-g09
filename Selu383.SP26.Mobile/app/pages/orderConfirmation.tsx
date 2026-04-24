@@ -113,6 +113,7 @@ function DetailRow({ label, value, accent, palette, isLast = false }: {
       <Text style={{
         color: accent ? palette.accent : palette.text,
         fontSize: 13,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 0.3,
         opacity: accent ? 1 : 0.85,
       }}>
@@ -253,13 +254,14 @@ const createStyles = (palette: ThemePalette) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + "40",
     },
-    logo: { color: palette.accent, fontSize: 14, letterSpacing: 1 },
+    logo: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1 },
 
     scroll: { paddingHorizontal: 32, paddingTop: 120, paddingBottom: 64 },
 
     headline: {
       color: palette.text,
       fontSize: 36,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       marginBottom: 10,
       textAlign: "center",
@@ -267,6 +269,7 @@ const createStyles = (palette: ThemePalette) =>
     subline: {
       color: palette.text,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.3,
       opacity: 0.5,
       lineHeight: 20,
@@ -287,6 +290,7 @@ const createStyles = (palette: ThemePalette) =>
     itemsHeading: {
       color: palette.text,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 2.5,
       textTransform: "uppercase",
       opacity: 0.4,
@@ -303,11 +307,12 @@ const createStyles = (palette: ThemePalette) =>
     itemName: {
       color: palette.text,
       fontSize: 14,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.3,
       marginBottom: 2,
     },
-    itemMeta: { color: palette.accent, fontSize: 11, opacity: 0.6, letterSpacing: 0.3 },
-    itemPrice: { color: palette.text, fontSize: 13, opacity: 0.75, letterSpacing: 0.3 },
+    itemMeta: { color: palette.accent, fontSize: 11, fontFamily: 'Tiempos-Regular', opacity: 0.6, letterSpacing: 0.3 },
+    itemPrice: { color: palette.text, fontSize: 13, fontFamily: 'Tiempos-Regular', opacity: 0.75, letterSpacing: 0.3 },
 
     summaryCard: {
       backgroundColor: palette.surface,
@@ -320,16 +325,16 @@ const createStyles = (palette: ThemePalette) =>
       gap: 10,
     },
     summaryRow: { flexDirection: "row", justifyContent: "space-between" },
-    summaryLabel: { color: palette.text, fontSize: 13, opacity: 0.5, letterSpacing: 0.3 },
-    summaryValue: { color: palette.text, fontSize: 13, opacity: 0.5, letterSpacing: 0.3 },
+    summaryLabel: { color: palette.text, fontSize: 13, fontFamily: 'Tiempos-Regular', opacity: 0.5, letterSpacing: 0.3 },
+    summaryValue: { color: palette.text, fontSize: 13, fontFamily: 'Tiempos-Regular', opacity: 0.5, letterSpacing: 0.3 },
     summaryTotalRow: {
       borderTopWidth: 1,
       borderTopColor: palette.subtle + "40",
       paddingTop: 10,
       marginTop: 2,
     },
-    summaryTotalLabel: { color: palette.text, fontSize: 15, letterSpacing: 0.5 },
-    summaryTotalValue: { color: palette.accent, fontSize: 15, letterSpacing: 0.5 },
+    summaryTotalLabel: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
+    summaryTotalValue: { color: palette.accent, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
 
     menuBtn: {
       borderWidth: 1,
@@ -343,6 +348,7 @@ const createStyles = (palette: ThemePalette) =>
     menuBtnText: {
       color: palette.text,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       opacity: 0.6,
     },
@@ -350,6 +356,7 @@ const createStyles = (palette: ThemePalette) =>
     footer: {
       color: palette.accent,
       fontSize: 15,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       textAlign: "center",
       lineHeight: 20,

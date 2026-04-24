@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme, ThemePalette } from "@/app/theme-context";
-import { globalBag, bagListeners, BagItem } from "./menu"; // adjust path if needed
+import { globalBag, bagListeners, BagItem } from "./menu";
 
 export default function BagScreen() {
   const { palette, theme } = useTheme();
@@ -213,7 +213,7 @@ const createStyles = (palette: ThemePalette) =>
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    backBtnText: { color: palette.text, fontFamily: 'Tiempos-Regular', fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
     scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
 
     headline: {
@@ -239,7 +239,7 @@ const createStyles = (palette: ThemePalette) =>
     },
     itemCardTop: { flexDirection: "row", justifyContent: "space-between", marginBottom: 12 },
     itemName: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, marginBottom: 4 },
-    itemMeta: { color: palette.accent, fontSize: 11, opacity: 0.65, letterSpacing: 0.3, marginTop: 2 },
+    itemMeta: { color: palette.accent, fontSize: 11, fontFamily: 'Tiempos-Regular', opacity: 0.65, letterSpacing: 0.3, marginTop: 2 },
     itemTotal: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
 
     itemCardBottom: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
@@ -249,7 +249,7 @@ const createStyles = (palette: ThemePalette) =>
       borderWidth: 1, borderColor: palette.accent,
       alignItems: "center", justifyContent: "center",
     },
-    qtyBtnText: { color: palette.accent, fontSize: 16, lineHeight: 20 },
+    qtyBtnText: { color: palette.accent, fontFamily: 'Tiempos-Regular', fontSize: 16, lineHeight: 20 },
     qtyNum: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', minWidth: 18, textAlign: "center" },
 
     removeBtn: { flexDirection: "row", alignItems: "center", gap: 5, opacity: 0.6 },
@@ -266,13 +266,14 @@ const createStyles = (palette: ThemePalette) =>
       gap: 10,
     },
     summaryRow: { flexDirection: "row", justifyContent: "space-between" },
-    summaryLabel: { color: palette.text, fontSize: 13, opacity: 0.6, letterSpacing: 0.3 },
-    summaryValue: { color: palette.text, fontSize: 13, opacity: 0.6, letterSpacing: 0.3 },
+    summaryLabel: { color: palette.text, fontSize: 13, fontFamily: 'Tiempos-Regular', opacity: 0.6, letterSpacing: 0.3 },
+    summaryValue: { color: palette.text, fontSize: 13, fontFamily: 'Tiempos-Regular', opacity: 0.6, letterSpacing: 0.3 },
     summaryTotal: {
       borderTopWidth: 1,
       borderTopColor: palette.subtle + "40",
       paddingTop: 10,
       marginTop: 2,
+      fontFamily: 'Tiempos-Regular',
     },
     summaryTotalLabel: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
     summaryTotalValue: { color: palette.accent, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },

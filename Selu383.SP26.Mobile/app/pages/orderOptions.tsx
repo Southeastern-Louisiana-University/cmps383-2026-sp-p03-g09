@@ -69,9 +69,9 @@ function SectionHeader({ number, label, palette }: { number: string; label: stri
         alignItems: "center", justifyContent: "center",
         backgroundColor: palette.accent + "18",
       }}>
-        <Text style={{ color: palette.accent, fontSize: 10, letterSpacing: 0.5 }}>{number}</Text>
+        <Text style={{ color: palette.accent, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 }}>{number}</Text>
       </View>
-      <Text style={{ color: palette.text, fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", opacity: 0.6 }}>
+      <Text style={{ color: palette.text, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 2.5, textTransform: "uppercase", opacity: 0.6 }}>
         {label}
       </Text>
     </View>
@@ -253,7 +253,7 @@ const createStyles = (palette: ThemePalette) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + "40",
     },
-    logo: { color: palette.accent, fontSize: 14, letterSpacing: 1 },
+    logo: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1 },
     backBtn: {
       flexDirection: "row",
       alignItems: "center",
@@ -264,12 +264,13 @@ const createStyles = (palette: ThemePalette) =>
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    backBtnText: { color: palette.text, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5, opacity: 0.8 },
     scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
 
     headline: {
       color: palette.text,
       fontSize: 42,
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 50,
       letterSpacing: 0.5,
       marginBottom: 8,
@@ -277,6 +278,7 @@ const createStyles = (palette: ThemePalette) =>
     subline: {
       color: palette.text,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       opacity: 0.6,
       lineHeight: 20,
@@ -301,9 +303,9 @@ const createStyles = (palette: ThemePalette) =>
       borderColor: palette.accent,
       backgroundColor: palette.accent + "12",
     },
-    optionLabel: { color: palette.text, fontSize: 14, letterSpacing: 0.3, marginBottom: 2, opacity: 0.6 },
+    optionLabel: { color: palette.text, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, marginBottom: 2, opacity: 0.6 },
     optionLabelActive: { opacity: 1 },
-    optionSub: { color: palette.accent, fontSize: 11, letterSpacing: 0.3, opacity: 0.55 },
+    optionSub: { color: palette.accent, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, opacity: 0.55 },
 
     // order type
     chipRow: { flexDirection: "row", gap: 10 },
@@ -318,7 +320,7 @@ const createStyles = (palette: ThemePalette) =>
       backgroundColor: palette.surface,
     },
     iconChipActive: { borderColor: palette.accent, backgroundColor: palette.accent + "12" },
-    iconChipText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.5 },
+    iconChipText: { color: palette.text, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5, opacity: 0.5 },
     iconChipTextActive: { color: palette.accent, opacity: 1 },
 
     // time
@@ -332,9 +334,9 @@ const createStyles = (palette: ThemePalette) =>
       backgroundColor: palette.surface,
     },
     timeChipActive: { borderColor: palette.accent, backgroundColor: palette.accent + "18" },
-    timeChipText: { color: palette.text, fontSize: 12, letterSpacing: 0.5, opacity: 0.5 },
+    timeChipText: { color: palette.text, fontSize: 12, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5, opacity: 0.5 },
     timeChipTextActive: { color: palette.accent, opacity: 1 },
-    closedText: { color: palette.text, fontSize: 13, opacity: 0.5, letterSpacing: 0.3, lineHeight: 22 },
+    closedText: { color: palette.text, fontSize: 13, fontFamily: 'Tiempos-Regular', opacity: 0.5, letterSpacing: 0.3, lineHeight: 22 },
 
     // payment
     paymentGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
@@ -348,7 +350,7 @@ const createStyles = (palette: ThemePalette) =>
       backgroundColor: palette.surface,
     },
     paymentCardActive: { borderColor: palette.accent, backgroundColor: palette.accent + "12" },
-    paymentLabel: { color: palette.text, fontSize: 12, letterSpacing: 0.3, opacity: 0.5 },
+    paymentLabel: { color: palette.text, fontSize: 12, fontFamily: 'Tiempos-Regular', letterSpacing: 0.3, opacity: 0.5 },
     paymentLabelActive: { color: palette.accent, opacity: 1 },
     paymentCheck: {
       position: "absolute",
@@ -372,11 +374,12 @@ const createStyles = (palette: ThemePalette) =>
       backgroundColor: palette.accent + "18",
       marginBottom: 8,
     },
-    submitBtnText: { color: palette.accent, fontSize: 14, letterSpacing: 1.5, },
+    submitBtnText: { color: palette.accent, fontSize: 14, fontFamily: 'Tiempos-Regular', letterSpacing: 1.5, },
 
     footer: {
       color: palette.accent,
       fontSize: 15,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       textAlign: "center",
       lineHeight: 20,

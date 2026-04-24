@@ -1,9 +1,10 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, StatusBar, ScrollView } from 'react-native';
 import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/app/theme-context';
 import { apiClient } from '@/api/client';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen() {
   const { palette, theme, setTheme } = useTheme();
@@ -14,6 +15,7 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const passwordRef = useRef<TextInput | null>(null);
+  const { login } = useAuth();
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -22,7 +24,7 @@ export default function LoginScreen() {
     }
     try {
       setSubmitting(true);
-      await apiClient.auth.login({ userName: email, password });
+      await login(email, password);
       router.replace('/');
     } catch (e: any) {
       Alert.alert('login failed', e.message ?? 'invalid username or password');
@@ -52,6 +54,7 @@ export default function LoginScreen() {
             </View>
 
       {/*login form*/}
+    <ScrollView>
       <View style={styles.content}>
 
         <Text style={styles.headline}>
@@ -115,13 +118,13 @@ export default function LoginScreen() {
           </View>
         </View>
 
-        {/* forgot */}
+        {/* forgot 
         <TouchableOpacity style={styles.forgotRow}>
           <Text 
             style={styles.forgotText} 
             onPress={() => router.push('/pages/forgotpass')}
           >forgot your password?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* sign in button */}
         <TouchableOpacity
@@ -141,6 +144,7 @@ export default function LoginScreen() {
           new orleans · hammond · new york
         </Text>
       </View>
+      </ScrollView>
     </View>
   );
 }
@@ -185,7 +189,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    backBtnText: { color: palette.text, fontFamily: 'Tiempos-Regular', fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
     scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
     content: {
       flex: 1,
@@ -206,6 +210,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       fontSize: 13,
       letterSpacing: 0.5,
       opacity: 0.75,
+      fontFamily: 'Tiempos-Regular',
       marginBottom: 48,
     },
 
@@ -219,6 +224,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       color: palette.text,
       opacity: 0.6,
       marginBottom: 8,
+      fontFamily: 'Tiempos-Regular',
     },
     inputRow: {
       flexDirection: 'row',
@@ -230,10 +236,12 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       borderRadius: 10,
       paddingHorizontal: 14,
       height: 46,
+      fontFamily: 'Tiempos-Regular',
     },
     input: {
       flex: 1,
       color: palette.text,
+      fontFamily: 'Tiempos-Regular',
       fontSize: 14,
       letterSpacing: 0.3,
     },
@@ -245,6 +253,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
     },
     forgotText: {
       color: palette.text,
+      fontFamily: 'Tiempos-Regular',
       fontSize: 11,
       letterSpacing: 0.5,
       opacity: 0.7,
@@ -262,6 +271,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       color: palette.accent,
       fontSize: 14,
       letterSpacing: 1.5,
+      fontFamily: 'Tiempos-Regular',
     },
 
     footer: {
@@ -269,6 +279,7 @@ const createStyles = (palette: ReturnType<typeof useTheme>['palette'], isDark: b
       fontSize: 15,
       letterSpacing: 1.5,
       textAlign: 'center',
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 20,
       paddingTop: 20,
       paddingBottom: 20,

@@ -45,6 +45,7 @@ export default function Stores() {
       <Text style={{
         color: palette.text,
         fontSize: 20,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -53,6 +54,7 @@ export default function Stores() {
       <Text style={{
         color: palette.accent,
         fontSize: 10,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -85,6 +87,7 @@ export default function Stores() {
       <Text style={{
         color: palette.text,
         fontSize: 20,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -93,6 +96,7 @@ export default function Stores() {
       <Text style={{
         color: palette.accent,
         fontSize: 10,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -125,6 +129,7 @@ export default function Stores() {
       <Text style={{
         color: palette.text,
         fontSize: 20,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -133,6 +138,7 @@ export default function Stores() {
       <Text style={{
         color: palette.accent,
         fontSize: 10,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -187,23 +193,25 @@ const createStyles = (palette: ThemePalette) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.subtle + "40",
     },
-    logo: { color: palette.accent, fontSize: 14, letterSpacing: 1 },
+    logo: { color: palette.accent, fontFamily: 'Tiempos-Regular', fontSize: 14, letterSpacing: 1 },
     topBarRight: { flexDirection: "row", alignItems: "center", gap: 8 },
     backBtn: {
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
+      fontFamily: 'Tiempos-Regular',
       borderWidth: 1,
       borderColor: palette.subtle,
       borderRadius: 20,
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    backBtnText: { color: palette.text, fontFamily: 'Tiempos-Regular', fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
     scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
     headline: {
       color: palette.text,
       fontSize: 42,
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 50,
       letterSpacing: 0.5,
       marginBottom: 8,
@@ -211,6 +219,7 @@ const createStyles = (palette: ThemePalette) =>
     subline: {
       color: palette.subtle,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       opacity: 0.75,
       marginBottom: 40,
@@ -224,6 +233,7 @@ const createStyles = (palette: ThemePalette) =>
       borderRadius: 10,
       paddingHorizontal: 14,
       fontSize: 14,
+      fontFamily: 'Tiempos-Regular',
       color: palette.text,
       letterSpacing: 0.3,
     },
@@ -232,6 +242,7 @@ const createStyles = (palette: ThemePalette) =>
     footer: {
       color: palette.subtle,
       fontSize: 11,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       textAlign: "center",
       lineHeight: 20,

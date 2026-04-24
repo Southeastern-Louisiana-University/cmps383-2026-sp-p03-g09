@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme, ThemeName } from '@/app/theme-context';
 import { useRouter } from 'expo-router';
 
-// ─── sub-components ──────────────────────────────────────────────────────────
+// sub-components 
 
 function SectionLabel({ text, palette }: { text: string; palette: any }) {
   return (
@@ -22,6 +22,7 @@ function SectionLabel({ text, palette }: { text: string; palette: any }) {
       style={{
         color: palette.accent,
         fontSize: 10,
+        fontFamily: 'Tiempos-Regular',
         letterSpacing: 3,
         textTransform: 'uppercase',
         marginBottom: 12,
@@ -70,7 +71,7 @@ function SettingRow({
       <View style={{ flex: 1 }}>
         <Text style={{ color, fontSize: 13, fontFamily: 'Tiempos-Regular', letterSpacing: 0.4 }}>{label}</Text>
         {sublabel ? (
-          <Text style={{ color: palette.accent, fontSize: 10, letterSpacing: 1, opacity: 0.55, marginTop: 2 }}>
+          <Text style={{ color: palette.accent, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 1, opacity: 0.55, marginTop: 2 }}>
             {sublabel}
           </Text>
         ) : null}
@@ -92,8 +93,8 @@ export default function SettingsScreen() {
   const router = useRouter();
 
   // account fields (pre-filled mock)
-  const [displayName, setDisplayName] = useState('Sophia');
-  const [email, setEmail] = useState('sophia@example.com');
+  const [displayName, setDisplayName] = useState('bob');
+  const [email, setEmail] = useState('bob@example.com');
   const [editing, setEditing] = useState(false);
 
   // notification toggles
@@ -389,7 +390,7 @@ const createStyles = (palette: any) =>
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    topBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    topBtnText: { color: palette.text, fontFamily: 'Tiempos-Regular', fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
 
     scroll: { paddingHorizontal: 32, paddingTop: 116, paddingBottom: 64 },
 
@@ -403,6 +404,7 @@ const createStyles = (palette: any) =>
     subline: {
       color: palette.accent,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       opacity: 0.6,
     },
@@ -428,6 +430,7 @@ const createStyles = (palette: any) =>
     themeChipText: {
       color: palette.accent,
       fontSize: 11,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       opacity: 0.75,
     },
@@ -456,6 +459,7 @@ const createStyles = (palette: any) =>
     fieldLabel: {
       color: palette.accent,
       fontSize: 9,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 2,
       textTransform: 'uppercase',
       opacity: 0.6,
@@ -489,7 +493,7 @@ const createStyles = (palette: any) =>
       borderColor: palette.accent + '66',
       borderRadius: 20,
     },
-    editBtnText: { color: palette.accent, fontSize: 11, letterSpacing: 1, opacity: 0.8 },
+    editBtnText: { color: palette.accent, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 1, opacity: 0.8 },
     editBtnRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
     saveBtn: {
       flex: 1,
@@ -500,7 +504,7 @@ const createStyles = (palette: any) =>
       borderColor: palette.accent,
       backgroundColor: palette.accent + '18',
     },
-    saveBtnText: { color: palette.accent, fontSize: 12, letterSpacing: 1.5 },
+    saveBtnText: { color: palette.accent, fontFamily: 'Tiempos-Regular', fontSize: 12, letterSpacing: 1.5 },
     cancelBtn: {
       paddingHorizontal: 18,
       alignItems: 'center',
@@ -509,12 +513,13 @@ const createStyles = (palette: any) =>
       borderWidth: 1,
       borderColor: palette.subtle + '55',
     },
-    cancelBtnText: { color: palette.text, fontSize: 12, letterSpacing: 1, opacity: 0.6 },
+    cancelBtnText: { color: palette.text, fontFamily: 'Tiempos-Regular', fontSize: 12, letterSpacing: 1, opacity: 0.6 },
 
     kaomoji: {
       color: palette.accent,
       fontSize: 12,
       letterSpacing: 1,
+      fontFamily: 'Tiempos-Regular',
       opacity: 0.5,
       textAlign: 'center',
       marginTop: 40,
