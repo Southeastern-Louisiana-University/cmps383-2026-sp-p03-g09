@@ -128,6 +128,7 @@ public class MenuItemsController(DataContext dataContext) : ControllerBase
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (item == null) return NotFound();
+        if (file == null || file.Length == 0) return BadRequest("A file is required.");
 
         var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
