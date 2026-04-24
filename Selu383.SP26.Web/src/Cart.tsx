@@ -18,7 +18,7 @@ import { TimeInput } from '@mantine/dates';
 import { IconCheck, IconShoppingBagX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Cards, { Focused } from 'react-credit-cards-2';
+import Cards, { type Focused } from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { api, type LocationDto, type OrderDto } from './api';
 import { useCart } from './CartContext';
