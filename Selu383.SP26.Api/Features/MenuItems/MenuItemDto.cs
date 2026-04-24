@@ -11,6 +11,8 @@ public class MenuItemDto
     public decimal? SmallPrice { get; set; }
     public decimal? MediumPrice { get; set; }
     public decimal? LargePrice { get; set; }
+    public string? ImageUrl { get; set; }
+    public bool IsFeatured { get; set; }
     public List<MenuItemAddOnDto> AddOns { get; set; } = new();
     public List<MenuItemToggleDto> Toggles { get; set; } = new();
 }

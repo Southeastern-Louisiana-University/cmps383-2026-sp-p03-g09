@@ -12,11 +12,17 @@ namespace Selu383.SP26.Api.Controllers;
 public class MenuItemsController(DataContext dataContext) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<MenuItemDto>>> GetAll()
+    public async Task<ActionResult<List<MenuItemDto>>> GetAll([FromQuery] bool? featured = null)
     {
-        var items = await dataContext.Set<MenuItem>()
+        var query = dataContext.Set<MenuItem>()
             .Include(x => x.AddOns)
             .Include(x => x.Toggles)
+            .AsQueryable();
+
+        if (featured.HasValue)
+            query = query.Where(x => x.IsFeatured == featured.Value);
+
+        var items = await query
             .OrderBy(x => x.Category)
             .ThenBy(x => x.Name)
             .ToListAsync();
@@ -96,6 +102,52 @@ public class MenuItemsController(DataContext dataContext) : ControllerBase
         return Ok();
     }
 
+    [HttpPut("{id}/featured")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<MenuItemDto>> SetFeatured(int id, SetFeaturedDto dto)
+    {
+        var item = await dataContext.Set<MenuItem>()
+            .Include(x => x.AddOns)
+            .Include(x => x.Toggles)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (item == null) return NotFound();
+
+        item.IsFeatured = dto.IsFeatured;
+        await dataContext.SaveChangesAsync();
+        return Ok(ToDto(item));
+    }
+
+    [HttpPost("{id}/image")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<MenuItemDto>> UploadImage(int id, IFormFile file)
+    {
+        var item = await dataContext.Set<MenuItem>()
+            .Include(x => x.AddOns)
+            .Include(x => x.Toggles)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (item == null) return NotFound();
+
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+        if (!allowed.Contains(ext)) return BadRequest("Only jpg, png, or webp images are allowed.");
+
+        var imagesDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "menu");
+        Directory.CreateDirectory(imagesDir);
+
+        var filename = $"{id}{ext}";
+        var filePath = Path.Combine(imagesDir, filename);
+        await using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        item.ImageUrl = $"/images/menu/{filename}";
+        await dataContext.SaveChangesAsync();
+        return Ok(ToDto(item));
+    }
+
     private static MenuItemDto ToDto(MenuItem item) => new()
     {
         Id = item.Id,
@@ -107,6 +159,8 @@ public class MenuItemsController(DataContext dataContext) : ControllerBase
         SmallPrice = item.SmallPrice,
         MediumPrice = item.MediumPrice,
         LargePrice = item.LargePrice,
+        ImageUrl = item.ImageUrl,
+        IsFeatured = item.IsFeatured,
         AddOns = item.AddOns.Select(a => new MenuItemAddOnDto
         {
             Id = a.Id,
@@ -120,6 +174,11 @@ public class MenuItemsController(DataContext dataContext) : ControllerBase
             DefaultOn = t.DefaultOn
         }).ToList()
     };
+}
+
+public class SetFeaturedDto
+{
+    public bool IsFeatured { get; set; }
 }
 
 public class SaveMenuItemDto

@@ -1,0 +1,1 @@
+tax rate updates for new locations ONLY if it's in the format "City, ST 00000"

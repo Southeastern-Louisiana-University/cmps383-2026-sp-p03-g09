@@ -11,15 +11,30 @@ import {
     SegmentedControl,
     Badge,
     Alert,
+    TextInput,
 } from '@mantine/core';
+import { QRCodeSVG } from 'qrcode.react';
 import { TimeInput } from '@mantine/dates';
 import { IconCheck, IconShoppingBagX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cards, { Focused } from 'react-credit-cards-2';
+import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { api, type LocationDto, type OrderDto } from './api';
 import { useCart } from './CartContext';
 
-const TAX_RATE = 0.0975;
+const TAX_RATES: Record<string, number> = {
+    LA: 0.0945,
+    NY: 0.08875,
+};
+const DEFAULT_TAX_RATE = 0.0945;
+
+function getTaxRate(locations: LocationDto[], locationId: string | null): number {
+    const loc = locations.find(l => String(l.id) === locationId);
+    if (!loc) return DEFAULT_TAX_RATE;
+    const match = loc.address.match(/,\s*([A-Z]{2})\s+\d/);
+    return match ? (TAX_RATES[match[1]] ?? DEFAULT_TAX_RATE) : DEFAULT_TAX_RATE;
+}
 
 const ORDER_TYPES = [
     { label: 'dine in', value: 'dine_in' },
@@ -27,14 +42,6 @@ const ORDER_TYPES = [
     { label: 'drive thru', value: 'drive_thru' },
 ];
 
-const PAYMENT_METHODS = [
-    { label: 'card', value: 'card' },
-    { label: 'cash', value: 'cash' },
-    { label: 'apple pay', value: 'apple_pay' },
-    { label: 'google pay', value: 'google_pay' },
-];
-
-// returns "HH:MM" string 30 min from now, rounded up to next 15
 function defaultPickupTime(): string {
     const d = new Date();
     d.setMinutes(d.getMinutes() + 30, 0, 0);
@@ -43,12 +50,49 @@ function defaultPickupTime(): string {
     return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-// converts "HH:MM" to today's ISO datetime string
 function timeStrToISO(hhmm: string): string {
     const [h, m] = hhmm.split(':').map(Number);
     const d = new Date();
     d.setHours(h, m, 0, 0);
     return d.toISOString();
+}
+
+function luhn(num: string): boolean {
+    let sum = 0;
+    let alt = false;
+    for (let i = num.length - 1; i >= 0; i--) {
+        let n = parseInt(num[i], 10);
+        if (alt) { n *= 2; if (n > 9) n -= 9; }
+        sum += n;
+        alt = !alt;
+    }
+    return sum % 10 === 0;
+}
+
+function validateCard(number: string, name: string, expiry: string, cvc: string) {
+    const errors: Record<string, string> = {};
+    const digits = number.replace(/\s/g, '');
+    if (digits.length !== 16 || !luhn(digits)) errors.number = 'invalid card number';
+    if (!name.trim()) errors.name = 'name is required';
+    const [mm, yy] = expiry.split('/');
+    if (!mm || !yy || mm.length !== 2 || yy.length !== 2) {
+        errors.expiry = 'use MM/YY format';
+    } else {
+        const now = new Date();
+        const exp = new Date(2000 + parseInt(yy), parseInt(mm) - 1);
+        if (exp < new Date(now.getFullYear(), now.getMonth())) errors.expiry = 'card is expired';
+    }
+    if (cvc.length < 3) errors.cvc = 'invalid cvv';
+    return errors;
+}
+
+function formatCardNumber(val: string) {
+    return val.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+}
+
+function formatExpiry(val: string) {
+    const digits = val.replace(/\D/g, '').slice(0, 4);
+    return digits.length >= 3 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
 }
 
 export default function Cart() {
@@ -58,8 +102,15 @@ export default function Cart() {
     const [locations, setLocations] = useState<LocationDto[]>([]);
     const [locationId, setLocationId] = useState<string | null>(null);
     const [orderType, setOrderType] = useState('carry_out');
-    const [paymentMethod, setPaymentMethod] = useState('card');
     const [pickupTime, setPickupTime] = useState<string>(defaultPickupTime);
+
+    const [cardNumber, setCardNumber] = useState('');
+    const [cardName, setCardName] = useState('');
+    const [cardExpiry, setCardExpiry] = useState('');
+    const [cardCvc, setCardCvc] = useState('');
+    const [cardFocus, setCardFocus] = useState<Focused>('');
+    const [cardErrors, setCardErrors] = useState<Record<string, string>>({});
+
     const [submitting, setSubmitting] = useState(false);
     const [confirmedOrder, setConfirmedOrder] = useState<OrderDto | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -71,14 +122,19 @@ export default function Cart() {
         });
     }, []);
 
-    const tax = total * TAX_RATE;
+    const taxRate = getTaxRate(locations, locationId);
+    const tax = total * taxRate;
     const grandTotal = total + tax;
 
     const handlePlaceOrder = async () => {
-        if (!locationId) {
-            setError('Please select a location.');
+        if (!locationId) { setError('please select a location.'); return; }
+
+        const errors = validateCard(cardNumber, cardName, cardExpiry, cardCvc);
+        if (Object.keys(errors).length > 0) {
+            setCardErrors(errors);
             return;
         }
+        setCardErrors({});
         setError(null);
         setSubmitting(true);
         try {
@@ -86,7 +142,7 @@ export default function Cart() {
                 locationId: Number(locationId),
                 orderType,
                 pickupTime: timeStrToISO(pickupTime),
-                paymentMethod,
+                paymentMethod: 'card',
                 items: items.map(i => ({
                     menuItemId: i.menuItemId,
                     size: i.size,
@@ -98,7 +154,7 @@ export default function Cart() {
             clearCart();
             setConfirmedOrder(order);
         } catch {
-            setError('something went wrong placing your order. please try again');
+            setError('something went wrong placing your order. please try again.');
         } finally {
             setSubmitting(false);
         }
@@ -156,6 +212,21 @@ export default function Cart() {
                                 </Group>
                             ))}
                         </Stack>
+
+                        <Card withBorder radius="md" padding="lg" style={{ width: '100%' }}>
+                            <Stack align="center" gap="xs">
+                                <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>
+                                    show this at pickup
+                                </Text>
+                                <QRCodeSVG
+                                    value={`order:${confirmedOrder.id}`}
+                                    size={160}
+                                    bgColor="transparent"
+                                    fgColor="currentColor"
+                                />
+                                <Text size="10pt" c="dimmed">order #{confirmedOrder.id}</Text>
+                            </Stack>
+                        </Card>
 
                         <Button
                             onClick={() => navigate('/menu')}
@@ -233,38 +304,11 @@ export default function Cart() {
                                     </Stack>
 
                                     <Group gap="xs" align="center">
-                                        <Button
-                                            size="xs"
-                                            variant="subtle"
-                                            color="gray"
-                                            onClick={() => updateQty(item.cartItemId, item.qty - 1)}
-                                            px={6}
-                                        >
-                                            −
-                                        </Button>
-                                        <Text size="13pt" fw={500} style={{ minWidth: 20, textAlign: 'center' }}>
-                                            {item.qty}
-                                        </Text>
-                                        <Button
-                                            size="xs"
-                                            variant="subtle"
-                                            color="gray"
-                                            onClick={() => updateQty(item.cartItemId, item.qty + 1)}
-                                            px={6}
-                                        >
-                                            +
-                                        </Button>
-                                        <Text size="13pt" fw={600} style={{ minWidth: 56, textAlign: 'right' }}>
-                                            ${(item.unitPrice * item.qty).toFixed(2)}
-                                        </Text>
-                                        <Button
-                                            size="xs"
-                                            variant="subtle"
-                                            color="red"
-                                            onClick={() => removeItem(item.cartItemId)}
-                                        >
-                                            ×
-                                        </Button>
+                                        <Button size="xs" variant="subtle" color="gray" onClick={() => updateQty(item.cartItemId, item.qty - 1)} px={6}>−</Button>
+                                        <Text size="13pt" fw={500} style={{ minWidth: 20, textAlign: 'center' }}>{item.qty}</Text>
+                                        <Button size="xs" variant="subtle" color="gray" onClick={() => updateQty(item.cartItemId, item.qty + 1)} px={6}>+</Button>
+                                        <Text size="13pt" fw={600} style={{ minWidth: 56, textAlign: 'right' }}>${(item.unitPrice * item.qty).toFixed(2)}</Text>
+                                        <Button size="xs" variant="subtle" color="red" onClick={() => removeItem(item.cartItemId)}>×</Button>
                                     </Group>
                                 </Group>
                             </Card>
@@ -279,7 +323,7 @@ export default function Cart() {
                                 <Text size="12pt">${total.toFixed(2)}</Text>
                             </Group>
                             <Group justify="space-between">
-                                <Text size="12pt" c="dimmed">tax (9.75%)</Text>
+                                <Text size="12pt" c="dimmed">tax ({(taxRate * 100).toFixed(3).replace(/\.?0+$/, '')}%)</Text>
                                 <Text size="12pt">${tax.toFixed(2)}</Text>
                             </Group>
                             <Divider />
@@ -300,9 +344,7 @@ export default function Cart() {
 
                         {/* location */}
                         <Stack gap={6}>
-                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
-                                location
-                            </Text>
+                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">location</Text>
                             <Select
                                 value={locationId}
                                 onChange={setLocationId}
@@ -314,9 +356,7 @@ export default function Cart() {
 
                         {/* order type */}
                         <Stack gap={6}>
-                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
-                                order type
-                            </Text>
+                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">order type</Text>
                             <SegmentedControl
                                 value={orderType}
                                 onChange={setOrderType}
@@ -329,9 +369,7 @@ export default function Cart() {
 
                         {/* pickup time */}
                         <Stack gap={6}>
-                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
-                                pickup time
-                            </Text>
+                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">pickup time</Text>
                             <TimeInput
                                 value={pickupTime}
                                 onChange={e => setPickupTime(e.currentTarget.value)}
@@ -339,19 +377,61 @@ export default function Cart() {
                             />
                         </Stack>
 
-                        {/* payment method */}
-                        <Stack gap={6}>
-                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
-                                payment
-                            </Text>
-                            <SegmentedControl
-                                value={paymentMethod}
-                                onChange={setPaymentMethod}
-                                color="#a5b4fc"
-                                data={PAYMENT_METHODS}
-                                fullWidth
-                                classNames={{ label: 'font-tiempos-text' }}
+                        {/* card payment */}
+                        <Stack gap="sm">
+                            <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">payment</Text>
+                            <Cards
+                                number={cardNumber}
+                                expiry={cardExpiry}
+                                cvc={cardCvc}
+                                name={cardName || 'full name'}
+                                focused={cardFocus}
                             />
+                            <TextInput
+                                label="card number"
+                                value={cardNumber}
+                                onChange={e => setCardNumber(formatCardNumber(e.target.value))}
+                                onFocus={() => setCardFocus('number')}
+                                onBlur={() => setCardFocus('')}
+                                placeholder="1234 5678 9012 3456"
+                                error={cardErrors.number}
+                                maxLength={19}
+                                inputMode="numeric"
+                            />
+                            <TextInput
+                                label="cardholder name"
+                                value={cardName}
+                                onChange={e => setCardName(e.target.value)}
+                                onFocus={() => setCardFocus('name')}
+                                onBlur={() => setCardFocus('')}
+                                placeholder="full name"
+                                error={cardErrors.name}
+                            />
+                            <Group grow>
+                                <TextInput
+                                    label="expiry"
+                                    value={cardExpiry}
+                                    onChange={e => setCardExpiry(formatExpiry(e.target.value))}
+                                    onFocus={() => setCardFocus('expiry')}
+                                    onBlur={() => setCardFocus('')}
+                                    placeholder="MM/YY"
+                                    error={cardErrors.expiry}
+                                    maxLength={5}
+                                    inputMode="numeric"
+                                />
+                                <TextInput
+                                    label="cvv"
+                                    value={cardCvc}
+                                    onChange={e => setCardCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                    onFocus={() => setCardFocus('cvc')}
+                                    onBlur={() => setCardFocus('')}
+                                    placeholder="123"
+                                    error={cardErrors.cvc}
+                                    maxLength={4}
+                                    type="password"
+                                    inputMode="numeric"
+                                />
+                            </Group>
                         </Stack>
                     </Stack>
 
