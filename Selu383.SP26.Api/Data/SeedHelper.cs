@@ -271,7 +271,7 @@ public static class SeedHelper
             },
             new MenuItem
             {
-                Name = "banana foster",
+                Name = "bananas foster",
                 Description = "bananas with cinnamon in a crepe, topped with a generous drizzle of caramel sauce.",
                 BasePrice = 8.95m,
                 Category = "sweet crepes",

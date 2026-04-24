@@ -13,6 +13,9 @@ public class MenuItem
     public decimal? MediumPrice { get; set; }
     public decimal? LargePrice { get; set; }
 
+    public string? ImageUrl { get; set; }
+    public bool IsFeatured { get; set; }
+
     public virtual ICollection<MenuItemAddOn> AddOns { get; set; } = new List<MenuItemAddOn>();
     public virtual ICollection<MenuItemToggle> Toggles { get; set; } = new List<MenuItemToggle>();
 }

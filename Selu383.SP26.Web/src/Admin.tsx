@@ -17,8 +17,9 @@ import {
     Select,
     Checkbox,
     Divider,
+    FileInput,
 } from '@mantine/core';
-import { IconPencil, IconTrash, IconPlus, IconShield } from '@tabler/icons-react';
+import { IconPencil, IconTrash, IconPlus, IconShield, IconStar, IconStarFilled } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, type UserDto, type MenuItemDto, type SaveMenuItemDto } from './api';
@@ -191,6 +192,7 @@ function MenuItemsTab() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editItem, setEditItem] = useState<MenuItemDto | null>(null);
     const [form, setForm] = useState<SaveMenuItemDto>(BLANK_FORM);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [saving, setSaving] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<MenuItemDto | null>(null);
     const [deleting, setDeleting] = useState(false);
@@ -206,6 +208,7 @@ function MenuItemsTab() {
     const openCreate = () => {
         setEditItem(null);
         setForm(BLANK_FORM);
+        setImageFile(null);
         setError(null);
         setModalOpen(true);
     };
@@ -222,6 +225,7 @@ function MenuItemsTab() {
             mediumPrice: item.mediumPrice,
             largePrice: item.largePrice,
         });
+        setImageFile(null);
         setError(null);
         setModalOpen(true);
     };
@@ -234,13 +238,19 @@ function MenuItemsTab() {
         setSaving(true);
         setError(null);
         try {
-            if (editItem) {
-                const updated = await api.admin.updateMenuItem(editItem.id, form);
-                setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
-            } else {
-                const created = await api.admin.createMenuItem(form);
-                setItems(prev => [...prev, created]);
+            let saved = editItem
+                ? await api.admin.updateMenuItem(editItem.id, form)
+                : await api.admin.createMenuItem(form);
+
+            if (imageFile) {
+                saved = await api.admin.uploadMenuItemImage(saved.id, imageFile);
             }
+
+            setItems(prev =>
+                prev.some(i => i.id === saved.id)
+                    ? prev.map(i => i.id === saved.id ? saved : i)
+                    : [...prev, saved]
+            );
             setModalOpen(false);
         } catch {
             setError('failed to save item');
@@ -301,6 +311,7 @@ function MenuItemsTab() {
                                         <Table.Th>description</Table.Th>
                                         <Table.Th>price</Table.Th>
                                         <Table.Th>sizes</Table.Th>
+                                        <Table.Th>featured</Table.Th>
                                         <Table.Th />
                                     </Table.Tr>
                                 </Table.Thead>
@@ -320,6 +331,20 @@ function MenuItemsTab() {
                                                 <Badge size="xs" variant="dot" color={item.hasSizes ? '#a5b4fc' : 'gray'}>
                                                     {item.hasSizes ? 'yes' : 'no'}
                                                 </Badge>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <ActionIcon
+                                                    size="sm"
+                                                    variant="subtle"
+                                                    color={item.isFeatured ? '#f59e0b' : 'gray'}
+                                                    aria-label="toggle featured"
+                                                    onClick={async () => {
+                                                        const updated = await api.admin.setFeatured(item.id, !item.isFeatured);
+                                                        setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
+                                                    }}
+                                                >
+                                                    {item.isFeatured ? <IconStarFilled size={14} /> : <IconStar size={14} />}
+                                                </ActionIcon>
                                             </Table.Td>
                                             <Table.Td>
                                                 <Group gap={4} justify="flex-end">
@@ -411,6 +436,29 @@ function MenuItemsTab() {
                             min={0} step={0.25} prefix="$" decimalScale={2} fixedDecimalScale
                         />
                     )}
+                    <Divider label="image" labelPosition="left" />
+                    {editItem?.imageUrl && !imageFile && (
+                        <img
+                            src={editItem.imageUrl}
+                            alt={editItem.name}
+                            style={{ width: '100%', borderRadius: 6, objectFit: 'cover', maxHeight: 160 }}
+                        />
+                    )}
+                    {imageFile && (
+                        <img
+                            src={URL.createObjectURL(imageFile)}
+                            alt="preview"
+                            style={{ width: '100%', borderRadius: 6, objectFit: 'cover', maxHeight: 160 }}
+                        />
+                    )}
+                    <FileInput
+                        label={editItem?.imageUrl ? 'replace image' : 'upload image'}
+                        placeholder="choose a jpg, png, or webp file"
+                        accept="image/jpeg,image/png,image/webp"
+                        value={imageFile}
+                        onChange={setImageFile}
+                        clearable
+                    />
                     {error && <Text size="xs" c="red">{error}</Text>}
                     <Divider />
                     <Group justify="flex-end">

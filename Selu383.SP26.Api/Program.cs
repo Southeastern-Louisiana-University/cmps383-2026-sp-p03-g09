@@ -54,6 +54,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app
     .UseRouting()
@@ -63,8 +64,6 @@ app
     {
         x.MapControllers();
     });
-
-app.UseStaticFiles();
 
 if(app.Environment.IsDevelopment())
 {

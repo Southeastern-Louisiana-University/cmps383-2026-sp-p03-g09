@@ -97,7 +97,7 @@ const MENU: { category: string; items: MenuItem[] }[] = [
       { name: 'le s\'mores', desc: 'marshmallow cream and chocolate sauce, topped with graham cracker crumbs', price: '$9.50', basePrice: 9.5, addOns: CREPE_ADDONS },
       { name: 'strawberry fields', desc: 'fresh strawberries, Hershey\'s chocolate drizzle, powdered sugar', price: '$10.00', basePrice: 10.0, addOns: CREPE_ADDONS },
       { name: 'bonjour', desc: 'syrup and cinnamon, finished with powdered sugar', price: '$8.50', basePrice: 8.5, addOns: CREPE_ADDONS },
-      { name: 'banana foster', desc: 'bananas with cinnamon, topped with a generous caramel drizzle', price: '$8.95', basePrice: 8.95, addOns: CREPE_ADDONS },
+      { name: 'bananas foster', desc: 'bananas with cinnamon, topped with a generous caramel drizzle', price: '$8.95', basePrice: 8.95, addOns: CREPE_ADDONS },
     ],
   },
   {

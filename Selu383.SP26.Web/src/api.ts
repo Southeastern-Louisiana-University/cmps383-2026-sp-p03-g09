@@ -42,6 +42,8 @@ export type MenuItemDto = {
     smallPrice: number | null;
     mediumPrice: number | null;
     largePrice: number | null;
+    imageUrl: string | null;
+    isFeatured: boolean;
     addOns: MenuItemAddOnDto[];
     toggles: MenuItemToggleDto[];
 };
@@ -139,6 +141,7 @@ export const api = {
     },
     menuItems: {
         getAll: () => request<MenuItemDto[]>('/api/menu-items'),
+        getFeatured: () => request<MenuItemDto[]>('/api/menu-items?featured=true'),
         getById: (id: number) => request<MenuItemDto>(`/api/menu-items/${id}`),
     },
     orders: {
@@ -177,5 +180,22 @@ export const api = {
                 method: 'DELETE',
                 credentials: 'include',
             }),
+        setFeatured: (id: number, isFeatured: boolean) =>
+            request<MenuItemDto>(`/api/menu-items/${id}/featured`, {
+                method: 'PUT',
+                body: JSON.stringify({ isFeatured }),
+            }),
+        uploadMenuItemImage: (id: number, file: File) => {
+            const form = new FormData();
+            form.append('file', file);
+            return fetch(`/api/menu-items/${id}/image`, {
+                method: 'POST',
+                credentials: 'include',
+                body: form,
+            }).then(async res => {
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+                return res.json() as Promise<MenuItemDto>;
+            });
+        },
     },
 };
