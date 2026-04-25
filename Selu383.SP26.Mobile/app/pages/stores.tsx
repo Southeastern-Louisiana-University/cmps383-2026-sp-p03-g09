@@ -1,14 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
   StyleSheet,
-  Alert,
   ScrollView,
-  Platform,
-  Switch,
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,7 +14,7 @@ import MapView, { Marker, UrlTile, PROVIDER_DEFAULT} from 'react-native-maps';
 
 
 export default function Stores() {
-  const { palette, theme, setTheme } = useTheme();
+  const { palette, theme } = useTheme();
   const isDark = theme === "dark" || theme === "oled";
 
   const styles = createStyles(palette);
