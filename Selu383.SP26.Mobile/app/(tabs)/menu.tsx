@@ -46,12 +46,12 @@ function getSizePrice(item: MenuItemDto, size: string): number {
 
 // bag 
 
-interface BagItem {
+export interface BagItem {
   id: string;
   name: string;
   size?: string;
-  addOnIds: number[];
-  toggleLabels: string[];
+  addOns: { label: string; price: number }[];
+  toggles: string[];
   qty: number;
   total: number;
 }
@@ -128,8 +128,9 @@ export default function MenuScreen() {
       id: `${modalItem.name}-${Date.now()}`,
       name: modalItem.name,
       size: modalItem.hasSizes ? selectedSize : undefined,
-      addOnIds: selectedAddOnIds,
-      toggleLabels: selectedToggleLabels,
+      addOns: modalItem.addOns          // ← store the full add-on objects
+        .filter(a => selectedAddOnIds.includes(a.id)),
+      toggles: selectedToggleLabels,
       qty,
       total: calcTotal(),
     });

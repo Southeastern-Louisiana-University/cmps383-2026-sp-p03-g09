@@ -45,15 +45,12 @@ export default function BagScreen() {
       removeItem(id);
       return;
     }
-    // recalculate total proportionally
     item.total = (item.total / item.qty) * newQty;
     item.qty = newQty;
     setBag([...globalBag]);
   };
 
   const subtotal = bag.reduce((s, item) => s + item.total, 0);
-  const tax = subtotal * 0.0975; // Louisiana tax ~9.75%
-  const grandTotal = subtotal + tax;
 
   const handlePlaceOrder = async () => {
     if (bag.length === 0) {
@@ -62,11 +59,7 @@ export default function BagScreen() {
     }
     try {
       setSubmitting(true);
-      // TODO: hook up your order submission here
-      Alert.alert("thank you! ♡", "all that looks good! just a few more questions ☕");
-      globalBag.splice(0, globalBag.length);
-      setBag([]);
-      router.replace("/pages/orderOptions");
+      router.push("/pages/orderOptions");
     } catch (e: any) {
       Alert.alert("order failed", e?.message || "unable to place order. please try again.");
     } finally {
@@ -149,19 +142,19 @@ export default function BagScreen() {
               </View>
             ))}
 
-            {/* order summary */}
+            {/* order summary — no tax here since location isn't chosen yet */}
             <View style={styles.summaryCard}>
               <View style={styles.summaryRow}>
                 <Text style={styles.summaryLabel}>subtotal</Text>
                 <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
               </View>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>tax (9.75%)</Text>
-                <Text style={styles.summaryValue}>${tax.toFixed(2)}</Text>
+                <Text style={styles.summaryLabel}>tax</Text>
+                <Text style={styles.summaryValue}>calculated at checkout</Text>
               </View>
               <View style={[styles.summaryRow, styles.summaryTotal]}>
-                <Text style={styles.summaryTotalLabel}>total</Text>
-                <Text style={styles.summaryTotalValue}>${grandTotal.toFixed(2)}</Text>
+                <Text style={styles.summaryTotalLabel}>est. total</Text>
+                <Text style={styles.summaryTotalValue}>${subtotal.toFixed(2)}</Text>
               </View>
             </View>
 
@@ -227,7 +220,7 @@ const createStyles = (palette: ThemePalette) =>
 
     emptyState: { alignItems: "center", paddingTop: 48 },
     emptyText: { color: palette.text, fontSize: 14, opacity: 0.4, letterSpacing: 0.5, marginBottom: 12, fontFamily: 'Tiempos-Regular' },
-    emptyLink: { color: palette.accent, fontSize: 13, letterSpacing: 0.5, fontFamily: 'Tiempos-Regular', },
+    emptyLink: { color: palette.accent, fontSize: 13, letterSpacing: 0.5, fontFamily: 'Tiempos-Regular' },
 
     itemCard: {
       backgroundColor: palette.surface,
@@ -253,7 +246,7 @@ const createStyles = (palette: ThemePalette) =>
     qtyNum: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', minWidth: 18, textAlign: "center" },
 
     removeBtn: { flexDirection: "row", alignItems: "center", gap: 5, opacity: 0.6 },
-    removeBtnText: { color: palette.subtle, fontSize: 11, letterSpacing: 0.5, fontFamily: 'Tiempos-Regular',},
+    removeBtnText: { color: palette.subtle, fontSize: 11, letterSpacing: 0.5, fontFamily: 'Tiempos-Regular' },
 
     summaryCard: {
       backgroundColor: palette.surface,
@@ -273,7 +266,6 @@ const createStyles = (palette: ThemePalette) =>
       borderTopColor: palette.subtle + "40",
       paddingTop: 10,
       marginTop: 2,
-      fontFamily: 'Tiempos-Regular',
     },
     summaryTotalLabel: { color: palette.text, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
     summaryTotalValue: { color: palette.accent, fontSize: 15, fontFamily: 'Tiempos-Regular', letterSpacing: 0.5 },
@@ -301,7 +293,6 @@ const createStyles = (palette: ThemePalette) =>
       lineHeight: 20,
       paddingTop: 20,
       paddingBottom: 20,
-      opacity: 1,
       fontFamily: 'Tiempos-Regular',
     },
   });
