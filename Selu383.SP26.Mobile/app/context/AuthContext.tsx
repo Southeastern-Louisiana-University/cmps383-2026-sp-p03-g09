@@ -6,9 +6,15 @@ type AuthContextType = {
     loading: boolean;
     login: (userName: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+    refresh: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
+
+const refresh = async () => {
+  const u = await api.auth.me().catch(() => null);
+  setUser(u);
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserDto | null>(null);
@@ -32,15 +38,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, logout, refresh }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
     const ctx = useContext(AuthContext);
     if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
     return ctx;
 }
+function setUser(u: UserDto | null) {
+    throw new Error('Function not implemented.');
+}
+
