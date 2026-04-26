@@ -141,16 +141,28 @@ function NavBar() {
                             sign out
                         </Button>
                     ) : (
-                        <Button
-                            onClick={() => setLoginOpened(true)}
-                            variant="subtle"
-                            color="#a5b4fc"
-                            size="sm"
-                            className="font-tiempos-text"
-                            tt="lowercase"
-                        >
-                            sign in
-                        </Button>
+                        <>
+                            <Button
+                                onClick={() => navigate('/signup')}
+                                variant="outline"
+                                color="#a5b4fc"
+                                size="sm"
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                sign up
+                            </Button>
+                            <Button
+                                onClick={() => setLoginOpened(true)}
+                                variant="subtle"
+                                color="#a5b4fc"
+                                size="sm"
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                sign in
+                            </Button>
+                        </>
                     )}
                 </Group>
             </Group>

@@ -333,3 +333,101 @@ html[data-mantine-color-scheme="light"] .hero-blob-3 {
   justify-content: center;
   flex-wrap: wrap;
 }
+
+/* ===== SIGNUP WIZARD ===== */
+.signup-root {
+  position: relative;
+  min-height: calc(100vh - 60px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+@keyframes signupFadeIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.signup-card {
+  position: relative;
+  z-index: 1;
+  width: 440px;
+  max-width: 100%;
+  border-radius: 18px;
+  animation: signupFadeIn 480ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+html[data-mantine-color-scheme="dark"] .signup-card {
+  background: rgba(14, 14, 28, 0.88);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+html[data-mantine-color-scheme="light"] .signup-card {
+  background: rgba(250, 249, 255, 0.92);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(165, 180, 252, 0.3);
+  box-shadow: 0 12px 48px rgba(99, 102, 241, 0.12);
+}
+
+/* Step indicator dots */
+.signup-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 28px 0 24px;
+}
+
+.signup-dot {
+  height: 6px;
+  width: 6px;
+  border-radius: 3px;
+  background: rgba(165, 180, 252, 0.22);
+  transition: background 350ms ease, width 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.signup-dot[data-active="true"] {
+  width: 22px;
+  background: #a5b4fc;
+}
+
+/* Carousel track */
+.signup-track {
+  display: flex;
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.signup-step {
+  width: 440px;
+  max-width: 100%;
+  flex-shrink: 0;
+  padding: 0 36px 8px;
+  box-sizing: border-box;
+}
+
+/* Review box on step 3 */
+.signup-review-box {
+  padding: 16px 20px;
+  border-radius: 10px;
+  background: rgba(165, 180, 252, 0.08);
+  border: 1px solid rgba(165, 180, 252, 0.2);
+}
+
+html[data-mantine-color-scheme="light"] .signup-review-box {
+  background: rgba(165, 180, 252, 0.12);
+  border-color: rgba(165, 180, 252, 0.35);
+}
+
+/* Back / Next navigation row */
+.signup-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 36px 16px;
+}

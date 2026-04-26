@@ -1,3 +1,4 @@
+using System.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,38 @@ public class AuthenticationController : ControllerBase
         await signInManager.SignInAsync(user, false);
 
         var resultDto = await GetUserDto(userManager.Users).SingleAsync(x => x.UserName == user.UserName);
+        resultDto.Tier = GetTier(resultDto.LoyaltyPoints);
+        return Ok(resultDto);
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
+    {
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        var newUser = new User
+        {
+            UserName = dto.UserName,
+            MemberSince = DateTime.UtcNow,
+        };
+
+        var createResult = await userManager.CreateAsync(newUser, dto.Password);
+        if (!createResult.Succeeded)
+        {
+            return BadRequest(createResult.Errors);
+        }
+
+        var roleResult = await userManager.AddToRoleAsync(newUser, RoleNames.User);
+        if (!roleResult.Succeeded)
+        {
+            return BadRequest();
+        }
+
+        transaction.Complete();
+
+        await signInManager.SignInAsync(newUser, false);
+
+        var resultDto = await GetUserDto(userManager.Users).SingleAsync(x => x.UserName == newUser.UserName);
         resultDto.Tier = GetTier(resultDto.LoyaltyPoints);
         return Ok(resultDto);
     }

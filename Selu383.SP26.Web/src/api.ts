@@ -20,6 +20,11 @@ export type LoginDto = {
     password: string;
 };
 
+export type RegisterDto = {
+    userName: string;
+    password: string;
+};
+
 export type MenuItemAddOnDto = {
     id: number;
     label: string;
@@ -126,6 +131,11 @@ export const api = {
         me: () => request<UserDto>('/api/authentication/me'),
         login: (dto: LoginDto) =>
             request<UserDto>('/api/authentication/login', {
+                method: 'POST',
+                body: JSON.stringify(dto),
+            }),
+        signup: (dto: RegisterDto) =>
+            request<UserDto>('/api/authentication/register', {
                 method: 'POST',
                 body: JSON.stringify(dto),
             }),

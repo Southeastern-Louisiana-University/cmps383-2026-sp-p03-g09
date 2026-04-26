@@ -1,7 +1,10 @@
 # General notes
-- Figure out how to store images in backend and allow for menu items to be created by admins, alongside custom photos for user profiles
-- When a user redeems loyalty points for an item, a more permanent system for redeeming in-store should be created. For example, upon redeeming a reward using loyalty points, a free version of the item should be added to the user's bag and the user should be prompted if they'd like to add anything else to the order before proceeding to check out
-
+- Web - menu - modal popup needs padding for the image at the top of the popup- right now the top edge hugs the top of the frame
+- Navbar - horizontal padding needs to be added outside of the text inside each button
+- Users should be able to select a table to reserve when placing dine-in orders.
+   - Ensure that tables can't be reserved at any time in the past
+	- Ensure that tables are automatically reserved when an order is placed, so that users cannot attempt to reserve a table that's already taken
+- Landing page background is still a little minimal- maybe we could try a different style of animation?
 
 # Done
 - [x] Margins/padding is too thin horizontally on the Navbar buttons — increased to 8px/16px
