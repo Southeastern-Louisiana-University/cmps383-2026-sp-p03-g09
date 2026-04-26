@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,97 +12,55 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/app/theme-context';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../context/AuthContext';
+import { api, type RewardDto, type OrderDto } from '../context/api';
 
-const REWARDS = [
-  {
-    name: 'drippy coffee',
-    id: 'free_drip',
-    label: 'free drip coffee',
-    desc: 'any drip coffee, on us',
-    cost: 50,
-    icon: 'cafe-outline',
-  },
-  {
-    name: 'iced out latte',
-    id: 'free_latte',
-    label: 'free iced latte',
-    desc: 'any iced latte, your way',
-    cost: 100,
-    icon: 'water-outline',
-  },
-  {
-    name: 'roaring frappe',
-    id: 'free_frappe',
-    label: 'free roaring frappe',
-    desc: 'our signature blended drink',
-    cost: 150,
-    icon: 'snow-outline',
-  },
-  {
-    name: 'lioness crepe',
-    id: 'free_crepe',
-    label: 'free sweet crepe',
-    desc: 'any sweet crepe of your choice',
-    cost: 200,
-    icon: 'restaurant-outline',
-  },
-  {
-    name: 'bagel bliss',
-    id: 'free_bagel',
-    label: 'free bagel',
-    desc: 'any bagel from the menu',
-    cost: 175,
-    icon: 'ellipse-outline',
-  },
-  {
-    name: 'queen\'s treat',
-    id: 'free_drink',
-    label: 'free drink of your choice',
-    desc: 'anything on the drinks menu',
-    cost: 250,
-    icon: 'star-outline',
-  },
-];
-
-const HISTORY = [
-  { label: 'iced latte purchase', points: '+10', date: 'apr 10' },
-  { label: 'roaring frappe purchase', points: '+10', date: 'apr 8' },
-  { label: 'free drip coffee redeemed', points: '-50', date: 'apr 5' },
-  { label: 'downtowner crepe purchase', points: '+10', date: 'apr 3' },
-  { label: 'double points day bonus', points: '+20', date: 'apr 1' },
-];
 
 export default function RewardsScreen() {
   const { palette, theme } = useTheme();
   const isDark = theme === 'dark' || theme === 'oled';
   const router = useRouter();
+  const { user, refresh } = useAuth();
 
-  const [points, setPoints] = useState(220);
-  const [history, setHistory] = useState(HISTORY);
-  const [confirmReward, setConfirmReward] = useState<typeof REWARDS[0] | null>(null);
+  const [rewards, setRewards] = useState<RewardDto[]>([]);
+  const [orders, setOrders] = useState<OrderDto[]>([]);
+  const [confirmReward, setConfirmReward] = useState<RewardDto | null>(null);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
+  
+  const rewardsIncrements = [50, 100, 150, 175, 200, 250];
+  const points = user?.loyaltyPoints ?? 0;
+  const NEXT_REWARD = rewardsIncrements.find(r => points < r) ?? 0; 
 
-  const showConfirm = (reward: typeof REWARDS[0]) => {
-    if (points >= reward.cost) setConfirmReward(reward);
+  useEffect(() => {
+    api.rewards.getAll().then(setRewards).catch(() => setRewards([]));
+    api.orders.getAll().then(setOrders).catch(() => setOrders([]));
+  }, []);
+
+  const showConfirm = (reward: RewardDto) => {
+    if (points >= reward.pointCost) setConfirmReward(reward);
   };
 
-  const redeem = () => {
+  const redeem = async () => {
     if (!confirmReward) return;
-    setPoints(p => p - confirmReward.cost);
-    setHistory(h => [
-      { label: `${confirmReward.label} redeemed`, points: `-${confirmReward.cost}`, date: 'today' },
-      ...h,
-    ]);
-    setConfirmReward(null);
-    setToastMsg(`${confirmReward.label} redeemed! ʕ•́ᴥ•̀ʔっ`);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    try {
+      await api.rewards.redeem(confirmReward.id);
+      await refresh(); // re-fetches user so points update
+      setConfirmReward(null);
+      setToastMsg(`${confirmReward.name} redeemed! ʕ•́ᴥ•̀ʔっ`);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } catch {
+      setConfirmReward(null);
+      setToastMsg('redemption failed, try again ☕');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }
   };
 
-  const progressPct = Math.min((points % 250) / 250, 1);
-  const nextMilestone = 250;
-  const toNext = nextMilestone - (points % 250);
+  const nextRewardCost = rewards.find(r => points < r.pointCost)?.pointCost ?? rewards[rewards.length - 1]?.pointCost ?? 250;
+  const toNext = nextRewardCost - points;
+  const progressPct = rewards.length === 0 ? 0 : Math.min(points / (rewards[rewards.length - 1]?.pointCost ?? 250), 1);
 
   const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: palette.bg },
@@ -142,6 +100,7 @@ export default function RewardsScreen() {
     backBtnText: {
       color: palette.text,
       fontSize: 11,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       opacity: 0.8,
     },
@@ -156,6 +115,7 @@ export default function RewardsScreen() {
     pageLabel: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 3,
       textTransform: 'uppercase',
       marginBottom: 8,
@@ -170,6 +130,7 @@ export default function RewardsScreen() {
     pageSubtitle: {
       color: palette.accent,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       opacity: 0.6,
       fontStyle: 'italic',
@@ -200,6 +161,7 @@ export default function RewardsScreen() {
     pointsUnit: {
       color: palette.accent,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       opacity: 0.7,
       marginBottom: 8,
@@ -212,6 +174,7 @@ export default function RewardsScreen() {
     progressLabelText: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       opacity: 0.6,
     },
@@ -230,6 +193,7 @@ export default function RewardsScreen() {
     progressNote: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       opacity: 0.5,
       marginTop: 8,
@@ -239,6 +203,7 @@ export default function RewardsScreen() {
     sectionLabel: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 3,
       textTransform: 'uppercase',
       opacity: 0.75,
@@ -284,6 +249,7 @@ export default function RewardsScreen() {
     rewardDesc: {
       color: palette.accent,
       fontSize: 11,
+      fontFamily: 'Tiempos-Regular',
       opacity: 0.6,
       letterSpacing: 0.3,
     },
@@ -312,11 +278,13 @@ export default function RewardsScreen() {
     redeemBtnText: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
     },
     redeemBtnTextLocked: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       opacity: 0.3,
     },
@@ -343,6 +311,7 @@ export default function RewardsScreen() {
     historyDate: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       opacity: 0.5,
       marginRight: 16,
@@ -356,6 +325,7 @@ export default function RewardsScreen() {
     footer: {
       color: palette.accent,
       fontSize: 11,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       textAlign: 'center',
       opacity: 0.5,
@@ -388,6 +358,7 @@ export default function RewardsScreen() {
     modalLabel: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 3,
       textTransform: 'uppercase',
       opacity: 0.75,
@@ -403,6 +374,7 @@ export default function RewardsScreen() {
     modalDesc: {
       color: palette.accent,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       opacity: 0.65,
       letterSpacing: 0.5,
       marginBottom: 28,
@@ -419,6 +391,7 @@ export default function RewardsScreen() {
     modalCostLabel: {
       color: palette.accent,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       opacity: 0.6,
     },
@@ -441,6 +414,7 @@ export default function RewardsScreen() {
     modalConfirmText: {
       color: palette.accent,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
     },
     modalCancelBtn: {
@@ -454,6 +428,7 @@ export default function RewardsScreen() {
     modalCancelText: {
       color: palette.text,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       opacity: 0.5,
     },
@@ -478,6 +453,7 @@ export default function RewardsScreen() {
     toastText: {
       color: palette.accent,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       flex: 1,
     },
@@ -516,7 +492,7 @@ export default function RewardsScreen() {
           </View>
           <View style={styles.progressLabel}>
             <Text style={styles.progressLabelText}>progress to next reward</Text>
-            <Text style={styles.progressLabelText}>{points % 250} / {nextMilestone}</Text>
+            <Text style={styles.progressLabelText}>{points % 250} / {NEXT_REWARD}</Text>
           </View>
           <View style={styles.progressTrack}>
             <View style={styles.progressFill} />
@@ -527,22 +503,19 @@ export default function RewardsScreen() {
         {/* rewards */}
         <Text style={styles.sectionLabel}>✦ redeem your points</Text>
         <View style={styles.rewardsGrid}>
-          {REWARDS.map(reward => {
-            const canRedeem = points >= reward.cost;
+          {rewards.map(reward => {
+            const canRedeem = points >= reward.pointCost;
             return (
-              <View
-                key={reward.id}
-                style={[styles.rewardCard, !canRedeem && styles.rewardCardLocked]}
-              >
+              <View key={reward.id} style={[styles.rewardCard, !canRedeem && styles.rewardCardLocked]}>
                 <View style={styles.rewardIcon}>
-                  <Ionicons name={reward.icon as any} size={18} color={palette.accent} />
+                  <Ionicons name="gift-outline" size={18} color={palette.accent} />
                 </View>
                 <View style={styles.rewardInfo}>
                   <Text style={styles.rewardName}>{reward.name}</Text>
-                  <Text style={styles.rewardDesc}>{reward.desc}</Text>
+                  <Text style={styles.rewardDesc}>{reward.description}</Text>
                 </View>
                 <View style={styles.rewardRight}>
-                  <Text style={styles.rewardCost}>{reward.cost} pts</Text>
+                  <Text style={styles.rewardCost}>{reward.pointCost} pts</Text>
                   <TouchableOpacity
                     style={canRedeem ? styles.redeemBtn : styles.redeemBtnLocked}
                     onPress={() => showConfirm(reward)}
@@ -559,20 +532,25 @@ export default function RewardsScreen() {
         </View>
 
         {/* history */}
-        <Text style={styles.sectionLabel}>✦ recent point activity</Text>
         <View style={styles.historySection}>
-          {history.slice(0, 5).map((item, i) => (
+          {orders.slice(0, 5).map((order, i) => (
             <View key={i} style={styles.historyRow}>
-              <Text style={styles.historyLabel}>{item.label}</Text>
-              <Text style={styles.historyDate}>{item.date}</Text>
-              <Text style={[
-                styles.historyPoints,
-                { color: item.points.startsWith('+') ? palette.accent : palette.text + 'aa' },
-              ]}>
-                {item.points}
+              <Text style={styles.historyLabel}>
+                {order.items[0]?.menuItemName ?? 'order'}{order.items.length > 1 ? ` +${order.items.length - 1} more` : ''}
+              </Text>
+              <Text style={styles.historyDate}>
+                {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </Text>
+              <Text style={[styles.historyPoints, { color: palette.accent }]}>
+                +{order.pointsEarned}
               </Text>
             </View>
           ))}
+          {orders.length === 0 && (
+            <Text style={{ color: palette.text, opacity: 0.4, fontSize: 12, fontFamily: 'Tiempos-Regular', letterSpacing: 1, paddingVertical: 16 }}>
+              no activity yet ☕
+            </Text>
+          )}
         </View>
 
         <Text style={styles.footer}>new orleans · hammond · new york</Text>
@@ -592,15 +570,15 @@ export default function RewardsScreen() {
               <View style={styles.modalHandle} />
               <Text style={styles.modalLabel}>✦ confirm redemption</Text>
               <Text style={styles.modalTitle}>{confirmReward?.name}</Text>
-              <Text style={styles.modalDesc}>{confirmReward?.desc}</Text>
+              <Text style={styles.modalDesc}>{confirmReward?.description}</Text>
               <View style={styles.modalCostRow}>
                 <Text style={styles.modalCostLabel}>points to redeem</Text>
-                <Text style={styles.modalCostValue}>{confirmReward?.cost} pts</Text>
+                <Text style={styles.modalCostValue}>{confirmReward?.pointCost} pts</Text>
               </View>
               <View style={styles.modalCostRow}>
-                <Text style={styles.modalCostLabel}>remaining after</Text>
+                <Text style={styles.modalCostLabel}>remaining points</Text>
                 <Text style={styles.modalCostValue}>
-                  {confirmReward ? points - confirmReward.cost : 0} pts
+                  {confirmReward ? points - confirmReward.pointCost : 0} pts
                 </Text>
               </View>
               <View style={styles.modalActions}>
