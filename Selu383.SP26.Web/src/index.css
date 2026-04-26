@@ -114,17 +114,17 @@ html[data-mantine-color-scheme="light"] a:hover {
   transition: background 200ms ease, border-color 200ms ease;
 }
 html[data-mantine-color-scheme="dark"] .glass-nav {
-  background: rgba(12, 13, 26, 0.82);
+  background: rgba(12, 13, 26, 0.42);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 html[data-mantine-color-scheme="light"] .glass-nav {
-  background: rgba(245, 244, 255, 0.82);
+  background: rgba(245, 244, 255, 0.42);
   border-bottom: 1px solid rgba(165, 180, 252, 0.22);
 }
 
 /* ===== NAVBAR LINKS ===== */
 .nav-link {
-  padding: 8px 16px;
+  padding: 8px 24px !important;
   border-radius: 8px;
   font-family: 'Tiempos Text', serif;
   font-size: 13pt;
@@ -430,4 +430,122 @@ html[data-mantine-color-scheme="light"] .signup-review-box {
   align-items: center;
   justify-content: space-between;
   padding: 20px 36px 16px;
+}
+
+/* ===== AURORA BACKGROUND (HOME PAGE) ===== */
+.aurora-band {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.aurora-band-1 {
+  width: 180%;
+  height: 320px;
+  top: 2%;
+  left: -40%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(99, 102, 241, 0.17) 20%,
+    rgba(165, 180, 252, 0.27) 42%,
+    rgba(196, 181, 253, 0.21) 62%,
+    rgba(129, 140, 248, 0.14) 82%,
+    transparent 100%
+  );
+  filter: blur(52px);
+  animation: auroraFlow1 17s ease-in-out infinite;
+}
+
+.aurora-band-2 {
+  width: 160%;
+  height: 240px;
+  top: 36%;
+  left: -30%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(129, 140, 248, 0.13) 15%,
+    rgba(167, 139, 250, 0.23) 45%,
+    rgba(99, 102, 241, 0.17) 72%,
+    transparent 100%
+  );
+  filter: blur(68px);
+  animation: auroraFlow2 23s ease-in-out infinite;
+  animation-delay: -9s;
+}
+
+.aurora-band-3 {
+  width: 200%;
+  height: 280px;
+  top: 68%;
+  left: -50%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(196, 181, 253, 0.15) 22%,
+    rgba(165, 180, 252, 0.23) 52%,
+    rgba(99, 102, 241, 0.13) 78%,
+    transparent 100%
+  );
+  filter: blur(58px);
+  animation: auroraFlow3 19s ease-in-out infinite;
+  animation-delay: -5s;
+}
+
+.aurora-band-4 {
+  width: 150%;
+  height: 190px;
+  top: 20%;
+  left: -20%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(167, 139, 250, 0.11) 28%,
+    rgba(196, 181, 253, 0.17) 55%,
+    transparent 100%
+  );
+  filter: blur(44px);
+  animation: auroraFlow4 13s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+@keyframes auroraFlow1 {
+  0%,100% { transform: translateX(0%)   scaleY(1);    opacity: 0.75; }
+  28%     { transform: translateX(7%)   scaleY(1.18); opacity: 1;    }
+  60%     { transform: translateX(-5%)  scaleY(0.84); opacity: 0.82; }
+}
+@keyframes auroraFlow2 {
+  0%,100% { transform: translateX(0%)   scaleY(1);    opacity: 0.65; }
+  38%     { transform: translateX(-9%)  scaleY(1.28); opacity: 0.92; }
+  68%     { transform: translateX(7%)   scaleY(0.88); opacity: 0.72; }
+}
+@keyframes auroraFlow3 {
+  0%,100% { transform: translateX(0%)   scaleY(1);    opacity: 0.68; }
+  33%     { transform: translateX(6%)   scaleY(1.14); opacity: 0.88; }
+  65%     { transform: translateX(-7%)  scaleY(0.86); opacity: 0.76; }
+}
+@keyframes auroraFlow4 {
+  0%,100% { transform: translateX(0%)   scaleY(1);    opacity: 0.55; }
+  42%     { transform: translateX(-11%) scaleY(1.38); opacity: 0.82; }
+  73%     { transform: translateX(9%)   scaleY(0.78); opacity: 0.62; }
+}
+
+/* Light mode: slightly bolder aurora */
+html[data-mantine-color-scheme="light"] .aurora-band-1 {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(165, 180, 252, 0.26) 22%,
+    rgba(196, 181, 253, 0.36) 44%,
+    rgba(129, 140, 248, 0.27) 70%,
+    transparent 100%
+  );
+}
+html[data-mantine-color-scheme="light"] .aurora-band-2 {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(167, 139, 250, 0.2) 30%,
+    rgba(99, 102, 241, 0.26) 58%,
+    transparent 100%
+  );
+}
+html[data-mantine-color-scheme="light"] .aurora-band-3,
+html[data-mantine-color-scheme="light"] .aurora-band-4 {
+  opacity: 0.8;
 }

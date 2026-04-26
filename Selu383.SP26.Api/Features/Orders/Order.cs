@@ -15,6 +15,7 @@ public class Order
     public decimal Total { get; set; }
     public int PointsEarned { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int? TableNumber { get; set; }
 
     public virtual User? User { get; set; }
     public virtual Location Location { get; set; } = null!;

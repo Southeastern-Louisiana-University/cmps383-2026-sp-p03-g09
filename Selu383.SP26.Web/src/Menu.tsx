@@ -205,7 +205,7 @@ export default function Menu() {
                 overlayProps={{ opacity: 0.55, blur: 3 }}
             >
                 {selected && (
-                    <Stack gap="md">
+                    <Stack gap="md" pt="sm">
                         {(selected.imageUrl ?? MENU_PHOTOS[selected.name]) ? (
                             <img
                                 src={selected.imageUrl ?? MENU_PHOTOS[selected.name]}

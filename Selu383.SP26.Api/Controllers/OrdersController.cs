@@ -76,6 +76,47 @@ public class OrdersController(DataContext dataContext, UserManager<User> userMan
             return BadRequest("Invalid location.");
         }
 
+        if (dto.PickupTime <= DateTime.UtcNow)
+        {
+            return BadRequest("Pickup time must be in the future.");
+        }
+
+        if (dto.OrderType == "dine_in" && dto.TableNumber.HasValue)
+        {
+            if (dto.TableNumber < 1 || dto.TableNumber > location.TableCount)
+            {
+                return BadRequest("Invalid table number.");
+            }
+
+            if (dto.PickupTime <= DateTime.UtcNow.AddHours(2))
+            {
+                return BadRequest("Reservations must be made at least 2 hours in advance.");
+            }
+
+            if (location.OpenHour.HasValue && location.CloseHour.HasValue)
+            {
+                var localHour = dto.PickupTime.ToLocalTime().Hour;
+                if (localHour < location.OpenHour.Value || localHour >= location.CloseHour.Value)
+                {
+                    return BadRequest("Reservation time is outside of business hours.");
+                }
+            }
+
+            var windowStart = dto.PickupTime.AddMinutes(-90);
+            var windowEnd   = dto.PickupTime.AddMinutes(90);
+            var conflict = await dataContext.Set<Order>().AnyAsync(o =>
+                o.LocationId   == dto.LocationId &&
+                o.TableNumber  == dto.TableNumber &&
+                o.OrderType    == "dine_in" &&
+                o.PickupTime   >= windowStart &&
+                o.PickupTime   <= windowEnd);
+
+            if (conflict)
+            {
+                return BadRequest("That table is already reserved at that time.");
+            }
+        }
+
         var menuItemIds = dto.Items.Select(x => x.MenuItemId).Distinct().ToList();
         var menuItems = await dataContext.Set<MenuItem>()
             .Include(x => x.AddOns)
@@ -142,6 +183,7 @@ public class OrdersController(DataContext dataContext, UserManager<User> userMan
             Total = total,
             PointsEarned = pointsEarned,
             CreatedAt = DateTime.UtcNow,
+            TableNumber = dto.OrderType == "dine_in" ? dto.TableNumber : null,
             Items = orderItems
         };
 
@@ -166,6 +208,7 @@ public class OrdersController(DataContext dataContext, UserManager<User> userMan
         Total = order.Total,
         PointsEarned = order.PointsEarned,
         CreatedAt = order.CreatedAt,
+        TableNumber = order.TableNumber,
         Items = order.Items.Select(i => new OrderItemDto
         {
             Id = i.Id,

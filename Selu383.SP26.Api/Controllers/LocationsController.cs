@@ -5,6 +5,7 @@ using Selu383.SP26.Api.Data;
 using Selu383.SP26.Api.Extensions;
 using Selu383.SP26.Api.Features.Auth;
 using Selu383.SP26.Api.Features.Locations;
+using Selu383.SP26.Api.Features.Orders;
 
 namespace Selu383.SP26.Api.Controllers;
 
@@ -23,6 +24,8 @@ public class LocationsController(DataContext dataContext) : ControllerBase
                 Address = x.Address,
                 TableCount = x.TableCount,
                 ManagerId = x.ManagerId,
+                OpenHour = x.OpenHour,
+                CloseHour = x.CloseHour,
             });
     }
 
@@ -44,7 +47,44 @@ public class LocationsController(DataContext dataContext) : ControllerBase
             Address = result.Address,
             TableCount = result.TableCount,
             ManagerId = result.ManagerId,
+            OpenHour = result.OpenHour,
+            CloseHour = result.CloseHour,
         });
+    }
+
+    [HttpGet("{id}/available-tables")]
+    public async Task<ActionResult<List<int>>> GetAvailableTables(int id, [FromQuery] DateTime time)
+    {
+        var location = await dataContext.Set<Location>().FindAsync(id);
+        if (location == null) return NotFound();
+
+        if (location.OpenHour.HasValue && location.CloseHour.HasValue)
+        {
+            var localHour = time.ToLocalTime().Hour;
+            if (localHour < location.OpenHour.Value || localHour >= location.CloseHour.Value)
+            {
+                return BadRequest("Location is closed at that time.");
+            }
+        }
+
+        var windowStart = time.AddMinutes(-90);
+        var windowEnd   = time.AddMinutes(90);
+
+        var takenTables = await dataContext.Set<Order>()
+            .Where(o =>
+                o.LocationId  == id &&
+                o.OrderType   == "dine_in" &&
+                o.TableNumber != null &&
+                o.PickupTime  >= windowStart &&
+                o.PickupTime  <= windowEnd)
+            .Select(o => o.TableNumber!.Value)
+            .ToListAsync();
+
+        var available = Enumerable.Range(1, location.TableCount)
+            .Except(takenTables)
+            .ToList();
+
+        return Ok(available);
     }
 
     [HttpPost]
@@ -61,7 +101,9 @@ public class LocationsController(DataContext dataContext) : ControllerBase
             Name = dto.Name,
             Address = dto.Address,
             TableCount = dto.TableCount,
-            ManagerId = dto.ManagerId
+            ManagerId = dto.ManagerId,
+            OpenHour = dto.OpenHour,
+            CloseHour = dto.CloseHour,
         };
 
         dataContext.Set<Location>().Add(location);
@@ -98,6 +140,8 @@ public class LocationsController(DataContext dataContext) : ControllerBase
         location.Address = dto.Address;
         location.TableCount = dto.TableCount;
         location.ManagerId = dto.ManagerId;
+        location.OpenHour = dto.OpenHour;
+        location.CloseHour = dto.CloseHour;
 
         dataContext.SaveChanges();
 

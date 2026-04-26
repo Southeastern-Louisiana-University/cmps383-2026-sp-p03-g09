@@ -57,27 +57,28 @@ public class AuthenticationController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
     {
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-
         var newUser = new User
         {
             UserName = dto.UserName,
             MemberSince = DateTime.UtcNow,
         };
 
-        var createResult = await userManager.CreateAsync(newUser, dto.Password);
-        if (!createResult.Succeeded)
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
-            return BadRequest(createResult.Errors);
-        }
+            var createResult = await userManager.CreateAsync(newUser, dto.Password);
+            if (!createResult.Succeeded)
+            {
+                return BadRequest(createResult.Errors);
+            }
 
-        var roleResult = await userManager.AddToRoleAsync(newUser, RoleNames.User);
-        if (!roleResult.Succeeded)
-        {
-            return BadRequest();
-        }
+            var roleResult = await userManager.AddToRoleAsync(newUser, RoleNames.User);
+            if (!roleResult.Succeeded)
+            {
+                return BadRequest();
+            }
 
-        transaction.Complete();
+            transaction.Complete();
+        }
 
         await signInManager.SignInAsync(newUser, false);
 

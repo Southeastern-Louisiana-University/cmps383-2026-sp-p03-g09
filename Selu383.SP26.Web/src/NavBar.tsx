@@ -59,7 +59,7 @@ function NavBar() {
                 </Text>
 
                 {/* Right side */}
-                <Group gap={20} align="right">
+                <Group gap={20} align="center">
                     {/* Nav links */}
                     {NAV_LINKS.map(link => (
                         <UnstyledButton
