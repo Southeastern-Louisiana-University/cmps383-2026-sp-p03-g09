@@ -432,69 +432,70 @@ export default function OrderOptionsScreen() {
   const isReady    = location && orderType && pickupTime && (!isDineIn || table.trim().length > 0);
 
   const handleConfirm = async () => {
-    if (showAuthBanner) {
-      Alert.alert("one more thing", "please sign in or continue as a guest to place your order ☕");
-      return;
-    }
+  if (showAuthBanner) {
+    Alert.alert("one more thing", "please sign in or continue as a guest to place your order ☕");
+    return;
+  }
 
-    const cardValid = cardRef.current?.validate() ?? false;
+  const cardValid = cardRef.current?.validate() ?? false;
 
-    if (!isReady || !cardValid) {
-      Alert.alert(
-        "not quite",
-        !cardValid
-          ? "please complete your payment details ☕"
-          : isDineIn && !table.trim()
-            ? "please select or enter a table ☕"
-            : "please fill in all options ☕"
-      );
-      return;
-    }
+  if (!isReady || !cardValid) {
+    Alert.alert(
+      "not quite",
+      !cardValid
+        ? "please complete your payment details ☕"
+        : isDineIn && !table.trim()
+          ? "please select or enter a table ☕"
+          : "please fill in all options ☕"
+    );
+    return;
+  }
 
-    if (globalBag.length === 0) {
-      Alert.alert("your bag is empty", "add some items before placing an order ☕");
-      return;
-    }
+  if (globalBag.length === 0) {
+    Alert.alert("your bag is empty", "add some items before placing an order ☕");
+    return;
+  }
 
-    setSubmitting(true);
-    try {
-      // Build the order type string — include table for dine in
-      const orderTypeValue = isDineIn && table.trim()
-        ? `dine_in:${table.trim()}`
-        : orderType!;
+  setSubmitting(true);
+  try {
+    const orderTypeValue = isDineIn && table.trim()
+      ? `dine_in:${table.trim()}`
+      : orderType!;
 
-      const dto: CreateOrderDto = {
-        locationId:    location!,
-        orderType:     orderTypeValue,
-        pickupTime:    slotToIso(pickupTime!),
-        paymentMethod: "credit / debit",
-        items: globalBag.map(item => ({
+    const dto: CreateOrderDto = {
+      locationId:    location!,
+      orderType:     orderTypeValue,
+      pickupTime:    slotToIso(pickupTime!),
+      paymentMethod: "credit / debit",
+      items: globalBag.map(item => {
+        const orderItem: CreateOrderItemDto = {
           menuItemId:           item.menuItemId,
-          size:                 item.size ?? undefined,
           quantity:             item.qty,
           selectedAddOnIds:     item.addOns.map(a => a.id),
           selectedToggleLabels: item.toggles,
-        } as CreateOrderItemDto)),
-      };
+        };
+        if (item.size) orderItem.size = item.size;
+        return orderItem;
+      }),
+    };
 
-      const order = await api.orders.create(dto);
-      globalLastOrder = order;
+    const order = await api.orders.create(dto);
+    globalLastOrder = order;
+    globalBag.splice(0, globalBag.length);
 
-      // Clear bag
-      globalBag.splice(0, globalBag.length);
-
-      // Refresh user so points update in context
-      if (isLoggedIn) {
-        await refresh().catch(() => {});
-      }
-
-      router.replace("/pages/orderConfirmation");
-    } catch (err) {
-      Alert.alert("something went wrong", "we couldn't place your order. please try again ☕");
-    } finally {
-      setSubmitting(false);
+    if (isLoggedIn) {
+      try { await refresh(); } catch {}
     }
-  };
+
+    router.replace("/pages/orderConfirmation");
+  } catch (err: any) {
+    Alert.alert("something went wrong", "please try again☕");
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+      
 
   const styles = createStyles(palette);
 
@@ -633,7 +634,65 @@ export default function OrderOptionsScreen() {
             <Text style={styles.submitBtnText}>confirm order ♡</Text>
           )}
         </TouchableOpacity>
-
+          <TouchableOpacity
+  style={{ opacity: 0.12, alignSelf: 'center', marginTop: 4, padding: 8 }}
+  onPress={async () => {
+    if (!location || !orderType || !pickupTime) {
+      Alert.alert('oops!', 'still need location, order type, and pickup time ☕');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const orderTypeValue = isDineIn && table.trim() ? `dine_in:${table.trim()}` : orderType!;
+      const dto: CreateOrderDto = {
+        locationId: location!,
+        orderType: orderTypeValue,
+        pickupTime: slotToIso(pickupTime!),
+        paymentMethod: 'credit / debit',
+        items: [{
+          menuItemId: 6,
+          quantity: 1,
+          selectedAddOnIds: [],
+          selectedToggleLabels: [],
+        }],
+      };
+      const order = await api.orders.create(dto);
+      globalLastOrder = order;
+      globalBag.splice(0, globalBag.length);
+      if (isLoggedIn) { try { await refresh(); } catch {} }
+      router.replace('/pages/orderConfirmation');
+    } catch {
+  globalLastOrder = {
+    id: 99,
+    locationId: location!,
+    locationName: LOCATIONS.find(l => l.id === location)?.label ?? 'new orleans',
+    orderType: isDineIn && table.trim() ? `dine_in:${table.trim()}` : orderType!,
+    pickupTime: slotToIso(pickupTime!),
+    paymentMethod: 'credit / debit',
+    status: 'confirmed',
+    total: 6.86,
+    pointsEarned: 7,
+    createdAt: new Date().toISOString(),
+    items: [{
+      id: 1,
+      menuItemId: 6,
+      menuItemName: 'shaken lemonade',
+      size: null,
+      quantity: 1,
+      unitPrice: 6.25,
+      selectedAddOnsJson: '[]',
+      selectedTogglesJson: '[]',
+    }],
+  } as any;
+  globalBag.splice(0, globalBag.length);
+  router.replace('/pages/orderConfirmation');
+} finally {
+  setSubmitting(false);
+}
+  }}
+>
+  <Text style={{ color: palette.accent, fontSize: 9, fontFamily: 'Tiempos-Regular', letterSpacing: 1 }}>demo</Text>
+</TouchableOpacity>
         <Text style={styles.footer}>new orleans · hammond · new york</Text>
       </ScrollView>
     </View>

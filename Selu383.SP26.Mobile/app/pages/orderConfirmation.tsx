@@ -277,7 +277,7 @@ export default function OrderConfirmationScreen() {
             </Text>
           </View>
         </Animated.View>
-      )
+      
 
         {/* items */}
         <Animated.View style={{ opacity: fadeIn, transform: [{ translateY: slideUp }] }}>

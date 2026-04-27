@@ -323,7 +323,7 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
             </Text>
           )}
         </View>
-        {globalLastOrder && (
+        {isLoggedIn && globalLastOrder && (
           <>
             <SectionLabel text="last order pickup" palette={palette} />
             <View style={{
