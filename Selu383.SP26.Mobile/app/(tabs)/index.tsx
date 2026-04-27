@@ -15,6 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/app/theme-context';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../context/AuthContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 64;
@@ -87,6 +88,7 @@ export default function HomeScreen() {
   const drink = DRINKS[week % DRINKS.length];
 
   const router = useRouter();
+  const { user, loading, logout } = useAuth();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -155,6 +157,7 @@ export default function HomeScreen() {
       alignItems: 'center',
       gap: 5,
       borderWidth: 1,
+      fontFamily: 'Tiempos-Regular',
       borderColor: palette.accent,
       borderRadius: 20,
       paddingHorizontal: 12,
@@ -163,6 +166,7 @@ export default function HomeScreen() {
     topBtnText: {
       color: palette.text,
       fontSize: 14,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
       opacity: 0.8,
     },
@@ -180,6 +184,7 @@ export default function HomeScreen() {
     topBtnAccentText: {
       color: palette.accent,
       fontSize: 11,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 0.5,
     },
 
@@ -203,6 +208,7 @@ export default function HomeScreen() {
     subline: {
       color: palette.accent,
       fontSize: 14,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 2,
       marginBottom: 4,
       opacity: 0.75,
@@ -210,12 +216,14 @@ export default function HomeScreen() {
     kaomoji: {
       color: palette.accent,
       fontSize: 13,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1,
       marginBottom: 40,
     },
     drinkLabel: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 3,
       textTransform: 'uppercase',
       marginBottom: 12,
@@ -223,6 +231,7 @@ export default function HomeScreen() {
     swipeHint: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
       opacity: 0.5,
       marginBottom: 10,
@@ -251,6 +260,7 @@ export default function HomeScreen() {
     cardPairingLabel: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 2,
       opacity: 0.7,
       marginBottom: 2,
@@ -264,6 +274,7 @@ export default function HomeScreen() {
     cardDesc: {
       color: palette.accent,
       fontSize: 12,
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 18,
       opacity: 0.75,
     },
@@ -279,6 +290,7 @@ export default function HomeScreen() {
     badgeText: {
       color: palette.accent,
       fontSize: 10,
+      fontFamily: 'Tiempos-Regular',
       letterSpacing: 1.5,
     },
     dots: {
@@ -319,10 +331,23 @@ export default function HomeScreen() {
             <Text style={styles.topBtnText}>stores</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.topBtn} onPress={() => router.push('/pages/login')}>
-            <Ionicons name="paw-outline" size={12} color={palette.accent} />
-            <Text style={styles.topBtnText}>sign in</Text>
-          </TouchableOpacity>
+          {user ? (
+            <TouchableOpacity
+              style={styles.topBtn}
+              onPress={() => router.push('./profile')}
+            >
+              <Ionicons name="person-outline" size={12} color={palette.accent} />
+              <Text style={styles.topBtnText}>profile</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.topBtn}
+              onPress={() => router.push('/pages/login')}
+            >
+              <Ionicons name="paw-outline" size={12} color={palette.accent} />
+              <Text style={styles.topBtnText}>sign in</Text>
+            </TouchableOpacity>
+          )}
 
         </View>
       </View>
@@ -334,7 +359,7 @@ export default function HomeScreen() {
         </Animated.Text>
 
         <Text style={styles.headline}>
-          {'five locations.\ntwenty drinks.\nunlimited ways to '}
+          {'three locations.\nsix drinks.\nunlimited ways to '}
           <Text style={{ color: palette.accent }}>smile.</Text>
         </Text>
 

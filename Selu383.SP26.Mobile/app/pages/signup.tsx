@@ -318,12 +318,12 @@ const createStyles = (palette: ThemePalette) =>
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    backBtnText: { color: palette.text, fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
+    backBtnText: { color: palette.text, fontFamily: 'Tiempos-Regular', fontSize: 11, letterSpacing: 0.5, opacity: 0.8 },
     scroll: { paddingHorizontal: 32, paddingTop: 40, paddingBottom: 64 },
     headline: {
       color: palette.text,
       fontSize: 42,
-      
+      fontFamily: 'Tiempos-Regular',
       lineHeight: 50,
       letterSpacing: 0.5,
       marginBottom: 8,
@@ -334,6 +334,7 @@ const createStyles = (palette: ThemePalette) =>
       letterSpacing: 0.5,
       //opacity: 0.75,
       marginBottom: 48,
+      fontFamily: 'Tiempos-Regular',
     },
     nameRow: { flexDirection: "row", gap: 12, marginBottom: 20 },
     fieldWrapper: { marginBottom: 20 },
@@ -344,6 +345,7 @@ const createStyles = (palette: ThemePalette) =>
       color: palette.text,
       opacity: 0.6,
       marginBottom: 8,
+      fontFamily: 'Tiempos-Regular',
     },
     inputRow: {
       flexDirection: "row",
@@ -355,6 +357,7 @@ const createStyles = (palette: ThemePalette) =>
       borderRadius: 10,
       paddingHorizontal: 14,
       height: 46,
+      fontFamily: 'Tiempos-Regular',
     },
     inputRowError: { borderColor: "#FF5722" },
     input: {
@@ -362,9 +365,11 @@ const createStyles = (palette: ThemePalette) =>
       color: palette.text,
       fontSize: 14,
       letterSpacing: 0.3,
+      fontFamily: 'Tiempos-Regular',
     },
     submitBtn: {
       borderWidth: 1,
+      fontFamily: 'Tiempos-Regular',
       borderColor: palette.accent,
       borderRadius: 24,
       paddingVertical: 14,
@@ -376,6 +381,7 @@ const createStyles = (palette: ThemePalette) =>
       color: palette.accent,
       fontSize: 14,
       letterSpacing: 1.5,
+      fontFamily: 'Tiempos-Regular',
       
     },
     footer: {
@@ -387,5 +393,6 @@ const createStyles = (palette: ThemePalette) =>
       paddingTop: 20,
       paddingBottom: 32,
       opacity: 1,
+      fontFamily: 'Tiempos-Regular',
     },
   });
