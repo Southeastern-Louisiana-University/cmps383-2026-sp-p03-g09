@@ -6,6 +6,7 @@ public class CreateOrderDto
     public string OrderType { get; set; } = string.Empty;
     public DateTime PickupTime { get; set; }
     public string PaymentMethod { get; set; } = string.Empty;
+    public int? TableNumber { get; set; }
     public List<CreateOrderItemDto> Items { get; set; } = new();
 }
 

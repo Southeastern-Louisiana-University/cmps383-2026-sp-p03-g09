@@ -12,11 +12,13 @@ import {
     Badge,
     Alert,
     TextInput,
+    Loader,
+    SimpleGrid,
 } from '@mantine/core';
 import { QRCodeSVG } from 'qrcode.react';
 import { TimeInput } from '@mantine/dates';
 import { IconCheck, IconShoppingBagX } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cards, { type Focused } from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
@@ -29,11 +31,11 @@ const TAX_RATES: Record<string, number> = {
 };
 const DEFAULT_TAX_RATE = 0.0945;
 
-function getTaxRate(locations: LocationDto[], locationId: string | null): number {
-    const loc = locations.find(l => String(l.id) === locationId);
-    if (!loc) return DEFAULT_TAX_RATE;
-    const match = loc.address.match(/,\s*([A-Z]{2})\s+\d/);
-    return match ? (TAX_RATES[match[1]] ?? DEFAULT_TAX_RATE) : DEFAULT_TAX_RATE;
+function resolvetaxRate(address: string): number {
+    const tokens = address.split(/\s+/);
+    const zipIdx = tokens.findIndex(t => /^\d{5}$/.test(t));
+    if (zipIdx > 0) return TAX_RATES[tokens[zipIdx - 1]] ?? DEFAULT_TAX_RATE;
+    return DEFAULT_TAX_RATE;
 }
 
 const ORDER_TYPES = [
@@ -111,8 +113,14 @@ export default function Cart() {
     const [cardFocus, setCardFocus] = useState<Focused>('');
     const [cardErrors, setCardErrors] = useState<Record<string, string>>({});
 
+    const [tableNumber, setTableNumber] = useState<number | null>(null);
+    const [availableTables, setAvailableTables] = useState<number[]>([]);
+    const [loadingTables, setLoadingTables] = useState(false);
+
+    const [taxRate, setTaxRate] = useState(DEFAULT_TAX_RATE);
     const [submitting, setSubmitting] = useState(false);
     const [confirmedOrder, setConfirmedOrder] = useState<OrderDto | null>(null);
+    const [chargedTotal, setChargedTotal] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -122,12 +130,55 @@ export default function Cart() {
         });
     }, []);
 
-    const taxRate = getTaxRate(locations, locationId);
+    // Reset table when switching away from dine-in
+    useEffect(() => {
+        if (orderType !== 'dine_in') {
+            setTableNumber(null);
+            setAvailableTables([]);
+        }
+    }, [orderType]);
+
+    const tableNumberRef = useRef(tableNumber);
+    tableNumberRef.current = tableNumber;
+
+    // Fetch available tables when location, time, or order type changes
+    useEffect(() => {
+        if (orderType !== 'dine_in' || !locationId || !pickupTime) return;
+        setLoadingTables(true);
+        api.locations.getAvailableTables(Number(locationId), timeStrToISO(pickupTime))
+            .then(tables => {
+                setAvailableTables(tables);
+                if (tableNumberRef.current && !tables.includes(tableNumberRef.current)) {
+                    setTableNumber(null);
+                }
+            })
+            .catch(() => setAvailableTables([]))
+            .finally(() => setLoadingTables(false));
+    }, [orderType, locationId, pickupTime]);
+
+    useEffect(() => {
+        const loc = locations.find(l => String(l.id) === locationId);
+        setTaxRate(loc ? resolvetaxRate(loc.address) : DEFAULT_TAX_RATE);
+    }, [locations, locationId]);
+
     const tax = total * taxRate;
     const grandTotal = total + tax;
 
     const handlePlaceOrder = async () => {
         if (!locationId) { setError('please select a location.'); return; }
+
+        const [ph, pm] = pickupTime.split(':').map(Number);
+        const pickupDate = new Date();
+        pickupDate.setHours(ph, pm, 0, 0);
+        if (pickupDate <= new Date()) {
+            setError('pickup time must be in the future.');
+            return;
+        }
+
+        if (orderType === 'dine_in' && !tableNumber) {
+            setError('please select a table for your dine-in order.');
+            return;
+        }
 
         const errors = validateCard(cardNumber, cardName, cardExpiry, cardCvc);
         if (Object.keys(errors).length > 0) {
@@ -143,6 +194,7 @@ export default function Cart() {
                 orderType,
                 pickupTime: timeStrToISO(pickupTime),
                 paymentMethod: 'card',
+                tableNumber: orderType === 'dine_in' ? tableNumber : null,
                 items: items.map(i => ({
                     menuItemId: i.menuItemId,
                     size: i.size,
@@ -151,6 +203,7 @@ export default function Cart() {
                     selectedToggleLabels: i.selectedToggleLabels,
                 })),
             });
+            setChargedTotal(grandTotal);
             clearCart();
             setConfirmedOrder(order);
         } catch {
@@ -190,9 +243,21 @@ export default function Cart() {
                                     </Text>
                                 </Group>
                                 <Group justify="space-between">
-                                    <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>total</Text>
-                                    <Text size="13pt" fw={600}>${confirmedOrder.total.toFixed(2)}</Text>
+                                    <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>subtotal</Text>
+                                    <Text size="13pt">${confirmedOrder.total.toFixed(2)}</Text>
                                 </Group>
+                                {chargedTotal != null && (
+                                    <Group justify="space-between">
+                                        <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>total charged</Text>
+                                        <Text size="13pt" fw={600}>${chargedTotal.toFixed(2)}</Text>
+                                    </Group>
+                                )}
+                                {confirmedOrder.tableNumber && (
+                                    <Group justify="space-between">
+                                        <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>table</Text>
+                                        <Text size="13pt" fw={600}>#{confirmedOrder.tableNumber}</Text>
+                                    </Group>
+                                )}
                                 {confirmedOrder.pointsEarned > 0 && (
                                     <Group justify="space-between">
                                         <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>points earned</Text>
@@ -376,6 +441,52 @@ export default function Cart() {
                                 classNames={{ input: 'font-tiempos-text' }}
                             />
                         </Stack>
+
+                        {/* table selection (dine-in only) */}
+                        {orderType === 'dine_in' && (() => {
+                            const loc = locations.find(l => String(l.id) === locationId);
+                            const tableCount = loc?.tableCount ?? 0;
+                            return (
+                                <Stack gap={8}>
+                                    <Text size="11pt" fw={600} tt="uppercase" style={{ letterSpacing: '0.08em' }} c="dimmed">
+                                        select a table
+                                    </Text>
+                                    {loadingTables ? (
+                                        <Loader size="sm" color="#a5b4fc" />
+                                    ) : (
+                                        <SimpleGrid cols={6} spacing="xs">
+                                            {Array.from({ length: tableCount }, (_, i) => i + 1).map(n => {
+                                                const avail = availableTables.includes(n);
+                                                const selected = tableNumber === n;
+                                                return (
+                                                    <Button
+                                                        key={n}
+                                                        size="xs"
+                                                        variant={selected ? 'filled' : avail ? 'outline' : 'default'}
+                                                        color={selected || avail ? '#a5b4fc' : 'gray'}
+                                                        disabled={!avail}
+                                                        onClick={() => setTableNumber(n)}
+                                                        className="font-tiempos-text"
+                                                        style={{ minWidth: 40 }}
+                                                    >
+                                                        {n}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </SimpleGrid>
+                                    )}
+                                    {tableNumber ? (
+                                        <Text size="10.5pt" c="dimmed" className="font-tiempos-text">
+                                            table {tableNumber} selected
+                                        </Text>
+                                    ) : (
+                                        <Text size="10.5pt" c="dimmed" className="font-tiempos-text">
+                                            select an available table above
+                                        </Text>
+                                    )}
+                                </Stack>
+                            );
+                        })()}
 
                         {/* card payment */}
                         <Stack gap="sm">

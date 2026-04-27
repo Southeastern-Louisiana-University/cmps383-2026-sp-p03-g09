@@ -70,7 +70,7 @@ export default function Rewards() {
         try {
             const updatedUser = await api.rewards.redeem(confirmReward.id);
             setProfile(updatedUser);
-            setRedeemSuccess(`your ${confirmReward.name} has been redeemed! show this to the barista.`);
+            setRedeemSuccess(`redeemed! check your profile for the QR code to show at the pickup window — enjoy your ${confirmReward.name}.`);
             setConfirmReward(null);
         } catch {
             setRedeemError('could not redeem reward. please try again.');

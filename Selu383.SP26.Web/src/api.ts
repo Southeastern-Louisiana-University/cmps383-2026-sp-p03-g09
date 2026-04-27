@@ -13,9 +13,16 @@ export type LocationDto = {
     address: string;
     tableCount: number;
     managerId: number | null;
+    openHour: number | null;
+    closeHour: number | null;
 };
 
 export type LoginDto = {
+    userName: string;
+    password: string;
+};
+
+export type RegisterDto = {
     userName: string;
     password: string;
 };
@@ -79,6 +86,7 @@ export type OrderDto = {
     total: number;
     pointsEarned: number;
     createdAt: string;
+    tableNumber?: number | null;
     items: OrderItemDto[];
 };
 
@@ -95,6 +103,7 @@ export type CreateOrderDto = {
     orderType: string;
     pickupTime: string; // ISO string
     paymentMethod: string;
+    tableNumber?: number | null;
     items: CreateOrderItemDto[];
 };
 
@@ -129,6 +138,11 @@ export const api = {
                 method: 'POST',
                 body: JSON.stringify(dto),
             }),
+        signup: (dto: RegisterDto) =>
+            request<UserDto>('/api/authentication/register', {
+                method: 'POST',
+                body: JSON.stringify(dto),
+            }),
         logout: () =>
             fetch('/api/authentication/logout', {
                 method: 'POST',
@@ -138,6 +152,8 @@ export const api = {
     locations: {
         getAll: () => request<LocationDto[]>('/api/locations'),
         getById: (id: number) => request<LocationDto>(`/api/locations/${id}`),
+        getAvailableTables: (id: number, time: string) =>
+            request<number[]>(`/api/locations/${id}/available-tables?time=${encodeURIComponent(time)}`),
     },
     menuItems: {
         getAll: () => request<MenuItemDto[]>('/api/menu-items'),

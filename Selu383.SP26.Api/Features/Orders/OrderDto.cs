@@ -13,6 +13,7 @@ public class OrderDto
     public decimal Total { get; set; }
     public int PointsEarned { get; set; }
     public DateTime CreatedAt { get; set; }
+    public int? TableNumber { get; set; }
     public List<OrderItemDto> Items { get; set; } = new();
 }
 

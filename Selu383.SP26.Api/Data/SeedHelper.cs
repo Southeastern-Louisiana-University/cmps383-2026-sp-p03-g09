@@ -20,6 +20,7 @@ public static class SeedHelper
         await UpdateUserLoyaltyData(serviceProvider); // runs even when users pre-exist (e.g. Azure)
 
         await AddLocations(dataContext);
+        await BackfillLocationHours(dataContext);
         await AddMenuItems(dataContext);
         await BackfillSizePrices(dataContext);
         await AddRewards(dataContext);
@@ -117,12 +118,40 @@ public static class SeedHelper
         }
 
         dataContext.Set<Location>().AddRange(
-            new Location { Name = "Caffeinated Lions – Hammond", Address = "1514 N Morrison Blvd, Hammond, LA 70401", TableCount = 12 },
-            new Location { Name = "Caffeinated Lions – New Orleans", Address = "800 Magazine St, New Orleans, LA 70130", TableCount = 20 },
-            new Location { Name = "Caffeinated Lions – New York", Address = "45 W 29th St, New York, NY 10001", TableCount = 15 }
+            new Location { Name = "Caffeinated Lions – Hammond",     Address = "1514 N Morrison Blvd, Hammond, LA 70401", TableCount = 12, OpenHour = 7,  CloseHour = 21 },
+            new Location { Name = "Caffeinated Lions – New Orleans", Address = "800 Magazine St, New Orleans, LA 70130",  TableCount = 20, OpenHour = 7,  CloseHour = 22 },
+            new Location { Name = "Caffeinated Lions – New York",    Address = "45 W 29th St, New York, NY 10001",        TableCount = 15, OpenHour = 6,  CloseHour = 23 }
         );
 
         await dataContext.SaveChangesAsync();
+    }
+
+    private static async Task BackfillLocationHours(DataContext dataContext)
+    {
+        var defaults = new Dictionary<string, (int Open, int Close)>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Caffeinated Lions – Hammond"]     = (7, 21),
+            ["Caffeinated Lions – New Orleans"] = (7, 22),
+            ["Caffeinated Lions – New York"]    = (6, 23),
+        };
+
+        var locations = await dataContext.Set<Location>()
+            .Where(l => l.OpenHour == null)
+            .ToListAsync();
+
+        foreach (var loc in locations)
+        {
+            if (defaults.TryGetValue(loc.Name, out var hours))
+            {
+                loc.OpenHour  = hours.Open;
+                loc.CloseHour = hours.Close;
+            }
+        }
+
+        if (locations.Any(l => l.OpenHour != null))
+        {
+            await dataContext.SaveChangesAsync();
+        }
     }
 
     private static List<MenuItemAddOn> DrinkAddOns() =>

@@ -13,8 +13,11 @@ import {
     Button,
     Divider,
     Avatar,
+    Modal,
+    ActionIcon,
 } from '@mantine/core';
-import { IconPaw } from '@tabler/icons-react';
+import { IconPaw, IconQrcode } from '@tabler/icons-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, type OrderDto, type UserDto } from './api';
@@ -46,6 +49,7 @@ export default function Profile() {
     const [profile, setProfile] = useState<UserDto | null>(null);
     const [orders, setOrders] = useState<OrderDto[]>([]);
     const [loadingProfile, setLoadingProfile] = useState(true);
+    const [qrOrder, setQrOrder] = useState<OrderDto | null>(null);
 
     useEffect(() => {
         if (!authLoading && authUser) {
@@ -232,7 +236,7 @@ export default function Profile() {
                             orders.slice(0, 5).map(order => (
                                 <Card key={order.id} withBorder radius="md" padding="md">
                                     <Group justify="space-between" align="flex-start">
-                                        <Stack gap={2}>
+                                        <Stack gap={2} style={{ flex: 1 }}>
                                             <Text size="13pt" fw={500} className="font-tiempos-headline">
                                                 {order.items.map(i => i.menuItemName).join(', ')}
                                             </Text>
@@ -244,14 +248,26 @@ export default function Profile() {
                                                 })}
                                             </Text>
                                         </Stack>
-                                        <Stack gap={2} align="flex-end">
-                                            <Text size="13pt" fw={600}>${order.total.toFixed(2)}</Text>
-                                            {order.pointsEarned > 0 && (
-                                                <Badge color="#a5b4fc" variant="light" size="sm">
-                                                    +{order.pointsEarned} pts
-                                                </Badge>
-                                            )}
-                                        </Stack>
+                                        <Group gap="sm" align="flex-start">
+                                            <Stack gap={2} align="flex-end">
+                                                <Text size="13pt" fw={600}>${order.total.toFixed(2)}</Text>
+                                                {order.pointsEarned > 0 && (
+                                                    <Badge color="#a5b4fc" variant="light" size="sm">
+                                                        +{order.pointsEarned} pts
+                                                    </Badge>
+                                                )}
+                                            </Stack>
+                                            <ActionIcon
+                                                variant="subtle"
+                                                color="#a5b4fc"
+                                                size="lg"
+                                                onClick={() => setQrOrder(order)}
+                                                aria-label="show QR code"
+                                                title="show QR code"
+                                            >
+                                                <IconQrcode size={20} />
+                                            </ActionIcon>
+                                        </Group>
                                     </Group>
                                 </Card>
                             ))
@@ -259,6 +275,35 @@ export default function Profile() {
                     </Stack>
                 </Stack>
             </Container>
+
+            <Modal
+                opened={!!qrOrder}
+                onClose={() => setQrOrder(null)}
+                centered
+                size="xs"
+                title={
+                    <Text size="15pt" className="font-tiempos-headline" fw={400}>
+                        order #{qrOrder?.id}
+                    </Text>
+                }
+            >
+                {qrOrder && (
+                    <Stack align="center" gap="md" pb="sm">
+                        <Text size="11pt" c="dimmed" className="font-tiempos-text" ta="center">
+                            show this at the pickup window or drive-thru.
+                        </Text>
+                        <QRCodeSVG
+                            value={`order:${qrOrder.id}`}
+                            size={180}
+                            bgColor="transparent"
+                            fgColor="currentColor"
+                        />
+                        <Text size="10pt" c="dimmed" className="font-tiempos-text">
+                            {qrOrder.items.map(i => i.menuItemName).join(', ')}
+                        </Text>
+                    </Stack>
+                )}
+            </Modal>
         </AppShell>
     );
 }
