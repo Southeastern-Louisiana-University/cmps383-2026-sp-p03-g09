@@ -8,4 +8,6 @@ public class UserDto
     public int LoyaltyPoints { get; set; }
     public DateTime? MemberSince { get; set; }
     public string Tier { get; set; } = "cub";
+
+    public string? ThemeColor { get; set; }
 }

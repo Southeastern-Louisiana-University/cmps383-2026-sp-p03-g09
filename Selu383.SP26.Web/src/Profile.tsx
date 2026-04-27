@@ -24,7 +24,16 @@ import { api, type OrderDto, type UserDto } from './api';
 import { useAuth } from './AuthContext';
 import Login from './Login';
 
-const NEXT_REWARD_INTERVAL = 250; // points needed per reward
+const NEXT_REWARD_INTERVAL = 250;
+
+const DEFAULT_COLOR = '#a5b4fc';
+
+const COLOR_OPTIONS = [
+    { name: 'Mint Green', value: '#86efac' },
+    { name: 'Ice Blue', value: '#7dd3fc' },
+    { name: 'Soft Pink', value: '#f9a8d4' },
+    { name: 'Peach', value: '#fdba74' },
+];
 
 const TIER_COLORS: Record<string, string> = {
     'cub': '#9ca3af',
@@ -45,11 +54,38 @@ function formatDate(iso: string | null | undefined): string {
 export default function Profile() {
     const { user: authUser, loading: authLoading } = useAuth();
     const navigate = useNavigate();
+
     const [loginOpened, setLoginOpened] = useState(false);
     const [profile, setProfile] = useState<UserDto | null>(null);
     const [orders, setOrders] = useState<OrderDto[]>([]);
     const [loadingProfile, setLoadingProfile] = useState(true);
     const [qrOrder, setQrOrder] = useState<OrderDto | null>(null);
+
+    const u = (profile ?? authUser)!;
+
+    const accentColor =
+        u?.themeColor ||
+        DEFAULT_COLOR;
+
+    useEffect(() => {
+        document.documentElement.style.setProperty('--accent-color', accentColor);
+    }, [accentColor]);
+
+    async function changeColor(color: string | null) {
+        const newColor = color ?? DEFAULT_COLOR;
+
+        try {
+            if (authUser?.id) {
+                await api.admin.updateThemeColor(authUser.id, newColor);
+            }
+
+            const updated = await api.auth.me();
+            setProfile(updated);
+
+        } catch (err) {
+            console.error("Failed to save theme color:", err);
+        }
+    }
 
     useEffect(() => {
         if (!authLoading && authUser) {
@@ -71,7 +107,7 @@ export default function Profile() {
     if (authLoading || loadingProfile) {
         return (
             <Center h="50vh">
-                <Loader color="#a5b4fc" />
+                <Loader color={accentColor} />
             </Center>
         );
     }
@@ -81,29 +117,27 @@ export default function Profile() {
             <AppShell>
                 <Container size="sm" py="xl">
                     <Stack gap="xl" align="center">
-                        <Text size="32pt" className="font-tiempos-headline" fw={300} ta="center">
+                        <Text size="32pt" fw={300} ta="center">
                             sign in to see your profile.
                         </Text>
-                        <Text size="13pt" c="dimmed" className="font-tiempos-text" ta="center">
+                        <Text size="13pt" c="dimmed" ta="center">
                             track your points, tier, and order history.
                         </Text>
                         <Button
                             onClick={() => setLoginOpened(true)}
                             variant="outline"
-                            color="#a5b4fc"
-                            className="font-tiempos-text"
-                            tt="lowercase"
+                            color={accentColor}
                         >
                             sign in
                         </Button>
                     </Stack>
+
                     <Login opened={loginOpened} onClose={() => setLoginOpened(false)} />
                 </Container>
             </AppShell>
         );
     }
 
-    const u = profile ?? authUser;
     const pts = u.loyaltyPoints ?? 0;
     const tier = u.tier ?? 'cub';
     const toNext = pointsToNextReward(pts);
@@ -114,51 +148,80 @@ export default function Profile() {
         <AppShell>
             <Container size="md" py="xl">
                 <Stack gap="xl">
-                    {/* Header */}
+
+                    {/* HEADER */}
                     <Group gap="lg" align="flex-start">
-                        <Avatar size={72} radius="xl" color="#a5b4fc">
+                        <Avatar
+                            size={72}
+                            radius="xl"
+                            style={{ backgroundColor: accentColor }}
+                        >
                             <IconPaw size={36} />
                         </Avatar>
+
                         <Stack gap={4}>
-                            <Text size="28pt" className="font-tiempos-headline" fw={300}>
+                            <Text size="28pt" fw={300}>
                                 {u.userName}
                             </Text>
-                            <Text size="12pt" c="dimmed" className="font-tiempos-text">
+
+                            <Text size="12pt" c="dimmed">
                                 member since {formatDate(u.memberSince)}
                             </Text>
+
                             <Badge
                                 color={tierColor}
                                 variant="light"
                                 size="lg"
-                                tt="lowercase"
-                                className="font-tiempos-text"
-                                style={{ letterSpacing: '0.1em' }}
                             >
                                 {tier}
                             </Badge>
+
+                            {/* 🎨 COLOR PICKER */}
+                            <Group gap={6} mt={8}>
+                                {COLOR_OPTIONS.map((c) => (
+                                    <Button
+                                        key={c.name}
+                                        onClick={() => changeColor(c.value)}
+                                        style={{
+                                            backgroundColor: c.value,
+                                            width: 22,
+                                            height: 22,
+                                            padding: 0,
+                                            minWidth: 22,
+                                        }}
+                                    />
+                                ))}
+
+                                <Button
+                                    onClick={() => changeColor(null)}
+                                    variant="light"
+                                    size="xs"
+                                >
+                                    default
+                                </Button>
+                            </Group>
                         </Stack>
                     </Group>
 
                     <Divider />
 
-                    {/* Points card */}
+                    {/* POINTS */}
                     <Card withBorder radius="md" padding="lg">
                         <Stack gap="md">
                             <Group justify="space-between" align="flex-end">
                                 <Stack gap={2}>
-                                    <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>
+                                    <Text size="11pt" c="dimmed">
                                         paw points
                                     </Text>
-                                    <Text size="32pt" className="font-tiempos-headline" fw={300} lh={1}>
+                                    <Text size="32pt" fw={300} lh={1}>
                                         {pts.toLocaleString()}
                                     </Text>
                                 </Stack>
+
                                 <Button
                                     onClick={() => navigate('/rewards')}
                                     variant="light"
-                                    color="#a5b4fc"
-                                    className="font-tiempos-text"
-                                    tt="lowercase"
+                                    color={accentColor}
                                     size="sm"
                                 >
                                     view rewards
@@ -168,11 +231,11 @@ export default function Profile() {
                             <Stack gap={4}>
                                 <Progress
                                     value={progress}
-                                    color="#a5b4fc"
+                                    color={accentColor}
                                     size="sm"
                                     radius="xl"
                                 />
-                                <Text size="10.5pt" c="dimmed" className="font-tiempos-text">
+                                <Text size="10.5pt" c="dimmed">
                                     {toNext} points to next reward
                                 </Text>
                             </Stack>
@@ -181,14 +244,15 @@ export default function Profile() {
 
                             <Group>
                                 <Stack gap={2} style={{ flex: 1 }}>
-                                    <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>tier</Text>
-                                    <Text size="13pt" className="font-tiempos-text">{tier}</Text>
+                                    <Text size="11pt" c="dimmed">tier</Text>
+                                    <Text size="13pt">{tier}</Text>
                                 </Stack>
+
                                 <Stack gap={2} style={{ flex: 1 }}>
-                                    <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>next tier</Text>
-                                    <Text size="13pt" className="font-tiempos-text">
+                                    <Text size="11pt" c="dimmed">next tier</Text>
+                                    <Text size="13pt">
                                         {tier === 'golden paw'
-                                            ? 'you\'re at the top!'
+                                            ? 'you’re at the top!'
                                             : tier === 'silver paw'
                                             ? `golden paw at 1,000 pts`
                                             : `silver paw at 500 pts`}
@@ -198,38 +262,39 @@ export default function Profile() {
                         </Stack>
                     </Card>
 
-                    {/* Stats */}
+                    {/* STATS */}
                     <SimpleGrid cols={2} spacing="md">
                         <Card withBorder radius="md" padding="md">
                             <Stack gap={2} align="center">
-                                <Text size="28pt" className="font-tiempos-headline" fw={300}>
+                                <Text size="28pt" fw={300}>
                                     {orders.length}
                                 </Text>
-                                <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>
+                                <Text size="11pt" c="dimmed">
                                     orders placed
                                 </Text>
                             </Stack>
                         </Card>
+
                         <Card withBorder radius="md" padding="md">
                             <Stack gap={2} align="center">
-                                <Text size="28pt" className="font-tiempos-headline" fw={300}>
+                                <Text size="28pt" fw={300}>
                                     {orders.reduce((sum, o) => sum + o.pointsEarned, 0)}
                                 </Text>
-                                <Text size="11pt" c="dimmed" tt="uppercase" style={{ letterSpacing: '0.08em' }}>
+                                <Text size="11pt" c="dimmed">
                                     total points earned
                                 </Text>
                             </Stack>
                         </Card>
                     </SimpleGrid>
 
-                    {/* Recent orders */}
+                    {/* RECENT ORDERS */}
                     <Stack gap="md">
-                        <Text size="24pt" className="font-tiempos-headline" fw={300}>
+                        <Text size="24pt" fw={300}>
                             recent orders.
                         </Text>
 
                         {orders.length === 0 ? (
-                            <Text size="13pt" c="dimmed" className="font-tiempos-text">
+                            <Text size="13pt" c="dimmed">
                                 no orders yet — head to the menu and place your first one.
                             </Text>
                         ) : (
@@ -237,33 +302,31 @@ export default function Profile() {
                                 <Card key={order.id} withBorder radius="md" padding="md">
                                     <Group justify="space-between" align="flex-start">
                                         <Stack gap={2} style={{ flex: 1 }}>
-                                            <Text size="13pt" fw={500} className="font-tiempos-headline">
+                                            <Text size="13pt" fw={500}>
                                                 {order.items.map(i => i.menuItemName).join(', ')}
                                             </Text>
-                                            <Text size="10.5pt" c="dimmed" className="font-tiempos-text">
-                                                {order.locationName}
-                                                {' · '}
-                                                {new Date(order.createdAt).toLocaleDateString(undefined, {
-                                                    month: 'short', day: 'numeric'
-                                                })}
+                                            <Text size="10.5pt" c="dimmed">
+                                                {order.locationName} · {new Date(order.createdAt).toLocaleDateString()}
                                             </Text>
                                         </Stack>
-                                        <Group gap="sm" align="flex-start">
+
+                                        <Group gap="sm">
                                             <Stack gap={2} align="flex-end">
-                                                <Text size="13pt" fw={600}>${order.total.toFixed(2)}</Text>
+                                                <Text size="13pt" fw={600}>
+                                                    ${order.total.toFixed(2)}
+                                                </Text>
                                                 {order.pointsEarned > 0 && (
-                                                    <Badge color="#a5b4fc" variant="light" size="sm">
+                                                    <Badge color={accentColor} variant="light" size="sm">
                                                         +{order.pointsEarned} pts
                                                     </Badge>
                                                 )}
                                             </Stack>
+
                                             <ActionIcon
                                                 variant="subtle"
-                                                color="#a5b4fc"
+                                                color={accentColor}
                                                 size="lg"
                                                 onClick={() => setQrOrder(order)}
-                                                aria-label="show QR code"
-                                                title="show QR code"
                                             >
                                                 <IconQrcode size={20} />
                                             </ActionIcon>
@@ -281,24 +344,22 @@ export default function Profile() {
                 onClose={() => setQrOrder(null)}
                 centered
                 size="xs"
-                title={
-                    <Text size="15pt" className="font-tiempos-headline" fw={400}>
-                        order #{qrOrder?.id}
-                    </Text>
-                }
+                title={`order #${qrOrder?.id}`}
             >
                 {qrOrder && (
                     <Stack align="center" gap="md" pb="sm">
-                        <Text size="11pt" c="dimmed" className="font-tiempos-text" ta="center">
+                        <Text size="11pt" c="dimmed" ta="center">
                             show this at the pickup window or drive-thru.
                         </Text>
+
                         <QRCodeSVG
                             value={`order:${qrOrder.id}`}
                             size={180}
                             bgColor="transparent"
                             fgColor="currentColor"
                         />
-                        <Text size="10pt" c="dimmed" className="font-tiempos-text">
+
+                        <Text size="10pt" c="dimmed">
                             {qrOrder.items.map(i => i.menuItemName).join(', ')}
                         </Text>
                     </Stack>

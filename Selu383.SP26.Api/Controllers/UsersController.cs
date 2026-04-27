@@ -29,10 +29,12 @@ public class UsersController : ControllerBase
             .ToListAsync();
 
         var dtos = new List<UserDto>();
+
         foreach (var u in users)
         {
             var roles = u.UserRoles.Select(ur => ur.Role!.Name!).ToArray();
             var points = u.LoyaltyPoints;
+
             dtos.Add(new UserDto
             {
                 Id = u.Id,
@@ -40,9 +42,16 @@ public class UsersController : ControllerBase
                 Roles = roles,
                 LoyaltyPoints = points,
                 MemberSince = u.MemberSince,
-                Tier = points switch { >= 1000 => "golden paw", >= 500 => "silver paw", _ => "cub" }
+                ThemeColor = u.ThemeColor,
+                Tier = points switch
+                {
+                    >= 1000 => "golden paw",
+                    >= 500 => "silver paw",
+                    _ => "cub"
+                }
             });
         }
+
         return Ok(dtos);
     }
 
@@ -62,6 +71,7 @@ public class UsersController : ControllerBase
 
         var roles = user.UserRoles.Select(ur => ur.Role!.Name!).ToArray();
         var points = user.LoyaltyPoints;
+
         return Ok(new UserDto
         {
             Id = user.Id,
@@ -69,7 +79,48 @@ public class UsersController : ControllerBase
             Roles = roles,
             LoyaltyPoints = points,
             MemberSince = user.MemberSince,
-            Tier = points switch { >= 1000 => "golden paw", >= 500 => "silver paw", _ => "cub" }
+            ThemeColor = user.ThemeColor,
+            Tier = points switch
+            {
+                >= 1000 => "golden paw",
+                >= 500 => "silver paw",
+                _ => "cub"
+            }
+        });
+    }
+
+    // ⭐ NEW: THEME COLOR ENDPOINT
+    [HttpPut("{id}/theme-color")]
+    public async Task<ActionResult<UserDto>> UpdateThemeColor(int id, [FromBody] UpdateThemeColorDto dto)
+    {
+        var user = await userManager.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null) return NotFound();
+
+        user.ThemeColor = dto.ThemeColor;
+
+        await userManager.UpdateAsync(user);
+
+        var roles = user.UserRoles.Select(ur => ur.Role!.Name!).ToArray();
+        var points = user.LoyaltyPoints;
+
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName!,
+            Roles = roles,
+            LoyaltyPoints = points,
+            MemberSince = user.MemberSince,
+            ThemeColor = user.ThemeColor,
+            Tier = points switch
+            {
+                >= 1000 => "golden paw",
+                >= 500 => "silver paw",
+                _ => "cub"
+            }
         });
     }
 
@@ -83,6 +134,7 @@ public class UsersController : ControllerBase
         {
             UserName = dto.UserName,
         };
+
         var createResult = await userManager.CreateAsync(newUser, dto.Password);
         if (!createResult.Succeeded)
         {
@@ -97,7 +149,8 @@ public class UsersController : ControllerBase
                 return BadRequest();
             }
         }
-        catch (InvalidOperationException e) when(e.Message.StartsWith("Role") && e.Message.EndsWith("does not exist."))
+        catch (InvalidOperationException e)
+        when (e.Message.StartsWith("Role") && e.Message.EndsWith("does not exist."))
         {
             return BadRequest();
         }
@@ -111,6 +164,12 @@ public class UsersController : ControllerBase
             UserName = newUser.UserName,
         });
     }
+}
+
+// DTOs
+public class UpdateThemeColorDto
+{
+    public string? ThemeColor { get; set; }
 }
 
 public class UpdateLoyaltyPointsDto

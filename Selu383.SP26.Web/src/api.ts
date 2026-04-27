@@ -5,6 +5,7 @@ export type UserDto = {
     loyaltyPoints: number;
     memberSince: string | null;
     tier: string; // "cub" | "silver paw" | "golden paw"
+    themeColor?: string | null;
 };
 
 export type LocationDto = {
@@ -201,6 +202,12 @@ export const api = {
                 method: 'PUT',
                 body: JSON.stringify({ isFeatured }),
             }),
+
+        updateThemeColor: (id: number, color: string) =>
+        request<UserDto>(`/api/users/${id}/theme-color`, {
+            method: 'PUT',
+            body: JSON.stringify({ themeColor: color }),
+        }),
         uploadMenuItemImage: (id: number, file: File) => {
             const form = new FormData();
             form.append('file', file);
