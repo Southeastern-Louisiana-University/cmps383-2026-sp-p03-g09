@@ -59,7 +59,7 @@ function NavBar() {
                 </Text>
 
                 {/* Right side */}
-                <Group gap={20} align="right">
+                <Group gap={20} align="center">
                     {/* Nav links */}
                     {NAV_LINKS.map(link => (
                         <UnstyledButton
@@ -141,16 +141,28 @@ function NavBar() {
                             sign out
                         </Button>
                     ) : (
-                        <Button
-                            onClick={() => setLoginOpened(true)}
-                            variant="subtle"
-                            color="#a5b4fc"
-                            size="sm"
-                            className="font-tiempos-text"
-                            tt="lowercase"
-                        >
-                            sign in
-                        </Button>
+                        <>
+                            <Button
+                                onClick={() => navigate('/signup')}
+                                variant="outline"
+                                color="#a5b4fc"
+                                size="sm"
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                sign up
+                            </Button>
+                            <Button
+                                onClick={() => setLoginOpened(true)}
+                                variant="subtle"
+                                color="#a5b4fc"
+                                size="sm"
+                                className="font-tiempos-text"
+                                tt="lowercase"
+                            >
+                                sign in
+                            </Button>
+                        </>
                     )}
                 </Group>
             </Group>

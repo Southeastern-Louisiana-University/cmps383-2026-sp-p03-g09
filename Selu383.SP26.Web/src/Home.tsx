@@ -85,11 +85,12 @@ export default function Home() {
     return (
         <div style={{ position: 'relative', minHeight: 'calc(100vh - 60px)' }}>
 
-            {/* Fixed animated blob background */}
+            {/* Aurora background */}
             <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-                <div className="hero-blob hero-blob-1" />
-                <div className="hero-blob hero-blob-2" />
-                <div className="hero-blob hero-blob-3" />
+                <div className="aurora-band aurora-band-1" />
+                <div className="aurora-band aurora-band-2" />
+                <div className="aurora-band aurora-band-3" />
+                <div className="aurora-band aurora-band-4" />
             </div>
 
             <div style={{ position: 'relative', zIndex: 1 }}>
