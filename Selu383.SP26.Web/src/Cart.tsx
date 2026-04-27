@@ -31,12 +31,11 @@ const TAX_RATES: Record<string, number> = {
 };
 const DEFAULT_TAX_RATE = 0.0945;
 
-function getTaxRate(locations: LocationDto[], locationId: string | null): number {
-    const loc = locations.find(l => String(l.id) === locationId);
-    if (!loc) return DEFAULT_TAX_RATE;
-    // Match the two-letter state code immediately before the 5-digit ZIP
-    const match = loc.address.match(/\b([A-Z]{2})\s+\d{5}\b/);
-    return match ? (TAX_RATES[match[1]] ?? DEFAULT_TAX_RATE) : DEFAULT_TAX_RATE;
+function resolvetaxRate(address: string): number {
+    const tokens = address.split(/\s+/);
+    const zipIdx = tokens.findIndex(t => /^\d{5}$/.test(t));
+    if (zipIdx > 0) return TAX_RATES[tokens[zipIdx - 1]] ?? DEFAULT_TAX_RATE;
+    return DEFAULT_TAX_RATE;
 }
 
 const ORDER_TYPES = [
@@ -118,6 +117,7 @@ export default function Cart() {
     const [availableTables, setAvailableTables] = useState<number[]>([]);
     const [loadingTables, setLoadingTables] = useState(false);
 
+    const [taxRate, setTaxRate] = useState(DEFAULT_TAX_RATE);
     const [submitting, setSubmitting] = useState(false);
     const [confirmedOrder, setConfirmedOrder] = useState<OrderDto | null>(null);
     const [chargedTotal, setChargedTotal] = useState<number | null>(null);
@@ -156,7 +156,11 @@ export default function Cart() {
             .finally(() => setLoadingTables(false));
     }, [orderType, locationId, pickupTime]);
 
-    const taxRate = getTaxRate(locations, locationId);
+    useEffect(() => {
+        const loc = locations.find(l => String(l.id) === locationId);
+        setTaxRate(loc ? resolvetaxRate(loc.address) : DEFAULT_TAX_RATE);
+    }, [locations, locationId]);
+
     const tax = total * taxRate;
     const grandTotal = total + tax;
 
