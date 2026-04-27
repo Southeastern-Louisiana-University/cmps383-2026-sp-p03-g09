@@ -15,6 +15,8 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { api, type RewardDto, type OrderDto, type MenuItemDto } from '../context/api';
 import { addToBag } from '../(tabs)/menu';
+import QRCode from 'react-native-qrcode-svg';
+import { setGlobalDriveThruCode, setGlobalLastOrder } from '../pages/orderOptions';
 
 
 export default function RewardsScreen() {
@@ -36,6 +38,9 @@ export default function RewardsScreen() {
   const [selectedToggleLabels, setSelectedToggleLabels] = useState<string[]>([]);
   const [choiceModalVisible, setChoiceModalVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<number>(1);
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderDto | null>(null);
+  const [driveThruCode] = useState(() => String(Math.floor(1000 + Math.random() * 9000)));
+  const [rewardDriveThruCode, setRewardDriveThruCode] = useState('');
 
   const LOCATIONS = [
     { id: 1, label: "new orleans", address: "1140 S Carrollton Ave, New Orleans, LA", taxRate: 0.0975 },
@@ -107,7 +112,7 @@ const redeem = async () => {
     await api.rewards.redeem(confirmReward.id);
 
     const pickupTime = new Date(Date.now() + 15 * 60000).toISOString();
-    await api.orders.create({
+    const order = await api.orders.create({
       locationId: selectedLocation,
       orderType: 'carry_out',
       pickupTime,
@@ -120,12 +125,19 @@ const redeem = async () => {
         selectedToggleLabels,
       }],
     });
+
     const updatedUser = await api.rewards.redeem(confirmReward.id);
     setUser(updatedUser);
     setConfirmReward(null);
     setCustomizeItem(null);
     setCustomizeReward(null);
-    router.push('/(tabs)/profile');
+    setRewardDriveThruCode(String(Math.floor(1000 + Math.random() * 9000)));
+    const code = String(Math.floor(1000 + Math.random() * 9000));
+    setRewardDriveThruCode(code);
+    setGlobalLastOrder(order);
+    setGlobalDriveThruCode(code);
+    setConfirmedOrder(order);
+    setConfirmedOrder(order);  
   } catch (e) {
     const err = e as any;
     console.log('[redeem] error →', err?.message ?? err);
@@ -771,9 +783,64 @@ const redeem = async () => {
                 ))}
               </ScrollView>
             </View>
-          </Pressable>
+              </Pressable>
+            </Pressable>
+          </Modal>
+          <Modal visible={!!confirmedOrder} transparent animationType="slide" onRequestClose={() => { setConfirmedOrder(null); router.push('/(tabs)/profile'); }}>
+      <Pressable style={styles.modalOverlay} onPress={() => {}}>
+        <Pressable onPress={() => {}}>
+          <View style={[styles.modalSheet, { alignItems: 'center' }]}>
+            <View style={styles.modalHandle} />
+            <Ionicons name="checkmark-circle-outline" size={36} color={palette.accent} style={{ marginBottom: 12 }} />
+            <Text style={styles.modalLabel}>✦ reward redeemed</Text>
+            <Text style={styles.modalTitle}>{confirmedOrder?.items[0]?.menuItemName ?? 'your free item'}</Text>
+            <Text style={[styles.modalDesc, { textAlign: 'center' }]}>
+              {LOCATIONS.find(l => l.id === selectedLocation)?.label} · carry out
+            </Text>
+
+            {/* QR code */}
+            <View style={{ padding: 12, backgroundColor: '#fff', borderRadius: 12, marginBottom: 16 }}>
+              <QRCode
+                value={`order:${confirmedOrder?.id}`}
+                size={140}
+                color="#000"
+                backgroundColor="#fff"
+              />
+            </View>
+            <Text style={{ color: palette.text, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 1.5, opacity: 0.4, marginBottom: 20 }}>
+              show at pickup · order #{confirmedOrder?.id}
+            </Text>
+
+            {/* drive-thru code */}
+            <View style={{
+              backgroundColor: palette.accent + '12',
+              borderWidth: 1,
+              borderColor: palette.accent + '60',
+              borderRadius: 12,
+              paddingVertical: 14,
+              paddingHorizontal: 24,
+              alignItems: 'center',
+              marginBottom: 24,
+              width: '100%',
+            }}>
+              <Text style={{ color: palette.text, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 2, opacity: 0.4, textTransform: 'uppercase', marginBottom: 6 }}>
+                drive-thru code
+              </Text>
+              <Text style={{ color: palette.accent, fontSize: 36, fontFamily: 'Tiempos-Regular', letterSpacing: 10 }}>
+                {driveThruCode}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.modalConfirmBtn}
+              onPress={() => { setConfirmedOrder(null); router.push('/(tabs)/profile'); }}
+            >
+              <Text style={styles.modalConfirmText}>view profile ✦</Text>
+            </TouchableOpacity>
+          </View>
         </Pressable>
-      </Modal>
+      </Pressable>
+    </Modal>
 
       {/* toast */}
       {showToast && (

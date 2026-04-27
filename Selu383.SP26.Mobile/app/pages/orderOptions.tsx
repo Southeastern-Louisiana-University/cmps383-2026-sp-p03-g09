@@ -251,7 +251,13 @@ const tds = (palette: ThemePalette) => StyleSheet.create({
 export interface CardEntryHandle {
   validate: () => boolean;
 }
-
+export let globalLastDriveThruCode: string | null = null;
+export function setGlobalDriveThruCode(code: string | null) {
+  globalLastDriveThruCode = code;
+}
+export function setGlobalLastOrder(order: OrderDto | null) {
+  globalLastOrder = order;
+}
 const CardEntry = forwardRef<CardEntryHandle, { palette: ThemePalette }>(
   function CardEntry({ palette }, ref) {
     const [cardNumber, setCardNumber] = useState("");

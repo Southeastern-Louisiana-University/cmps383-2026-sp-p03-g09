@@ -11,16 +11,22 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme, ThemePalette } from "@/app/theme-context";
-import { globalLastOrder } from "./orderOptions";
 import { OrderDto } from "../context/api";
+import QRCode from 'react-native-qrcode-svg';
+import { globalLastOrder, setGlobalDriveThruCode } from './orderOptions';
 
-//  drive-thru code — stable for the lifetime of this screen
+//  drive-thru code 
 
 function useDriveThruCode(isDriveThru: boolean): string {
-  return useMemo(
-    () => isDriveThru ? String(Math.floor(1000 + Math.random() * 9000)) : "",
-    [isDriveThru]
-  );
+  return useMemo(() => {
+    if (!isDriveThru) {
+      setGlobalDriveThruCode(null);
+      return '';
+    }
+    const code = String(Math.floor(1000 + Math.random() * 9000));
+    setGlobalDriveThruCode(code);
+    return code;
+  }, [isDriveThru]);
 }
 
 //  parse order type string
@@ -247,6 +253,31 @@ export default function OrderConfirmationScreen() {
             <DriveThruCode code={driveThruCode} palette={palette} />
           </Animated.View>
         )}
+
+        {/* qr code */}
+        <Animated.View style={{ opacity: fadeIn, transform: [{ translateY: slideUp }], marginBottom: 28 }}>
+          <View style={{
+            backgroundColor: palette.surface,
+            borderWidth: 1,
+            borderColor: palette.accent + '40',
+            borderRadius: 16,
+            paddingVertical: 24,
+            paddingHorizontal: 24,
+            alignItems: 'center',
+            gap: 12,
+          }}>
+            <Text style={{ color: palette.text, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 2.5, textTransform: 'uppercase', opacity: 0.5 }}>
+              show at pickup
+            </Text>
+            <View style={{ padding: 12, backgroundColor: '#fff', borderRadius: 12 }}>
+              <QRCode value={`order:${order.id}`} size={160} color="#000" backgroundColor="#fff" />
+            </View>
+            <Text style={{ color: palette.text, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 0.4, opacity: 0.4 }}>
+              order #{order.id}
+            </Text>
+          </View>
+        </Animated.View>
+      )
 
         {/* items */}
         <Animated.View style={{ opacity: fadeIn, transform: [{ translateY: slideUp }] }}>

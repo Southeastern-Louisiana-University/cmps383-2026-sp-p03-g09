@@ -14,6 +14,8 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { BlurView as ExpoBlurView } from 'expo-blur';
 import { api, type OrderDto } from '../context/api';
+import QRCode from 'react-native-qrcode-svg';
+import { globalLastOrder, globalLastDriveThruCode } from '../pages/orderOptions'; 
 
     
 const rewardsIncrements = [50, 100, 150, 175, 200, 250];
@@ -321,6 +323,42 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
             </Text>
           )}
         </View>
+        {globalLastOrder && (
+          <>
+            <SectionLabel text="last order pickup" palette={palette} />
+            <View style={{
+              backgroundColor: palette.surface,
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: palette.accent + '40',
+              padding: 20,
+              alignItems: 'center',
+              gap: 12,
+            }}>
+              <Text style={{ color: palette.text, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 1, opacity: 0.5 }}>
+                order #{globalLastOrder.id} · show at pickup
+              </Text>
+              <View style={{ padding: 12, backgroundColor: '#fff', borderRadius: 12 }}>
+                <QRCode
+                  value={`order:${globalLastOrder.id}`}
+                  size={140}
+                  color="#000"
+                  backgroundColor="#fff"
+                />
+              </View>
+              {globalLastOrder && (
+                <View style={{ alignItems: 'center', gap: 4 }}>
+                  <Text style={{ color: palette.text, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 2, opacity: 0.4, textTransform: 'uppercase' }}>
+                    drive-thru code
+                  </Text>
+                  <Text style={{ color: palette.accent, fontSize: 36, fontFamily: 'Tiempos-Regular', letterSpacing: 10 }}>
+                    {globalLastDriveThruCode}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </>
+        )}
 
         <TouchableOpacity style={styles.signOutBtn} onPress={async () => { await logout(); router.replace('/pages/login'); }}>
           <Ionicons name="log-out-outline" size={14} color={palette.accent} opacity={0.7} />
