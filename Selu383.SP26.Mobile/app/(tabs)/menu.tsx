@@ -14,24 +14,40 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/app/theme-context';
 import { useRouter } from 'expo-router';
 import { api, type MenuItemDto } from '../context/api';
+import { menuPhotos } from '@/app/context/menuPhotos';
 
 // photos
 
-const MENU_PHOTOS: Record<string, any> = {
-  'iced latte':               require('../../assets/iced latte.png'),
-  'supernova':                require('../../assets/supernova.png'),
-  'roaring frappe':           require('../../assets/roaring frappe.png'),
-  'black & white cold brew':  require('../../assets/black and white cold brew.png'),
-  'strawberry limeade':       require('../../assets/strawberry limeade.png'),
-  'shaken lemonade':          require('../../assets/shaken lemonade.png'),
-  'mannino honey crepe':      require('../../assets/mannino crepe.png'),
-  'downtowner':               require('../../assets/downtowner.png'),
-  'funky monkey':             require('../../assets/funky monkey.png'),
-  "le s'mores":               require('../../assets/le smores.png'),
-  'strawberry fields':        require('../../assets/strawberry fields.png'),
-  'bonjour':                  require('../../assets/bonjour.png'),
-  'banana foster':            require('../../assets/bananas foster.png'),
-};
+function getMenuPhoto(name: string) {
+  const map: Record<string, any> = {
+    'iced latte':              menuPhotos.icedLatte,
+    'supernova':               menuPhotos.supernova,
+    'roaring frappe':          menuPhotos.roaringFrappe,
+    'black & white cold brew': menuPhotos.blackWhiteColdBrew,
+    'strawberry limeade':      menuPhotos.strawberryLimeade,
+    'shaken lemonade':         menuPhotos.shakenLemonade,
+    'mannino honey crepe':     menuPhotos.manninoCrepe,
+    'downtowner':              menuPhotos.downtowner,
+    'funky monkey':            menuPhotos.funkyMonkey,
+    "le s'mores":              menuPhotos.leSmores,
+    'strawberry fields':       menuPhotos.strawberryFields,
+    'bonjour':                 menuPhotos.bonjour,
+    'banana foster':           menuPhotos.bananasFoster,
+    "matt's scrambled eggs":   menuPhotos.mattsScrambledEggs,
+    'meanie mushroom':         menuPhotos.meanieMushroom,
+    'turkey club':             menuPhotos.turkeyClub,
+    'green machine':           menuPhotos.greenMachine,
+    'perfect pair':            menuPhotos.perfectPair,
+    'crepe fromage':           menuPhotos.crepeFromage,
+    'farmers market crepe':    menuPhotos.farmersMarketCrepe,
+    'travis special':          menuPhotos.travisSpecial,
+    'creme brulagel':          menuPhotos.cremeBrulagel,
+    'the fancy one':           menuPhotos.theFancyOne,
+    'breakfast bagel':         menuPhotos.breakfastBagel,
+    'the classic':             menuPhotos.theClassic,
+  };
+  return map[name.toLowerCase()] ?? null;
+}
 
 //helpers
 
@@ -250,7 +266,8 @@ export default function MenuScreen() {
     toastText: { color: palette.accent, fontFamily: 'Tiempos-Regular', fontSize: 12, letterSpacing: 0.5, flex: 1 },
   });
 
-  const photo = modalItem ? MENU_PHOTOS[modalItem.name.toLowerCase()] : null;
+  const photo = modalItem ? getMenuPhoto(modalItem.name) : null;
+  
 
   return (
     <View style={s.container}>

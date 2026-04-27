@@ -100,7 +100,6 @@ export default function SettingsScreen() {
   // notification toggles
   const [orderUpdates, setOrderUpdates] = useState(true);
   const [promoAlerts, setPromoAlerts] = useState(false);
-  const [streakReminder, setStreakReminder] = useState(true);
 
   const styles = createStyles(palette);
 
@@ -298,24 +297,9 @@ export default function SettingsScreen() {
               />
             }
           />
-          <SettingRow
-            icon="flame-outline"
-            label="streak reminder"
-            sublabel="daily nudge to keep your streak alive"
-            palette={palette}
-            right={
-              <Switch
-                value={streakReminder}
-                onValueChange={setStreakReminder}
-                trackColor={{ false: palette.subtle + '55', true: palette.accent + '88' }}
-                thumbColor={streakReminder ? palette.accent : palette.elevated}
-                ios_backgroundColor={palette.subtle + '55'}
-              />
-            }
-          />
         </View>
 
-        {/* ── about ───────────────────────────────────────────────────── */}
+        {/*about*/}
         <SectionLabel text="about" palette={palette} />
 
         <View style={styles.card}>

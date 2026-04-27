@@ -51,7 +51,8 @@ export type RewardDto = {
     name: string;
     description: string;
     pointCost: number;
-    category: string; // "drink" | "food"
+    category: string; // "drink" or "food"
+    menuItemId: number | null; // null for the 250 pt drink of choice
 };
 
 export type OrderItemDto = {
@@ -142,6 +143,7 @@ export const api = {
     menuItems: {
         getAll: () => request<MenuItemDto[]>('/api/menu-items'),
         getById: (id: number) => request<MenuItemDto>(`/api/menu-items/${id}`),
+        getFeatured: () => request<MenuItemDto[]>('/api/menu-items?featured=true'),
     },
     orders: {
         getAll: () => request<OrderDto[]>('/api/orders'),
