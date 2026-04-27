@@ -10,9 +10,6 @@
     "web": "expo start --web",
     "lint": "expo lint"
   },
-  "overrides": {
-    "react-native-svg": "15.8.0"
-  },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@react-native-picker/picker": "2.11.1",
