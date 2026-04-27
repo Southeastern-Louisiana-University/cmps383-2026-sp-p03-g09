@@ -14,6 +14,8 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { BlurView as ExpoBlurView } from 'expo-blur';
 import { api, type OrderDto } from '../context/api';
+import QRCode from 'react-native-qrcode-svg';
+import { globalLastOrder, globalLastDriveThruCode } from '../pages/orderOptions'; 
 
     
 const rewardsIncrements = [50, 100, 150, 175, 200, 250];
@@ -35,9 +37,12 @@ export default function ProfileScreen() {
   const [orders, setOrders] = useState<OrderDto[]>([]);
 
   useEffect(() => {
-    if (!user) return;
-    api.orders.getAll().then(setOrders).catch(() => setOrders([]));
-  }, [user]);
+  api.orders.getAll()
+    .then(data => setOrders(data.sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )))
+    .catch(() => setOrders([]));
+}, []);
 
   const progressAnim = useRef(new Animated.Value(0)).current;
   const streakAnim = useRef(new Animated.Value(0)).current;
@@ -255,7 +260,7 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
               )}
           </View>
         </View>
-
+{/*
         <SectionLabel text="current streak" palette={palette} />
         <Animated.View style={[styles.streakCard, { transform: [{ scale: streakAnim }] }]}>
           <Text style={styles.streakNum}>—</Text>
@@ -263,7 +268,7 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
             <Text style={styles.streakLabel}>days in a row ☕</Text>
             <Text style={styles.streakSub}>keep going, you&apos;re on a roll ( •̀ ω •́ )</Text>
           </View>
-        </Animated.View>
+        </Animated.View> */}
 
         <SectionLabel text="paw points" palette={palette} />
         <View style={styles.pointsRow}>
@@ -272,7 +277,7 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
           <TouchableOpacity style={styles.pointsNextBtn} onPress={() => router.push('/pages/rewards')} accessibilityLabel="view rewards">
             <Text style={styles.pointsNextText}>
               {isLoggedIn
-                ? NEXT_REWARD === 0
+                ? NEXT_REWARD === 0 
                   ? 'redeem your next reward'
                   : `${NEXT_REWARD - points} to next reward`
                 : '— to next reward'}
@@ -307,7 +312,9 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
                   {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · {order.locationName.toLowerCase()}
                 </Text>
               </View>
-              <Text style={styles.orderPoints}>+{order.pointsEarned} pts</Text>
+              <Text style={[styles.orderPoints, { color: order.paymentMethod === 'reward' ? 'tomato' : palette.accent }]}>
+                {order.paymentMethod === 'reward' ? 'pts redeemed' : `+${order.pointsEarned} pts`}
+              </Text>
             </View>
           ))}
           {orders.length === 0 && (
@@ -316,6 +323,42 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
             </Text>
           )}
         </View>
+        {globalLastOrder && (
+          <>
+            <SectionLabel text="last order pickup" palette={palette} />
+            <View style={{
+              backgroundColor: palette.surface,
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: palette.accent + '40',
+              padding: 20,
+              alignItems: 'center',
+              gap: 12,
+            }}>
+              <Text style={{ color: palette.text, fontSize: 11, fontFamily: 'Tiempos-Regular', letterSpacing: 1, opacity: 0.5 }}>
+                order #{globalLastOrder.id} · show at pickup
+              </Text>
+              <View style={{ padding: 12, backgroundColor: '#fff', borderRadius: 12 }}>
+                <QRCode
+                  value={`order:${globalLastOrder.id}`}
+                  size={140}
+                  color="#000"
+                  backgroundColor="#fff"
+                />
+              </View>
+              {globalLastOrder && (
+                <View style={{ alignItems: 'center', gap: 4 }}>
+                  <Text style={{ color: palette.text, fontSize: 10, fontFamily: 'Tiempos-Regular', letterSpacing: 2, opacity: 0.4, textTransform: 'uppercase' }}>
+                    drive-thru code
+                  </Text>
+                  <Text style={{ color: palette.accent, fontSize: 36, fontFamily: 'Tiempos-Regular', letterSpacing: 10 }}>
+                    {globalLastDriveThruCode}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </>
+        )}
 
         <TouchableOpacity style={styles.signOutBtn} onPress={async () => { await logout(); router.replace('/pages/login'); }}>
           <Ionicons name="log-out-outline" size={14} color={palette.accent} opacity={0.7} />
@@ -336,7 +379,7 @@ const tierStyle = getTierStyles(user?.tier ?? 'cub');
           <View style={styles.overlayCard}>
             <Text style={{ fontSize: 32 }}>🐾</Text>
             <Text style={styles.overlayTitle}>you&apos;re not logged in</Text>
-            <Text style={styles.overlaySub}>sign in to see your paw points,{'\n'}streak, and order history ✦</Text>
+            <Text style={styles.overlaySub}>sign in to see your paw points,{'\n'}and order history ✦</Text>
             <TouchableOpacity style={styles.overlayBtn} onPress={() => router.push('/pages/login')}>
               <Text style={styles.overlayBtnText}>sign in</Text>
             </TouchableOpacity>

@@ -201,7 +201,7 @@ const createStyles = (palette: ThemePalette) =>
       alignItems: "center",
       gap: 5,
       borderWidth: 1,
-      borderColor: palette.subtle,
+      borderColor: palette.accent,
       borderRadius: 20,
       paddingHorizontal: 12,
       paddingVertical: 6,
